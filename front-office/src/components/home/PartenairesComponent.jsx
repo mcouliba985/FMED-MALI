@@ -6,7 +6,7 @@ import 'swiper/css/navigation';
 import partenaires from '../../utils/partenaires.json';
 
 const Title = styled.h2`
-      text-transform: uppercase;
+      text-transform: capitalize;
       font-size: 32px;
       font-weight: 800;
       font-family: 'Nunito Sans';
