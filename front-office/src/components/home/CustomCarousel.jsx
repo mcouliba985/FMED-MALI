@@ -7,7 +7,7 @@ const CustomCarousel = ({ slides }) => {
                   {slides.map((slide, index) => (
                         <Carousel.Item key={index}>
                               <div
-                                    className="relative w-full h-[820px] bg-center bg-cover"
+                                    className="relative w-full h-[575px] lg:h-[820px] bg-center bg-cover"
                                     style={{ backgroundImage: `url(${slide.image})` }}
                               >
                                     {/* Overlay sombre */}
@@ -22,7 +22,7 @@ const CustomCarousel = ({ slides }) => {
                                                 </h2>
 
                                                 {/* Boutons à droite */}
-                                                <div className="mt-6 lg:mt-0 flex flex-col lg:gap-6 gap-4">
+                                                <div className="mt-6 lg:mt-0 flex flex-col md:flex-row lg:flex-col lg:gap-6 gap-4">
                                                       <button className="bg-deepgreen text-white px-6 lg:px-16 py-3 hover:bg-green-800 transition-all rounded-2xl text-lg font-roboto">
                                                             En savoir plus
                                                       </button>
