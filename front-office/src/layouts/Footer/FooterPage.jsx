@@ -177,6 +177,7 @@ const FooterPage = () => {
                                     </div>
                               </section>
                         </div>
+
                         <FooterBottom>
                               <FooterLink
                                     target="_blank"
