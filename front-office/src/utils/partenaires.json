@@ -1,0 +1,37 @@
+[
+      {
+            "id": 1,
+            "fullName": "Orange Mali",
+            "logoPath": "https://play-lh.googleusercontent.com/VhiDRo_CIv95FWO7MAGwpqE6vKRI2zns5QZyIX7ymkD2eAnZzP97gJECMS9UcWWcOBU",
+            "logoName": "VhiDRo_CIv95FWO7MAGwpqE6vKRI2zns5QZyIX7ymkD2eAnZzP97gJECMS9UcWWcOBU",
+            "link": "https://www.orange-mali.com"
+      },
+      {
+            "id": 2,
+            "fullName": "Ecobank Mali",
+            "logoPath": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZ7NFdjydyB5vGqhKylVjoojnYGoR-dcj3-g&s",
+            "logoName": "ANd9GcRZ7NFdjydyB5vGqhKylVjoojnYGoR",
+            "link": "https://www.ecobank.com/mali"
+      },
+      {
+            "id": 3,
+            "fullName": "SOTELMA Malitel",
+            "logoPath": "https://bamada.net/wp-content/uploads/2023/04/malitel-moov.jpg",
+            "logoName": "malitel",
+            "link": "https://www.malitel.ml"
+      },
+      {
+            "id": 4,
+            "fullName": "BICIM – BNP Paribas Mali",
+            "logoPath": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQspVHsxDfgjIdo73tPGXXisfLqE08a6bcVug&s",
+            "logoName": "ANd9GcQspVHsxDfgjIdo73tPGXXisfLqE08a6bcVug",
+            "link": "https://www.bnpparibas.net/mali"
+      },
+      {
+            "id": 5,
+            "fullName": "UBA Mali",
+            "logoPath": "https://www.ubamali.com/wp-content/uploads/sites/26/2024/08/Logo-UBA.png",
+            "logoName": "content UBA MALI",
+            "link": "https://www.ubagroup.com/mali"
+      }
+]
