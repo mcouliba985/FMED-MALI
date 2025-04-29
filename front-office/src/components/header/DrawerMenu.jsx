@@ -56,7 +56,7 @@ function DrawerMenu() {
                               />
 
                               <DrawerSubMenu
-                                    title="S’engager à nos côtés"
+                                    title="S’engager avec nous"
                                     links={[
                                           { href: '/benevole', label: 'Devenir bénévole' },
                                           { href: '/don', label: 'Faire un don' },

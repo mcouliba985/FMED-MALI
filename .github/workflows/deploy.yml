@@ -1,0 +1,37 @@
+name: Build and Deploy React App to cPanel
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build the React app
+      run: npm run build
+
+    - name: Set up SSH key
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.CPANEL_SSH_KEY }}" > ~/.ssh/id_ed25519
+        chmod 600 ~/.ssh/id_ed25519
+        ssh-keyscan -H fmed.ml >> ~/.ssh/known_hosts
+
+    - name: Deploy build folder to cPanel
+      run: |
+        rsync -avz --delete \
+          ./build/ user@fmed.ml:/home/user/public_html/
