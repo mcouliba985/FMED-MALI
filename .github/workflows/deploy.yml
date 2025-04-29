@@ -36,4 +36,4 @@ jobs:
     - name: Deploy build folder to cPanel
       run: |
         rsync -avz --delete \
-          ./front-office/build/ user@fmed86:/home/user/public_html/
+          ./front-office/build/ fmed86@fmed.ml:/home/user/public_html/
