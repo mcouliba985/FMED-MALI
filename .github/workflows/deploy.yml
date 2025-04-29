@@ -1,4 +1,4 @@
-name: Build and Deploy React App to cPanel
+name: Build and Deploy React App (front-office) to cPanel
 
 on:
   push:
@@ -18,10 +18,12 @@ jobs:
       with:
         node-version: 18
 
-    - name: Install dependencies
+    - name: Install dependencies (React front-office)
+      working-directory: ./front-office
       run: npm install
 
     - name: Build the React app
+      working-directory: ./front-office
       run: npm run build
 
     - name: Set up SSH key
@@ -34,4 +36,4 @@ jobs:
     - name: Deploy build folder to cPanel
       run: |
         rsync -avz --delete \
-          ./build/ user@fmed.ml:/home/user/public_html/
+          ./front-office/build/ user@fmed86:/home/user/public_html/

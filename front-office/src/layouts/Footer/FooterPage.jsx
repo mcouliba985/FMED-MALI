@@ -161,21 +161,20 @@ const FooterPage = () => {
                               <section className="col-12 col-md-6 col-lg-4 mb-4">
                                     <SectionTitle>Rejoingez-nous</SectionTitle>
                                     <div className="block text-white text-base mb-5 relative pl-6 font-poppins font-extralight hover:text-[#2ecc71] transition-colors duration-200">
-  <i className="fas fa-map-location-dot absolute left-0 top-1 text-white"></i>
-  Siège social : Hamdallaye ACI Immeuble Alfarouk non loin de CANAL+
-</div>
+                                          <i className="fas fa-map-location-dot absolute left-0 top-1 text-white"></i>
+                                          Siège social : Hamdallaye ACI Immeuble Alfarouk non loin
+                                          de CANAL+
+                                    </div>
 
-<div className="block text-white text-base mb-5 relative pl-6 font-poppins font-extralight hover:text-[#2ecc71] transition-colors duration-200">
-  <i className="fas fa-phone absolute left-0 top-1 text-white"></i>
-  +223 00 00 00 00 / +223 11 11 11 11
-</div>
+                                    <div className="block text-white text-base mb-5 relative pl-6 font-poppins font-extralight hover:text-[#2ecc71] transition-colors duration-200">
+                                          <i className="fas fa-phone absolute left-0 top-1 text-white"></i>
+                                          +223 00 00 00 00 / +223 11 11 11 11
+                                    </div>
 
-<div className="block text-white text-base mb-5 relative pl-6 font-poppins font-extralight hover:text-[#2ecc71] transition-colors duration-200">
-  <i className="fas fa-envelope-open-text absolute left-0 top-1 text-white"></i>
-  contact@fmed.ml
-</div>
-
-
+                                    <div className="block text-white text-base mb-5 relative pl-6 font-poppins font-extralight hover:text-[#2ecc71] transition-colors duration-200">
+                                          <i className="fas fa-envelope-open-text absolute left-0 top-1 text-white"></i>
+                                          contact@fmed.ml
+                                    </div>
                               </section>
                         </div>
                         <FooterBottom>
