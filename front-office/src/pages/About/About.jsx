@@ -5,7 +5,7 @@ const About = () => {
       const title = 'A propos de nous';
       return (
             <Main>
-                  {/* <CoverPageComponent title={title} />
+                  <CoverPageComponent title={title} />
 
                   <section className="container py-8">
                         <div className="row">
@@ -13,7 +13,7 @@ const About = () => {
                                     <div className="w-full h-16"></div>
                               </div>
                         </div>
-                  </section> */}
+                  </section>
             </Main>
       );
 };
