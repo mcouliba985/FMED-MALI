@@ -15,6 +15,7 @@ module.exports = {
                         medgreen: '#2A8A39',
                         gold: '#FFC107',
                         light: 'F5F4F4',
+                        blushmist: 'F3EFEF',
                   },
             },
       },

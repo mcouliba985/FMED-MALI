@@ -1,25 +1,63 @@
 import styled from 'styled-components';
 import bamako from '../../assets/res/bamako.jpg';
 import spade from '../../assets/icons/sprade-base.png';
+import { motion } from 'framer-motion';
+import PropTypes from 'prop-types';
 
-const CoverPageComponent = ({ title }) => {
+const CoverPageComponent = ({ title, showSection, label, hook }) => {
       return (
-            <Container>
-                  <Overlay>
-                        <ContentWrapper className="container">
-                              <IconContainer>
-                                    <SpadeIcon src={spade} alt="spade icon" />
-                              </IconContainer>
-                              <TitleContainer>
-                                    <Title>{title}</Title>
-                              </TitleContainer>
-                        </ContentWrapper>
-                  </Overlay>
-            </Container>
+            <section className="relative">
+                  <Container>
+                        <Overlay>
+                              <ContentWrapper className="container">
+                                    <IconContainer>
+                                          <SpadeIcon
+                                                src={spade}
+                                                alt="spade icon"
+                                                animate={{ y: [0, -15, 0, 15, 0] }}
+                                                transition={{
+                                                      duration: 3,
+                                                      repeat: Infinity,
+                                                      ease: 'easeInOut',
+                                                }}
+                                          />
+                                    </IconContainer>
+
+                                    <TitleContainer>
+                                          <Title>{title}</Title>
+                                    </TitleContainer>
+                              </ContentWrapper>
+                        </Overlay>
+                  </Container>
+
+                  {showSection && (
+                        <div className="container mb-16">
+                              <section className="bg-light w-[90%] md:w-[100%] lg:w-[70%] mx-auto -mt-20 p-6 rounded-xl shadow-lg relative z-10">
+                                    <h2 className="text-center font-poppins font-bold text-2xl md:text-4xl mb-4">
+                                          {label}
+                                    </h2>
+                                    <p className="font-roboto text-center text-sm md:text-base lg:text-[20px] leading-5 text-gray-700">
+                                          {hook}
+                                    </p>
+                              </section>
+                        </div>
+                  )}
+            </section>
       );
 };
 
 export default CoverPageComponent;
+
+CoverPageComponent.propTypes = {
+      title: PropTypes.string.isRequired,
+      showSection: PropTypes.bool,
+      label: PropTypes.string,
+      hook: PropTypes.string,
+};
+
+CoverPageComponent.defaultProps = {
+      showSection: false,
+};
 
 // Styled-components
 const Container = styled.div`
@@ -66,7 +104,7 @@ const IconContainer = styled.div`
       justify-content: flex-start;
 `;
 
-const SpadeIcon = styled.img`
+const SpadeIcon = styled(motion.img)`
       height: 210px;
       width: auto;
 
