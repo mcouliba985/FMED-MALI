@@ -4,6 +4,7 @@
             "fullName": "Moussa Mara",
             "email": "moussamara@gmail.com",
             "phone": "+223 00 00 00 00",
+            "type": "conseil",
             "poste": "président",
             "imagePath": "https://fmed.ml/Publics/Media/CA/ca-%20(1).jpg",
             "imageName": "Moussa Mara"
@@ -13,6 +14,7 @@
             "fullName": "Mohamed Sy Savané",
             "email": "mohamed.sy@fmed.ml",
             "phone": "+223 20 22 24 02",
+            "type": "coordinateur",
             "poste": "président",
             "imagePath": "https://fmed.ml/Publics/Media/CA/ca-%20(2).jpg",
             "imageName": "Mohamed Sy Savané"
@@ -23,6 +25,7 @@
             "email": "ousmane.daou@fmed.ml",
             "phone": "+223 76 30 45 84",
             "poste": "membre du conseil d'administration",
+            "type": "double",
             "imagePath": "https://fmed.ml/Publics/Media/CA/1.jpg",
             "imageName": "Abdoul Karim Konaté"
       },
@@ -32,6 +35,7 @@
             "email": "",
             "phone": "",
             "poste": "",
+            "type": "conseil",
             "imagePath": "https://fmed.ml/Publics/Media/CA/ca-%20(4).jpg",
             "imageName": "Doumbia Adama Sangare"
       }

@@ -9,6 +9,12 @@ import Error from './pages/404/Error';
 import ArticleDetail from './pages/Articles/ArticleDetail';
 import EventsPage from './pages/Events/EventsPage';
 import EventDetail from './pages/event-detail/event-detail';
+import MemberPage from './pages/Member/member-page';
+import FonsejArticle from './pages/fonsej/fonsej-article';
+import FonsejForm from './pages/fonsej/fonsej-form';
+import FormMember from './pages/Member/form-member';
+import PaymentForm from './pages/Donation/PaymentForm';
+import GalleryPage from './pages/Gallery/GalleryPage';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -20,6 +26,12 @@ root.render(
                         <Route path="/article/:articleId" element={<ArticleDetail />} />
                         <Route path="/list-event" element={<EventsPage />} />
                         <Route path="/event/:eventId" element={<EventDetail />} />
+                        <Route path="/members" element={<MemberPage />} />
+                        <Route path="/fonsej" element={<FonsejArticle />} />
+                        <Route path="/fonsej-form" element={<FonsejForm />} />
+                        <Route path="/member-form" element={<FormMember />} />
+                        <Route path="/payment" element={<PaymentForm />} />
+                        <Route path="/gallery" element={<GalleryPage />} />
                         <Route path="*" element={<Error />} />
                   </Routes>
             </Router>
