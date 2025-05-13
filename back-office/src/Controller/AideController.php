@@ -10,9 +10,11 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
+
+
 
 class AideController extends AbstractController
 {
@@ -41,10 +43,10 @@ class AideController extends AbstractController
         try {
             $file->move($uploadDir, $newFilename);
         } catch (FileException $e) {
-            return $this->json(['message' => 'Erreur lors de l\'upload du fichier.'], 500);
+            return $this->json(['message' => "Erreur lors de l'upload du fichier."], 500);
         }
 
-        $fichierPath = $this->getParameter('back_url') . '/uploads/aides/' . $newFilename;
+        $fichierPath = $this->getParameter('back_url') . 'uploads/aides/' . $newFilename;
 
         // Enregistrement en base de données
         $aide = new AideSubmission();
@@ -57,16 +59,19 @@ class AideController extends AbstractController
         $em->flush();
 
         // Envoi d’email
-        $email = (new Email())
-            ->from('info@magservices-mali.org')
-            ->to('mcouliba985@gmail.com')
-            ->subject('Nouvelle demande d’aide')
-            ->html("
-                <h2>Nouvelle demande reçue</h2>
-                <p><strong>Nom :</strong> $nom</p>
-                <p><strong>Prénom :</strong> $prenom</p>
-                <p><strong>Fichier :</strong> <a href='$fichierPath'>Télécharger</a></p>
-            ");
+        $email = (new TemplatedEmail())
+            ->from('info@fmed.ml')
+            ->to('mag.services.mali.tech@gmail.com')
+            ->subject('Nouvelle demande d’inscription au FONSEJ')
+            ->text("Nouvelle demande reçue de $prenom $nom. Fichier : $fichierPath")
+            ->htmlTemplate('emails/demande_fonsej.html.twig')
+            ->context([
+                'nom' => $nom,
+                'prenom' => $prenom,
+                'fichierPath' => $fichierPath,
+            ]);
+
+        $email->getHeaders()->addTextHeader('X-Mailer', 'Symfony Mailer');
 
         $mailer->send($email);
 
