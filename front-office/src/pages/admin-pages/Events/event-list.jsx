@@ -17,17 +17,33 @@ const EventList = () => {
       );
 
       useEffect(() => {
-            async function article() {
+            async function fetchArticles() {
                   try {
                         const fetchArticle = await fetch(API_ENDPOINTS.getArticles);
+
+                        // Vérifie si la réponse HTTP est correcte (status 2xx)
+                        if (!fetchArticle.ok) {
+                              console.error(
+                                    'Erreur HTTP lors du chargement des articles :',
+                                    fetchArticle.status
+                              );
+                              return;
+                        }
+
                         const response = await fetchArticle.json();
-                        setArticles(response);
+
+                        // Vérifie si la réponse est bien un tableau
+                        if (Array.isArray(response)) {
+                              setArticles(response);
+                        } else {
+                              console.warn('Format inattendu reçu pour les articles :', response);
+                        }
                   } catch (error) {
-                        console.log(error);
+                        console.error('Erreur lors de la récupération des articles :', error);
                   }
             }
 
-            article();
+            fetchArticles();
       }, []);
 
       return (
