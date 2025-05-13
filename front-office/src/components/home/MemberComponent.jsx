@@ -17,14 +17,14 @@ const MemberComponent = () => {
       const [members, setMembers] = useState([]);
 
       useEffect(() => {
-            async function memberFunc() {
+            async function TestimonialFunc() {
                   try {
                         const fetchRequest = await fetch(API_ENDPOINTS.getMembers);
 
-                        // Vérifie que la réponse HTTP est correcte
+                        // Vérifie si la réponse HTTP est correcte (status 2xx)
                         if (!fetchRequest.ok) {
                               console.error(
-                                    'Erreur HTTP lors du chargement des membres :',
+                                    'Erreur HTTP lors du chargement des articles :',
                                     fetchRequest.status
                               );
                               return;
@@ -32,18 +32,17 @@ const MemberComponent = () => {
 
                         const response = await fetchRequest.json();
 
-                        // Vérifie que la réponse est bien un tableau
+                        // Vérifie si la réponse est bien un tableau
                         if (Array.isArray(response)) {
                               setMembers(response);
                         } else {
-                              console.warn('Format inattendu reçu pour les membres :', response);
+                              console.warn('Format inattendu reçu pour les articles :', response);
                         }
                   } catch (error) {
-                        console.error('Erreur lors de la récupération des membres :', error);
+                        console.error('Erreur lors de la récupération des articles :', error);
                   }
             }
-
-            memberFunc();
+            TestimonialFunc();
       }, []);
 
       if (members === undefined) return null;

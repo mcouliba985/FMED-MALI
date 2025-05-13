@@ -13,33 +13,32 @@ const TestimonialsComponent = () => {
       const [selectedTestimonial, setSelectedTestimonial] = useState(null);
 
       useEffect(() => {
-            async function testimonialFunc() {
+            async function TestimonialFunc() {
                   try {
                         const fetchRequest = await fetch(API_ENDPOINTS.getTestimonial);
 
-                        // Vérifie si la réponse est OK (code 200-299)
+                        // Vérifie si la réponse HTTP est correcte (status 2xx)
                         if (!fetchRequest.ok) {
-                              console.error('Erreur HTTP :', fetchRequest.status);
+                              console.error(
+                                    'Erreur HTTP lors du chargement des articles :',
+                                    fetchRequest.status
+                              );
                               return;
                         }
 
-                        const responseData = await fetchRequest.json();
+                        const response = await fetchRequest.json();
 
-                        // Vérifie que la réponse est bien un tableau
-                        if (Array.isArray(responseData)) {
-                              setTestimonials(responseData);
+                        // Vérifie si la réponse est bien un tableau
+                        if (Array.isArray(response)) {
+                              setTestimonials(response);
                         } else {
-                              console.warn(
-                                    'Format inattendu reçu pour les témoignages :',
-                                    responseData
-                              );
+                              console.warn('Format inattendu reçu pour les articles :', response);
                         }
                   } catch (error) {
-                        console.error('Erreur lors du chargement des témoignages :', error);
+                        console.error('Erreur lors de la récupération des articles :', error);
                   }
             }
-
-            testimonialFunc();
+            TestimonialFunc();
       }, []);
 
       if (testimonials === undefined) return null;

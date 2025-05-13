@@ -7,16 +7,33 @@ const TestimonialList = () => {
       const [loading, setLoading] = useState(true);
 
       useEffect(() => {
-            fetch(API_ENDPOINTS.getTestimonial)
-                  .then((res) => res.json())
-                  .then((data) => {
-                        setTestimonials(data);
-                        setLoading(false);
-                  })
-                  .catch((err) => {
-                        console.error('Erreur de chargement :', err);
-                        setLoading(false);
-                  });
+            async function TestimonialFunc() {
+                  try {
+                        const fetchRequest = await fetch(API_ENDPOINTS.getTestimonial);
+
+                        // Vérifie si la réponse HTTP est correcte (status 2xx)
+                        if (!fetchRequest.ok) {
+                              console.error(
+                                    'Erreur HTTP lors du chargement des articles :',
+                                    fetchRequest.status
+                              );
+                              return;
+                        }
+
+                        const response = await fetchRequest.json();
+
+                        // Vérifie si la réponse est bien un tableau
+                        if (Array.isArray(response)) {
+                              setTestimonials(response);
+                              setLoading(false);
+                        } else {
+                              console.warn('Format inattendu reçu pour les articles :', response);
+                        }
+                  } catch (error) {
+                        console.error('Erreur lors de la récupération des articles :', error);
+                  }
+            }
+            TestimonialFunc();
       }, []);
 
       return (

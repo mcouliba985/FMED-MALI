@@ -12,17 +12,32 @@ const FmedInfo = () => {
       const [articleData, setArticleData] = useState([]);
 
       useEffect(() => {
-            async function artilces() {
+            async function TestimonialFunc() {
                   try {
-                        const fetchArticle = await fetch(API_ENDPOINTS.getPublishedArticles);
-                        const responseData = await fetchArticle.json();
-                        setArticleData(responseData);
+                        const fetchRequest = await fetch(API_ENDPOINTS.getPublishedArticles);
+
+                        // Vérifie si la réponse HTTP est correcte (status 2xx)
+                        if (!fetchRequest.ok) {
+                              console.error(
+                                    'Erreur HTTP lors du chargement des articles :',
+                                    fetchRequest.status
+                              );
+                              return;
+                        }
+
+                        const response = await fetchRequest.json();
+
+                        // Vérifie si la réponse est bien un tableau
+                        if (Array.isArray(response)) {
+                              setArticleData(response);
+                        } else {
+                              console.warn('Format inattendu reçu pour les articles :', response);
+                        }
                   } catch (error) {
-                        console.log(error);
+                        console.error('Erreur lors de la récupération des articles :', error);
                   }
             }
-
-            artilces();
+            TestimonialFunc();
       }, []);
 
       if (articleData === undefined) return null;
