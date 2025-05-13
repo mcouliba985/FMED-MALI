@@ -5,6 +5,7 @@ import BG4 from '../../assets/res/bg-four.png';
 import SIMG1 from '../../assets/icons/s-img (1).png';
 import SIMG2 from '../../assets/icons/s-img (2).png';
 import SIMG3 from '../../assets/icons/s-img (3).png';
+import SIMG4 from '../../assets/icons/s-image.png';
 import styled from 'styled-components';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Autoplay } from 'swiper/modules';
@@ -49,7 +50,7 @@ const ServiceComponent = () => {
                                     <img src={SIMG3} alt="simg1" className="w-16 mx-auto" />
                                     <div className="mt-4">
                                           <a
-                                                href="/"
+                                                href="/domain/humanitaire"
                                                 className="font-nunito text-lg hover:text-green-700 font-extrabold"
                                           >
                                                 HUMANITAIRES
@@ -67,7 +68,7 @@ const ServiceComponent = () => {
                                     <img src={SIMG2} alt="simg2" className="w-16 mx-auto" />
                                     <div className="mt-4">
                                           <a
-                                                href="/"
+                                                href="/domain/socio-professional"
                                                 className="font-nunito text-lg hover:text-yellow-400 font-extrabold"
                                           >
                                                 SOCIO-PROFESSIONAL
@@ -84,7 +85,7 @@ const ServiceComponent = () => {
                                     <img src={SIMG1} alt="simg3" className="w-16 mx-auto" />
                                     <div className="mt-4">
                                           <a
-                                                href="/"
+                                                href="/domain/population"
                                                 className="font-nunito text-lg hover:text-red-700 font-extrabold"
                                           >
                                                 POPULATIONS
@@ -98,10 +99,10 @@ const ServiceComponent = () => {
 
                         <SwiperSlide>
                               <ServiceWrapper res={BG4}>
-                                    <img src={SIMG1} alt="simg3" className="w-16 mx-auto" />
+                                    <img src={SIMG4} alt="simg3" className="w-16 mx-auto" />
                                     <div className="mt-4">
                                           <a
-                                                href="/"
+                                                href="/domain/vivre-ensemble"
                                                 className="font-nunito text-lg hover:text-green-600 font-extrabold"
                                           >
                                                 VIVRE ENSEMBLE

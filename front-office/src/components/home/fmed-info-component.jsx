@@ -5,30 +5,25 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import cause from '../../assets/res/cause-bg.png';
 import spade from '../../assets/icons/spade-base.png';
-import dataFmed from '../../utils/Fmed-info.json';
-
-const TitleArticle = styled.h2`
-      text-transform: uppercase;
-      font-size: 32px;
-      font-weight: 800;
-      font-family: 'Nunito Sans';
-`;
-
-const ArticleWrapper = styled.section`
-      background: url(${cause}) repeat;
-`;
-
-const ArticleSwiper = styled.article`
-      height: auto;
-`;
-
-const SpadeDecorator = styled.div`
-      position: relative;
-      width: 96px;
-      height: 96px;
-`;
+import { useEffect, useState } from 'react';
+import { API_ENDPOINTS } from '../../config/API_ENDPOINT';
 
 const FmedInfo = () => {
+      const [articleData, setArticleData] = useState([]);
+
+      useEffect(() => {
+            async function artilces() {
+                  try {
+                        const fetchArticle = await fetch(API_ENDPOINTS.getPublishedArticles);
+                        const responseData = await fetchArticle.json();
+                        setArticleData(responseData);
+                  } catch (error) {
+                        console.log(error);
+                  }
+            }
+
+            artilces();
+      }, []);
       return (
             <ArticleWrapper className="py-4">
                   <div className="container relative">
@@ -67,7 +62,7 @@ const FmedInfo = () => {
                               loop={true}
                               className="relative px-4"
                         >
-                              {dataFmed.map((data) => {
+                              {articleData.map((data) => {
                                     return (
                                           <SwiperSlide key={data.id}>
                                                 <ArticleSwiper className="lg:w-[285px] xl:w-[350px]">
@@ -82,9 +77,9 @@ const FmedInfo = () => {
                                                                   href={`/article/${data.id}`}
                                                                   className="font-roboto text-lg py-2 font-light p-2 hover:text-red-600 block"
                                                             >
-                                                                  {data.contenus.length > 180
-                                                                        ? `${data.contenus.slice(0, data.contenus.indexOf(' ', 180))}...`
-                                                                        : data.contenus}
+                                                                  {data.content.length > 180
+                                                                        ? `${data.content.slice(0, data.content.indexOf(' ', 180))}...`
+                                                                        : data.content}
                                                             </a>
                                                       </div>
                                                 </ArticleSwiper>
@@ -98,3 +93,24 @@ const FmedInfo = () => {
 };
 
 export default FmedInfo;
+
+const TitleArticle = styled.h2`
+      text-transform: uppercase;
+      font-size: 32px;
+      font-weight: 800;
+      font-family: 'Nunito Sans';
+`;
+
+const ArticleWrapper = styled.section`
+      background: url(${cause}) repeat;
+`;
+
+const ArticleSwiper = styled.article`
+      height: auto;
+`;
+
+const SpadeDecorator = styled.div`
+      position: relative;
+      width: 96px;
+      height: 96px;
+`;

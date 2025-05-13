@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import fmed_logo from '../../assets/logo/FMED LOGO.png';
 import DesktopMenu from '../../components/header/DesktopMenu';
 import DrawerMenu from '../../components/header/DrawerMenu';
@@ -6,6 +7,8 @@ import { useEffect, useState } from 'react';
 
 export default function HeaderPage() {
       const [isSticky, setIsSticky] = useState(false);
+
+      const navigate = useNavigate();
 
       useEffect(() => {
             const handleScroll = () => {
@@ -49,7 +52,10 @@ export default function HeaderPage() {
                               <DesktopMenu />
 
                               {/* Bouton Faire un don */}
-                              <div className="flex gap-8  flex-shrink-0">
+                              <div
+                                    onClick={() => navigate('/payment')}
+                                    className="flex gap-8  flex-shrink-0"
+                              >
                                     <button className="hidden md:flex bg-gold hover:bg-yellow-400 text-black font-semibold py-2 px-6 rounded-full shadow-md transition duration-300">
                                           Faire un don
                                     </button>

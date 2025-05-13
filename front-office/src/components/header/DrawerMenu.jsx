@@ -5,11 +5,14 @@ import twitter from '../../assets/icons/twitter.png';
 import youtube from '../../assets/icons/youtube.png';
 import instagram from '../../assets/icons/insta.png';
 import DrawerSubMenu from './DrawerSubMenu';
+import { useNavigate } from 'react-router-dom';
 
 function DrawerMenu() {
       const [isOpen, setIsOpen] = useState(false);
 
       const toggleDrawer = () => setIsOpen(!isOpen);
+
+      const navigate = useNavigate();
 
       return (
             <div>
@@ -49,39 +52,40 @@ function DrawerMenu() {
                               <DrawerSubMenu
                                     title="Qui sommes-nous"
                                     links={[
-                                          { href: '/notre-histoire', label: 'Notre histoire' },
-                                          { href: '/notre-mission', label: 'Notre mission' },
-                                          { href: '/notre-equipe', label: 'Équipe' },
+                                          { href: '/about/history', label: 'Notre histoire' },
+                                          { href: '/about/mission', label: 'Notre mission' },
+                                          { href: '/our-teams', label: 'Équipe' },
                                     ]}
                               />
 
                               <DrawerSubMenu
                                     title="S’engager avec nous"
                                     links={[
-                                          { href: '/benevole', label: 'Devenir bénévole' },
-                                          { href: '/don', label: 'Faire un don' },
+                                          { href: '/member-form', label: 'Devenir bénévole' },
+                                          { href: '/fonsej-form', label: 'Formulaire Fonsej' },
                                     ]}
                               />
 
                               <DrawerSubMenu
                                     title="Vous informer"
                                     links={[
-                                          { href: '/actualites', label: 'Actualités' },
-                                          { href: '/campagnes', label: 'Nos campagnes' },
+                                          { href: '/gallery', label: 'Nos Réalisations' },
+                                          { href: '/list-event', label: 'Nos Evénements' },
                                     ]}
                               />
 
                               <DrawerSubMenu
                                     title="FONSEJ"
                                     links={[
-                                          { href: '/fonsej-presentation', label: 'Présentation' },
-                                          { href: '/fonsej-actions', label: 'Nos actions' },
+                                          { href: '/about/fonsej', label: 'Presentation' },
+                                          { href: '/fonsej-news', label: 'Actualités' },
                                     ]}
                               />
                         </ul>
 
                         <div className="flex flex-col gap-4 text-base">
                               <button
+                                    onClick={() => navigate('/payment')}
                                     className=" md:hidden bg-gold hover:bg-yellow-400
                                text-black font-semibold py-2 px-6 rounded-full shadow-md 
                                transition duration-300"

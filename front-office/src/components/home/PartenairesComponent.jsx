@@ -3,7 +3,8 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
-import partenaires from '../../utils/partenaires.json';
+import { useEffect, useState } from 'react';
+import { API_ENDPOINTS } from '../../config/API_ENDPOINT';
 
 const Title = styled.h2`
       text-transform: capitalize;
@@ -13,6 +14,24 @@ const Title = styled.h2`
 `;
 
 const PartenairesComponent = () => {
+      const [partenaires, setImages] = useState([]);
+
+      useEffect(() => {
+            const fetchPartners = async () => {
+                  try {
+                        const res = await fetch(API_ENDPOINTS.getPartners);
+                        const data = await res.json();
+                        setImages(data);
+                  } catch (err) {
+                        console.error('Erreur lors du chargement des partenaires :', err);
+                  }
+            };
+
+            fetchPartners();
+      }, []);
+
+      if (partenaires === undefined) return null;
+
       return (
             <section className="container">
                   <Title>Nos Partenaires</Title>
@@ -41,18 +60,13 @@ const PartenairesComponent = () => {
                         {partenaires.map((partenaire) => {
                               return (
                                     <SwiperSlide key={partenaire.id}>
-                                          <a
-                                                href={partenaire.link}
-                                                className="block w-full h-64"
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                          >
+                                          <div className="block w-full h-64">
                                                 <img
                                                       className="w-full h-full"
                                                       src={partenaire.logoPath}
                                                       alt={partenaire.logoName || 'Logo partenaire'}
                                                 />
-                                          </a>
+                                          </div>
                                     </SwiperSlide>
                               );
                         })}

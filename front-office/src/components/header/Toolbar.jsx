@@ -11,12 +11,12 @@ const Toolbar = () => {
             >
                   <div className="flex gap-4">
                         <div className="flex gap-2 items-center">
-                              <i class="fas fa-envelope text-gold"></i>
+                              <i className="fas fa-envelope text-gold"></i>
                               <p className="font-light text-[12px]">contact@fmed.ml</p>
                         </div>
 
                         <div className="flex gap-2 items-center">
-                              <i class="fas fa-phone text-gold"></i>
+                              <i className="fas fa-phone text-gold"></i>
                               <p className="font-light text-[12px]">+223 00 00 00 00</p>
                         </div>
                   </div>

@@ -9,18 +9,21 @@ const DesktopMenu = () => {
                         </button>
                         <div className="absolute top-full left-0 hidden w-56 rounded-md bg-white shadow-lg group-hover:block z-20">
                               <a
-                                    href="/notre-histoire"
-                                    className="block px-4 py-2 hover:bg-gray-100"
+                                    href="/about/history"
+                                    className="block px-4 py-2 hover:bg-medgreen hover:text-white"
                               >
                                     Notre histoire
                               </a>
                               <a
-                                    href="/notre-mission"
-                                    className="block px-4 py-2 hover:bg-gray-100"
+                                    href="/about/mission"
+                                    className="block px-4 py-2 hover:bg-medgreen hover:text-white"
                               >
                                     Notre mission
                               </a>
-                              <a href="/notre-equipe" className="block px-4 py-2 hover:bg-gray-100">
+                              <a
+                                    href="/our-teams"
+                                    className="block px-4 py-2 hover:bg-medgreen hover:text-white"
+                              >
                                     Équipe
                               </a>
                         </div>
@@ -32,11 +35,17 @@ const DesktopMenu = () => {
                               S’engager à nos côtés
                         </button>
                         <div className="absolute top-full left-0 hidden w-56 rounded-md bg-white shadow-lg group-hover:block z-20">
-                              <a href="/benevole" className="block px-4 py-2 hover:bg-gray-100">
+                              <a
+                                    href="/member-form"
+                                    className="block px-4 py-2 hover:bg-medgreen hover:text-white"
+                              >
                                     Devenir bénévole
                               </a>
-                              <a href="/don" className="block px-4 py-2 hover:bg-gray-100">
-                                    Faire un don
+                              <a
+                                    href="/fonsej-form"
+                                    className="block px-4 py-2 hover:bg-medgreen hover:text-white"
+                              >
+                                    Formulaire Fonsej
                               </a>
                         </div>
                   </div>
@@ -45,11 +54,17 @@ const DesktopMenu = () => {
                   <div className="relative group">
                         <button className="text-gray-800 hover:text-medgreen">Vous informer</button>
                         <div className="absolute top-full left-0 hidden w-56 rounded-md bg-white shadow-lg group-hover:block z-20">
-                              <a href="/actualites" className="block px-4 py-2 hover:bg-gray-100">
-                                    Actualités
+                              <a
+                                    href="/gallery"
+                                    className="block px-4 py-2 hover:bg-medgreen hover:text-white"
+                              >
+                                    Nos Réalisations
                               </a>
-                              <a href="/campagnes" className="block px-4 py-2 hover:bg-gray-100">
-                                    Nos campagnes
+                              <a
+                                    href="/list-event"
+                                    className="block px-4 py-2 hover:bg-medgreen hover:text-white"
+                              >
+                                    Nos Evénements
                               </a>
                         </div>
                   </div>
@@ -59,16 +74,16 @@ const DesktopMenu = () => {
                         <button className="text-gray-800 hover:text-medgreen">FONSEJ</button>
                         <div className="absolute top-full left-0 hidden w-56 rounded-md bg-white shadow-lg group-hover:block z-20">
                               <a
-                                    href="/fonsej-presentation"
-                                    className="block px-4 py-2 hover:bg-gray-100"
+                                    href="/about/fonsej"
+                                    className="block px-4 py-2 hover:bg-medgreen hover:text-white"
                               >
                                     Présentation
                               </a>
                               <a
-                                    href="/fonsej-actions"
-                                    className="block px-4 py-2 hover:bg-gray-100"
+                                    href="/fonsej-news"
+                                    className="block px-4 py-2 hover:bg-medgreen hover:text-white"
                               >
-                                    Nos actions
+                                    Actualités
                               </a>
                         </div>
                   </div>

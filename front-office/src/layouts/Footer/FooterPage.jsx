@@ -3,6 +3,107 @@ import spadeBaseYellow from '../../assets/icons/spade-base.png';
 import decorateur from '../../assets/icons/decorator.png';
 import NewsletterForm from '../../components/footer/NewsleeterForm';
 
+const FooterPage = () => {
+      return (
+            <FooterWrapper>
+                  <div className="container relative">
+                        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+                              <NewsletterWrapper>
+                                    <div>
+                                          <h2 className="font-nunito font-bold text-2xl sm:text-3xl lg:text-4xl">
+                                                S'abonner à notre Newsletter
+                                          </h2>
+                                          <p className="font-nunito font-light text-base mt-2">
+                                                Inspections régulières et mécanismes de retour
+                                                d'information
+                                          </p>
+                                    </div>
+                              </NewsletterWrapper>
+
+                              {/* Partie droite */}
+                              <div className="w-full lg:w-4/12">
+                                    <NewsletterForm />
+                              </div>
+                        </div>
+
+                        <Separator setMargin={'3rem'} />
+
+                        <div className="row lg:justify-content-center text-start lg:mx-16">
+                              <section className="col-12 col-md-6 col-lg-4 mb-4">
+                                    <SectionTitle>Quick Links</SectionTitle>
+                                    <FooterLink href="/about/history" showIcon={true}>
+                                          Notre historie
+                                    </FooterLink>
+                                    <FooterLink href="/about/mission" showIcon={true}>
+                                          Notre mission
+                                    </FooterLink>
+                                    <FooterLink showIcon={true} href="/fonsej-news">
+                                          Actualités Fonsej
+                                    </FooterLink>
+                                    <FooterLink showIcon={true} href="/list-event">
+                                          Evenements
+                                    </FooterLink>
+                                    <FooterLink showIcon={true} href="/gallery">
+                                          Nos Realisations
+                                    </FooterLink>
+                                    <FooterLink showIcon={true} href="/contact">
+                                          Web Meld
+                                    </FooterLink>
+                              </section>
+
+                              <section className="col-12 col-md-6 col-lg-4 mb-4">
+                                    <SectionTitle>Nos Domaines</SectionTitle>
+                                    <FooterLink showIcon={true} href="/domain/humanitaire">
+                                          Humanitaires
+                                    </FooterLink>
+                                    <FooterLink showIcon={true} href="/domain/socio-professional">
+                                          Socio-profesionels
+                                    </FooterLink>
+                                    <FooterLink showIcon={true} href="/domain/population">
+                                          Soutiens au populations
+                                    </FooterLink>
+                                    <FooterLink showIcon={true} href="/domain/vivre-ensemble">
+                                          Soutiens vivre ensemble
+                                    </FooterLink>
+                              </section>
+
+                              <section className="col-12 col-md-6 col-lg-4 mb-4">
+                                    <SectionTitle>Rejoingez-nous</SectionTitle>
+                                    <div className="block text-white text-base mb-5 relative pl-6 font-poppins font-extralight hover:text-[#2ecc71] transition-colors duration-200">
+                                          <i className="fas fa-map-location-dot absolute left-0 top-1 text-white"></i>
+                                          Siège social : Hamdallaye ACI Immeuble Alfarouk non loin
+                                          de CANAL+
+                                    </div>
+
+                                    <div className="block text-white text-base mb-5 relative pl-6 font-poppins font-extralight hover:text-[#2ecc71] transition-colors duration-200">
+                                          <i className="fas fa-phone absolute left-0 top-1 text-white"></i>
+                                          +223 00 00 00 00 / <br /> +223 22 22 22 22
+                                    </div>
+
+                                    <div className="block text-white text-base mb-5 relative pl-6 font-poppins font-extralight hover:text-[#2ecc71] transition-colors duration-200">
+                                          <i className="fas fa-envelope-open-text absolute left-0 top-1 text-white"></i>
+                                          contact@fmed.ml
+                                    </div>
+                              </section>
+                        </div>
+
+                        <FooterBottom>
+                              <FooterLink
+                                    target="_blank"
+                                    href="https://magservices-mali.org/"
+                                    showIcon={false}
+                              >
+                                    &copy; {new Date().getFullYear()} FMED Mali. Tous droits
+                                    réservés — Site développé par MAG SERVICES MALI
+                              </FooterLink>
+                        </FooterBottom>
+                  </div>
+            </FooterWrapper>
+      );
+};
+
+export default FooterPage;
+
 const FooterWrapper = styled.footer`
       background-color: #122f2a; /* gray-900 */
       color: white;
@@ -93,104 +194,3 @@ const FooterBottom = styled.div`
       padding: 1rem 0;
       font-size: 0.875rem;
 `;
-
-const FooterPage = () => {
-      return (
-            <FooterWrapper>
-                  <div className="container relative">
-                        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
-                              <NewsletterWrapper>
-                                    <div>
-                                          <h2 className="font-nunito font-bold text-2xl sm:text-3xl lg:text-4xl">
-                                                S'abonner à notre Newsletter
-                                          </h2>
-                                          <p className="font-nunito font-light text-base mt-2">
-                                                Inspections régulières et mécanismes de retour
-                                                d'information
-                                          </p>
-                                    </div>
-                              </NewsletterWrapper>
-
-                              {/* Partie droite */}
-                              <div className="w-full lg:w-4/12">
-                                    <NewsletterForm />
-                              </div>
-                        </div>
-
-                        <Separator setMargin={'3rem'} />
-
-                        <div className="row lg:justify-content-center text-start lg:mx-16">
-                              <section className="col-12 col-md-6 col-lg-4 mb-4">
-                                    <SectionTitle>Quick Links</SectionTitle>
-                                    <FooterLink href="/" showIcon={true}>
-                                          A propos de nous
-                                    </FooterLink>
-                                    <FooterLink href="/notre-histoire" showIcon={true}>
-                                          S’engage à nos cotés
-                                    </FooterLink>
-                                    <FooterLink showIcon={true} href="/actualites">
-                                          Actualités
-                                    </FooterLink>
-                                    <FooterLink showIcon={true} href="/contact">
-                                          Evenements
-                                    </FooterLink>
-                                    <FooterLink showIcon={true} href="/contact">
-                                          Nos Realisations
-                                    </FooterLink>
-                                    <FooterLink showIcon={true} href="/contact">
-                                          Web Meld
-                                    </FooterLink>
-                              </section>
-
-                              <section className="col-12 col-md-6 col-lg-4 mb-4">
-                                    <SectionTitle>Nos Domaines</SectionTitle>
-                                    <FooterLink showIcon={true} href="/benevole">
-                                          Humanitaires
-                                    </FooterLink>
-                                    <FooterLink showIcon={true} href="/don">
-                                          Socio-profesionels
-                                    </FooterLink>
-                                    <FooterLink showIcon={true} href="/fonsej-presentation">
-                                          Soutiens au populations
-                                    </FooterLink>
-                                    <FooterLink showIcon={true} href="/fonsej-presentation">
-                                          Soutiens vivre ensemble
-                                    </FooterLink>
-                              </section>
-
-                              <section className="col-12 col-md-6 col-lg-4 mb-4">
-                                    <SectionTitle>Rejoingez-nous</SectionTitle>
-                                    <div className="block text-white text-base mb-5 relative pl-6 font-poppins font-extralight hover:text-[#2ecc71] transition-colors duration-200">
-                                          <i className="fas fa-map-location-dot absolute left-0 top-1 text-white"></i>
-                                          Siège social : Hamdallaye ACI Immeuble Alfarouk non loin
-                                          de CANAL+
-                                    </div>
-
-                                    <div className="block text-white text-base mb-5 relative pl-6 font-poppins font-extralight hover:text-[#2ecc71] transition-colors duration-200">
-                                          <i className="fas fa-phone absolute left-0 top-1 text-white"></i>
-                                          +223 00 00 00 00 / <br /> +223 22 22 22 22
-                                    </div>
-
-                                    <div className="block text-white text-base mb-5 relative pl-6 font-poppins font-extralight hover:text-[#2ecc71] transition-colors duration-200">
-                                          <i className="fas fa-envelope-open-text absolute left-0 top-1 text-white"></i>
-                                          contact@fmed.ml
-                                    </div>
-                              </section>
-                        </div>
-
-                        <FooterBottom>
-                              <FooterLink
-                                    target="_blank"
-                                    href="https://magservices-mali.org/"
-                                    showIcon={false}
-                              >
-                                    &copy; {new Date().getFullYear()} FMED Mali. Tous droits
-                                    réservés — Site développé par MAG SERVICES MALI
-                              </FooterLink>
-                        </FooterBottom>
-                  </div>
-            </FooterWrapper>
-      );
-};
-
-export default FooterPage;

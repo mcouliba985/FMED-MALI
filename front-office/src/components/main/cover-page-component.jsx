@@ -33,7 +33,7 @@ const CoverPageComponent = ({ title, showSection, label, hook }) => {
                   {showSection && (
                         <div className="container mb-16">
                               <section className="bg-light w-[90%] md:w-[100%] lg:w-[70%] mx-auto -mt-20 p-6 rounded-xl shadow-lg relative z-10">
-                                    <h2 className="text-center font-poppins font-bold text-2xl md:text-4xl mb-4">
+                                    <h2 className="text-center font-poppins font-bold text-2xl md:text-3xl mb-4">
                                           {label}
                                     </h2>
                                     <p className="font-roboto text-center text-sm md:text-base lg:text-[20px] leading-5 text-gray-700">

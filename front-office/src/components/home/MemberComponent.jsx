@@ -3,7 +3,8 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
-import members from '../../utils/member.json';
+import { useEffect, useState } from 'react';
+import { API_ENDPOINTS } from '../../config/API_ENDPOINT';
 
 const TitleMember = styled.h2`
       text-transform: normal;
@@ -13,6 +14,23 @@ const TitleMember = styled.h2`
 `;
 
 const MemberComponent = () => {
+      const [members, setMembers] = useState([]);
+
+      useEffect(() => {
+            async function memberFunc() {
+                  try {
+                        const fetchRequest = await fetch(API_ENDPOINTS.getMembers);
+                        const response = await fetchRequest.json();
+
+                        setMembers(response);
+                  } catch (error) {
+                        console.log(error);
+                  }
+            }
+
+            memberFunc();
+      }, []);
+
       return (
             <section className="container">
                   <div>
@@ -39,7 +57,7 @@ const MemberComponent = () => {
                         loop={true}
                         className="relative p-4"
                   >
-                        {members.map((member) => {
+                        {members.slice(0, 8).map((member) => {
                               return (
                                     <SwiperSlide key={member.id}>
                                           <img src={member.imagePath} alt="" />
@@ -49,12 +67,13 @@ const MemberComponent = () => {
                   </Swiper>
 
                   <div className="flex justify-center">
-                        <button
+                        <a
+                              href="our-teams"
                               className="bg-gold hover:bg-black text-white
                           px-4 py-3 rounded-2xl"
                         >
                               Voir plus
-                        </button>
+                        </a>
                   </div>
             </section>
       );
