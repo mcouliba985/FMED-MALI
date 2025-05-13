@@ -8,6 +8,7 @@ const CustomCarousel = () => {
 
       useEffect(() => {
             async function slideFunc() {
+                  console.log(API_ENDPOINTS);
                   try {
                         const fetchRequest = await fetch(`${API_ENDPOINTS.getCarouselElement}`);
                         const data = await fetchRequest.json();
