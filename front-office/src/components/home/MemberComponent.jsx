@@ -20,16 +20,33 @@ const MemberComponent = () => {
             async function memberFunc() {
                   try {
                         const fetchRequest = await fetch(API_ENDPOINTS.getMembers);
+
+                        // Vérifie que la réponse HTTP est correcte
+                        if (!fetchRequest.ok) {
+                              console.error(
+                                    'Erreur HTTP lors du chargement des membres :',
+                                    fetchRequest.status
+                              );
+                              return;
+                        }
+
                         const response = await fetchRequest.json();
 
-                        setMembers(response);
+                        // Vérifie que la réponse est bien un tableau
+                        if (Array.isArray(response)) {
+                              setMembers(response);
+                        } else {
+                              console.warn('Format inattendu reçu pour les membres :', response);
+                        }
                   } catch (error) {
-                        console.log(error);
+                        console.error('Erreur lors de la récupération des membres :', error);
                   }
             }
 
             memberFunc();
       }, []);
+
+      if (members === undefined) return null;
 
       return (
             <section className="container">

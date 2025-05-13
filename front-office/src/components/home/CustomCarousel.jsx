@@ -8,18 +8,37 @@ const CustomCarousel = () => {
 
       useEffect(() => {
             async function slideFunc() {
-                  console.log(API_ENDPOINTS);
+                  console.log('API_ENDPOINTS:', API_ENDPOINTS);
+
                   try {
-                        const fetchRequest = await fetch(`${API_ENDPOINTS.getCarouselElement}`);
+                        const fetchRequest = await fetch(API_ENDPOINTS.getCarouselElement);
+
+                        // Vérifie si la requête s'est bien passée
+                        if (!fetchRequest.ok) {
+                              console.error(
+                                    'Erreur HTTP lors du chargement des slides :',
+                                    fetchRequest.status
+                              );
+                              return;
+                        }
+
                         const data = await fetchRequest.json();
-                        setSlides(data);
+
+                        // Vérifie que le format de données est correct
+                        if (Array.isArray(data)) {
+                              setSlides(data);
+                        } else {
+                              console.warn('Format inattendu pour les slides :', data);
+                        }
                   } catch (error) {
-                        console.log(error);
+                        console.error('Erreur lors de la récupération des slides :', error);
                   }
             }
 
             slideFunc();
       }, []);
+
+      if (slides === undefined) return null;
 
       return (
             <Carousel fade controls={false} indicators={false} interval={3000}>

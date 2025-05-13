@@ -24,6 +24,8 @@ const VideoComponent = () => {
             youtubeFunc();
       }, []);
 
+      if (youtube === undefined) return null;
+
       return (
             <section className="container">
                   <div className="row">

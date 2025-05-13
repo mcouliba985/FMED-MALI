@@ -16,14 +16,33 @@ const TestimonialsComponent = () => {
             async function testimonialFunc() {
                   try {
                         const fetchRequest = await fetch(API_ENDPOINTS.getTestimonial);
+
+                        // Vérifie si la réponse est OK (code 200-299)
+                        if (!fetchRequest.ok) {
+                              console.error('Erreur HTTP :', fetchRequest.status);
+                              return;
+                        }
+
                         const responseData = await fetchRequest.json();
-                        setTestimonials(responseData);
+
+                        // Vérifie que la réponse est bien un tableau
+                        if (Array.isArray(responseData)) {
+                              setTestimonials(responseData);
+                        } else {
+                              console.warn(
+                                    'Format inattendu reçu pour les témoignages :',
+                                    responseData
+                              );
+                        }
                   } catch (error) {
-                        console.log(error);
+                        console.error('Erreur lors du chargement des témoignages :', error);
                   }
             }
+
             testimonialFunc();
       }, []);
+
+      if (testimonials === undefined) return null;
 
       return (
             <TestimonialsWrapper>

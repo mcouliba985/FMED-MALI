@@ -24,6 +24,8 @@ const FmedInfo = () => {
 
             artilces();
       }, []);
+
+      if (articleData === undefined) return null;
       return (
             <ArticleWrapper className="py-4">
                   <div className="container relative">
