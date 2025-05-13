@@ -73,6 +73,21 @@ const AideForm = () => {
                         </div>
                   )}
 
+                  <p className="font-roboto">
+                        Veuillez d'abord{' '}
+                        <strong>télécharger et remplir la fiche de candidature FONSEJ</strong> avant
+                        de remplir le formulaire.
+                  </p>
+                  <a
+                        href="https://back.fmed.ml/public/uploads/res_telechargable/fiche_fonsej.pdf"
+                        className="text-gold hover:text-yellow-300 my-2 mb-4 block"
+                        download
+                        target="_blank"
+                        rel="noopener noreferrer"
+                  >
+                        <i className="fas fa-file-zipper mr-2"></i> Télécharger le fichier
+                  </a>
+
                   <form onSubmit={handleSubmit} className="space-y-6">
                         {/* Ligne Nom + Prénom */}
                         <div className="flex flex-col md:flex-row gap-4">
@@ -103,12 +118,18 @@ const AideForm = () => {
 
                         {/* Champ fichier */}
                         <div className="w-full">
+                              <p className="font-roboto text-sm text-red-500 mb-4">
+                                    Remarque : Après avoir rempli la fiche de candidature FONSEJ,
+                                    veuillez nous la renvoyer en l’important ci-dessous, puis
+                                    renseignez votre nom et prénom.
+                              </p>
+
                               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                                     <label
                                           htmlFor="fichier"
                                           className="bg-black text-white px-4 py-2 rounded-xl cursor-pointer shadow"
                                     >
-                                          Choisir un fichier
+                                          Importer votre fiche de condidature FONSEJ
                                     </label>
 
                                     <span className="text-black break-all">

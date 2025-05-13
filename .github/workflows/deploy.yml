@@ -26,6 +26,17 @@ jobs:
         working-directory: ./front-office
         run: npm run build
 
+      - name: Set up PHP and Composer
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          extensions: mbstring, intl, pdo, pdo_mysql
+          tools: composer
+
+      - name: Install Symfony dependencies (Composer install)
+        working-directory: ./back-office
+        run: composer install --no-dev --optimize-autoloader
+
       - name: Set up SSH key
         run: |
           mkdir -p ~/.ssh
@@ -33,11 +44,10 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -H fmed.ml >> ~/.ssh/known_hosts
 
-      - name: Deploy build folder to cPanel
+      - name: Deploy React build folder to cPanel
         run: |
           scp -r ./front-office/build/* fmed86@fmed.ml:/home/fmed86/public_html/
 
-      # Deploy Symfony backend to cPanel (adjust path as needed)
       - name: Deploy Symfony backend to cPanel
         run: |
           scp -r ./back-office/* fmed86@fmed.ml:/home/fmed86/back.fmed.ml/

@@ -15,16 +15,33 @@ const FonsejForm = () => {
       const [article, setArticle] = useState([]);
 
       useEffect(() => {
-            async function fmedArticleFunc() {
+            async function fetchArticles() {
                   try {
-                        const fetchRequest = await fetch(API_ENDPOINTS.getArticles);
-                        const responseData = await fetchRequest.json();
-                        setArticle(responseData);
+                        const fetchArticle = await fetch(API_ENDPOINTS.getArticles);
+
+                        // Vérifie si la réponse HTTP est correcte (status 2xx)
+                        if (!fetchArticle.ok) {
+                              console.error(
+                                    'Erreur HTTP lors du chargement des articles :',
+                                    fetchArticle.status
+                              );
+                              return;
+                        }
+
+                        const response = await fetchArticle.json();
+
+                        // Vérifie si la réponse est bien un tableau
+                        if (Array.isArray(response)) {
+                              setArticle(response);
+                        } else {
+                              console.warn('Format inattendu reçu pour les articles :', response);
+                        }
                   } catch (error) {
-                        console.log(error);
+                        console.error('Erreur lors de la récupération des articles :', error);
                   }
             }
-            fmedArticleFunc();
+
+            fetchArticles();
       }, []);
       return (
             <section>
