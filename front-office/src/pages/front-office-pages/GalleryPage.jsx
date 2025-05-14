@@ -18,7 +18,7 @@ const GalleryPage = () => {
       useEffect(() => {
             async function galleries() {
                   try {
-                        const fetchRequest = await fetch(API_ENDPOINTS.getArticles);
+                        const fetchRequest = await fetch(API_ENDPOINTS.getPublishedArticles);
                         const response = await fetchRequest.json();
                         setImages(response);
                   } catch (error) {

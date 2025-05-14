@@ -4,13 +4,13 @@ namespace App\Controller;
 
 use App\Entity\Articles;
 use App\Repository\ArticlesRepository;
+use App\Services\NewsletterService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/api/articles')]
@@ -20,7 +20,7 @@ class ArticlesController extends AbstractController
     public function create(
         Request $request,
         EntityManagerInterface $em,
-        SluggerInterface $slugger
+        SluggerInterface $slugger,
     ): Response {
         // Récupérer les données JSON depuis la clé "informations"
         $data = json_decode($request->request->get('informations'), true);
@@ -155,26 +155,23 @@ class ArticlesController extends AbstractController
         return $this->json($articleData, Response::HTTP_OK);
     }
 
-
     #[Route('/{id}/status', name: 'update_status', methods: ['PUT'])]
     public function updateStatus(
         int $id,
         Request $request,
         ArticlesRepository $articlesRepository,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        NewsletterService $newsletterService
     ): JsonResponse {
-        // Récupération de l'article
         $article = $articlesRepository->find($id);
 
         if (!$article) {
             return new JsonResponse(['message' => 'Article non trouvé'], Response::HTTP_NOT_FOUND);
         }
 
-        // Lecture des données JSON
         $data = json_decode($request->getContent(), true);
         $newStatus = $data['status'] ?? null;
 
-        // Validation du statut
         $allowedStatuses = ['draft', 'published', 'disabled'];
         if (!in_array($newStatus, $allowedStatuses, true)) {
             return new JsonResponse(['message' => 'Statut invalide'], Response::HTTP_BAD_REQUEST);
@@ -182,9 +179,14 @@ class ArticlesController extends AbstractController
 
         // Mise à jour du statut
         $article->setStatus($newStatus);
+
+        // Envoyer aux abonnés uniquement si l'article est publié
+        if ($newStatus === 'published') {
+            $newsletterService->sendArticleToSubscribers($article);
+        }
+
         $em->flush();
 
-        // Retour de l'article mis à jour
         return new JsonResponse([
             'id' => $article->getId(),
             'title' => $article->getTitle(),

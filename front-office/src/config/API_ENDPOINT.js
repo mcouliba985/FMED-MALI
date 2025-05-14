@@ -14,4 +14,5 @@ export const API_ENDPOINTS = {
       getCarouselElement: `${API_URL}/carousel`,
       getYoutubeElement: `${API_URL}/youtube`,
       fonsejSubmit: `${API_URL}/aide/submit`,
+      newsletterSubscribe: `${API_URL}/newsletter/create`,
 };
