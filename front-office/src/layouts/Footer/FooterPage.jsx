@@ -80,7 +80,7 @@ const FooterPage = () => {
 
                                     <div className="block text-white text-base mb-5 relative pl-6 font-poppins font-extralight hover:text-[#2ecc71] transition-colors duration-200">
                                           <i className="fas fa-phone absolute left-0 top-1 text-white"></i>
-                                          +223 00 00 00 00 / <br /> +223 22 22 22 22
+                                          +223 20 22 24 02 / <br /> +223 76 30 45 84
                                     </div>
 
                                     <div className="block text-white text-base mb-5 relative pl-6 font-poppins font-extralight hover:text-[#2ecc71] transition-colors duration-200">

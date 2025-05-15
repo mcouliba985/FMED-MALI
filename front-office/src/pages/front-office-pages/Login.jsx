@@ -17,8 +17,13 @@ function Login() {
             try {
                   const response = await fetch(API_ENDPOINTS.login, {
                         method: 'POST',
+                        headers: {
+                              'Content-Type': 'application/json',
+                        },
                         body: JSON.stringify({ email, password }),
                   });
+
+                  console.log(JSON.stringify({ email, password }));
 
                   if (!response.ok) throw new Error('Email ou mot de passe incorrect');
 

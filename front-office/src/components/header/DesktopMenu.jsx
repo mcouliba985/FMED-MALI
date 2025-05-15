@@ -41,12 +41,6 @@ const DesktopMenu = () => {
                               >
                                     Devenir bénévole
                               </a>
-                              <a
-                                    href="/fonsej-form"
-                                    className="block px-4 py-2 hover:bg-medgreen hover:text-white"
-                              >
-                                    Formulaire Fonsej
-                              </a>
                         </div>
                   </div>
 
@@ -84,6 +78,12 @@ const DesktopMenu = () => {
                                     className="block px-4 py-2 hover:bg-medgreen hover:text-white"
                               >
                                     Actualités
+                              </a>
+                              <a
+                                    href="/fonsej-form"
+                                    className="block px-4 py-2 hover:bg-medgreen hover:text-white"
+                              >
+                                    Formulaire Fonsej
                               </a>
                         </div>
                   </div>

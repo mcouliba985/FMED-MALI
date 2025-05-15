@@ -5,14 +5,11 @@ import twitter from '../../assets/icons/twitter.png';
 import youtube from '../../assets/icons/youtube.png';
 import instagram from '../../assets/icons/insta.png';
 import DrawerSubMenu from './DrawerSubMenu';
-import { useNavigate } from 'react-router-dom';
 
 function DrawerMenu() {
       const [isOpen, setIsOpen] = useState(false);
 
       const toggleDrawer = () => setIsOpen(!isOpen);
-
-      const navigate = useNavigate();
 
       return (
             <div>
@@ -60,10 +57,7 @@ function DrawerMenu() {
 
                               <DrawerSubMenu
                                     title="S’engager avec nous"
-                                    links={[
-                                          { href: '/member-form', label: 'Devenir bénévole' },
-                                          { href: '/fonsej-form', label: 'Formulaire Fonsej' },
-                                    ]}
+                                    links={[{ href: '/member-form', label: 'Devenir bénévole' }]}
                               />
 
                               <DrawerSubMenu
@@ -79,32 +73,57 @@ function DrawerMenu() {
                                     links={[
                                           { href: '/about/fonsej', label: 'Presentation' },
                                           { href: '/fonsej-news', label: 'Actualités' },
+                                          { href: '/fonsej-form', label: 'Formulaire Fonsej' },
                                     ]}
                               />
                         </ul>
 
                         <div className="flex flex-col gap-4 text-base">
-                              <button
-                                    onClick={() => navigate('/payment')}
+                              <a
+                                    href="/payment"
                                     className=" md:hidden bg-gold hover:bg-yellow-400
                                text-black font-semibold py-2 px-6 rounded-full shadow-md 
-                               transition duration-300"
+                               transition duration-300 text-center"
                               >
                                     Faire un don
-                              </button>
+                              </a>
 
                               <div className="flex items-center justify-center gap-3">
-                                    <div className="w-6 h-6">
-                                          <img src={facebook} alt="logo for facebook" />
+                                    <div className="w-8 h-8">
+                                          <a
+                                                href="https://www.facebook.com/profile.php?id=100081306009776"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                          >
+                                                <img src={facebook} alt="logo for facebook" />
+                                          </a>
                                     </div>
-                                    <div className="w-6 h-6">
-                                          <img src={youtube} alt="logo for youtube" />
+                                    <div className="w-8 h-8">
+                                          <a
+                                                href="https://www.youtube.com/@Fmed_Officiel"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                          >
+                                                <img src={youtube} alt="logo for youtube" />
+                                          </a>
                                     </div>
-                                    <div className="w-6 h-6">
-                                          <img src={twitter} alt="logo for twitter" />
+                                    <div className="w-8 h-8">
+                                          <a
+                                                href="https://twitter.com/Fmed_Officiel"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                          >
+                                                <img src={twitter} alt="logo for twitter" />
+                                          </a>
                                     </div>
-                                    <div className="w-6 h-6">
-                                          <img src={instagram} alt="logo for instagram" />
+                                    <div className="w-8 h-8">
+                                          <a
+                                                href="https://www.instagram.com/fmed_mali2012/"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                          >
+                                                <img src={instagram} alt="logo for instagram" />
+                                          </a>
                                     </div>
                               </div>
                         </div>

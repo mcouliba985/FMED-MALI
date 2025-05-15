@@ -173,7 +173,7 @@ const VideoComponent = () => {
 
                                     <button className="bg-transparent text-gray-600 hover:bg-gray-600 hover:text-gold transition-all px-4 py-2 rounded-lg">
                                           <i className="fas fa-phone me-2 text-2xl"></i>
-                                          <span className="mt-2">+223 00 00 00 00</span>
+                                          <span className="mt-2">+223 76 30 45 84</span>
                                     </button>
                               </div>
                         </div>
