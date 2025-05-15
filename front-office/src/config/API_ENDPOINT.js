@@ -1,6 +1,7 @@
 const API_URL = process.env.REACT_APP_API_URL;
 
 export const API_ENDPOINTS = {
+      login: `${API_URL}/login`,
       getArticles: `${API_URL}/articles`,
       getPublishedArticles: `${API_URL}/articles/published`,
       createArticle: `${API_URL}/articles/create`,

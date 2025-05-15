@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_ENDPOINTS } from './../../config/API_ENDPOINT';
 
 function Login() {
       const navigate = useNavigate();
@@ -14,7 +15,7 @@ function Login() {
             setLoading(true);
 
             try {
-                  const response = await fetch('http://localhost:8000/api/login', {
+                  const response = await fetch(API_ENDPOINTS.login, {
                         method: 'POST',
                         body: JSON.stringify({ email, password }),
                   });
