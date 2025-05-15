@@ -1,5 +1,6 @@
 import { Outlet, NavLink } from 'react-router-dom';
 import Main from '../Main/Main';
+import { AuthGuard } from '../../utils/AuthGuard';
 
 const AdminLayout = () => {
       const links = [
@@ -53,6 +54,7 @@ const AdminLayout = () => {
                                     </aside>
 
                                     <main className="flex-1 bg-white shadow rounded-xl p-6 relative">
+                                          <AuthGuard />;
                                           <Outlet />
                                     </main>
                               </div>

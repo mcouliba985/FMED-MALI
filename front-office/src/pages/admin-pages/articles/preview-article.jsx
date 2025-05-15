@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { API_ENDPOINTS } from '../../../config/API_ENDPOINT';
+import Loader from '../../../components/main/loader-component';
 
 export default function PreviewArticle() {
       const { articleID } = useParams(); // ✅ extraction correcte
       const [article, setArticle] = useState({});
+      const [loading, setLoading] = useState(false);
 
       useEffect(() => {
             if (!articleID) return; // ✅ évite le fetch si l'ID est manquant
@@ -27,6 +29,7 @@ export default function PreviewArticle() {
       }, [articleID]);
 
       const handleStatusChange = async (newStatus) => {
+            setLoading(true);
             try {
                   const response = await fetch(`${API_ENDPOINTS.getArticles}/${articleID}/status`, {
                         method: 'PUT',
@@ -43,6 +46,8 @@ export default function PreviewArticle() {
                   window.location.reload();
             } catch (error) {
                   console.error('Erreur de mise à jour du statut :', error);
+            } finally {
+                  setLoading(false);
             }
       };
 
@@ -82,43 +87,79 @@ export default function PreviewArticle() {
                   </div>
 
                   <div className="flex justify-end gap-4 mt-6">
-                        <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                        <a
+                              href={`/admin/edit-article/${article.id}`}
+                              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                              disabled={loading}
+                        >
                               Modifier
-                        </button>
+                        </a>
 
                         {article.status === 'draft' && (
                               <button
-                                    className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
+                                    className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 flex items-center gap-2"
                                     onClick={() => handleStatusChange('published')}
+                                    disabled={loading}
                               >
-                                    Publier
+                                    {loading ? (
+                                          <>
+                                                <Loader size={5} color="black" />
+                                                <span>Enregistrement...</span>
+                                          </>
+                                    ) : (
+                                          'Publier'
+                                    )}
                               </button>
                         )}
 
                         {article.status === 'published' && (
                               <button
-                                    className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                                    className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 flex items-center gap-2"
                                     onClick={() => handleStatusChange('disabled')}
+                                    disabled={loading}
                               >
-                                    Désactiver
+                                    {loading ? (
+                                          <>
+                                                <Loader size={5} color="black" />
+                                                <span>Enregistrement...</span>
+                                          </>
+                                    ) : (
+                                          'Desactiver'
+                                    )}
                               </button>
                         )}
 
                         {article.status === 'disabled' && (
                               <button
-                                    className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                                    className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 flex items-center gap-2"
                                     onClick={() => handleStatusChange('published')}
+                                    disabled={loading}
                               >
-                                    Réactiver
+                                    {loading ? (
+                                          <>
+                                                <Loader size={5} color="black" />
+                                                <span>Enregistrement...</span>
+                                          </>
+                                    ) : (
+                                          'Reactiver'
+                                    )}
                               </button>
                         )}
 
                         {!['draft', 'published', 'disabled'].includes(article.status) && (
                               <button
-                                    className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
+                                    className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 flex items-center gap-2"
                                     onClick={() => handleStatusChange('published')}
+                                    disabled={loading}
                               >
-                                    Publier
+                                    {loading ? (
+                                          <>
+                                                <Loader size={5} color="black" />
+                                                <span>Enregistrement...</span>
+                                          </>
+                                    ) : (
+                                          'Publier'
+                                    )}
                               </button>
                         )}
                   </div>

@@ -16,17 +16,33 @@ const GalleryPage = () => {
       const [images, setImages] = useState([]);
 
       useEffect(() => {
-            async function galleries() {
+            async function fetchFunc() {
                   try {
                         const fetchRequest = await fetch(API_ENDPOINTS.getPublishedArticles);
+
+                        // Vérifie si la réponse HTTP est correcte (status 2xx)
+                        if (!fetchRequest.ok) {
+                              console.error(
+                                    'Erreur HTTP lors du chargement des articles :',
+                                    fetchRequest.status
+                              );
+                              return;
+                        }
+
                         const response = await fetchRequest.json();
-                        setImages(response);
+
+                        // Vérifie si la réponse est bien un tableau
+                        if (Array.isArray(response)) {
+                              setImages(response);
+                        } else {
+                              console.warn('Format inattendu reçu pour les articles :', response);
+                        }
                   } catch (error) {
-                        console.log(error);
+                        console.error('Erreur lors de la récupération des articles :', error);
                   }
             }
 
-            galleries();
+            fetchFunc();
       }, []);
 
       const categories = ['Tous', ...Array.from(new Set(images.map((img) => img.category)))];

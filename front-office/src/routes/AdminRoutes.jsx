@@ -13,12 +13,22 @@ import PaymentRegister from '../pages/admin-pages/transaction/payment-register';
 import TestimonialForm from '../pages/admin-pages/temoignage/TestimonialForm';
 import TestimonialList from '../pages/admin-pages/temoignage/TestimonialList';
 import SiteSettings from '../pages/admin-pages/settings/site-setting';
+import ProtectedRoute from '../utils/ProtectedRoute';
+import EditArticleForm from '../pages/admin-pages/articles/edit-article';
 
 const AdminRoutes = () => {
       return (
-            <Route path="/admin" element={<AdminLayout />}>
+            <Route
+                  path="/admin"
+                  element={
+                        <ProtectedRoute>
+                              <AdminLayout />
+                        </ProtectedRoute>
+                  }
+            >
                   <Route path="list-article" element={<ArticleList />} />
                   <Route path="add-article" element={<AddArticleForm />} />
+                  <Route path="edit-article/:id" element={<EditArticleForm />} />
                   <Route path="preview-article/:articleID" element={<PreviewArticle />} />
                   <Route path="list-member" element={<MemberList />} />
                   <Route path="event-list" element={<EventList />} />

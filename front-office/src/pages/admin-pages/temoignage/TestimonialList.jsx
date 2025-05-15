@@ -1,10 +1,38 @@
 import React, { useEffect, useState } from 'react';
 import { API_ENDPOINTS } from '../../../config/API_ENDPOINT';
 import { Link } from 'react-router-dom';
+import ConfirmDeleteModal from '../../../components/main/confirm-delete-modal';
 
 const TestimonialList = () => {
       const [testimonials, setTestimonials] = useState([]);
-      const [loading, setLoading] = useState(true);
+      const [modalOpen, setModalOpen] = useState(false);
+      const [selectedId, setSelectedId] = useState(null);
+      const [loading, setLoading] = useState(false);
+
+      // Ouvre le modal
+      const handleDeleteClick = (id) => {
+            setSelectedId(id);
+            setModalOpen(true);
+      };
+
+      // Confirmer la suppression
+      const handleConfirmDelete = async () => {
+            setLoading(true);
+
+            try {
+                  await fetch(`${API_ENDPOINTS.getTestimonial}/delete/${selectedId}`, {
+                        method: 'DELETE',
+                  });
+                  // TODO : Mettre à jour la liste après suppression
+            } catch (error) {
+                  console.error('Erreur lors de la suppression :', error);
+            } finally {
+                  setModalOpen(false);
+                  setSelectedId(null);
+                  setLoading(true);
+                  window.location.reload();
+            }
+      };
 
       useEffect(() => {
             async function TestimonialFunc() {
@@ -25,7 +53,6 @@ const TestimonialList = () => {
                         // Vérifie si la réponse est bien un tableau
                         if (Array.isArray(response)) {
                               setTestimonials(response);
-                              setLoading(false);
                         } else {
                               console.warn('Format inattendu reçu pour les articles :', response);
                         }
@@ -64,6 +91,7 @@ const TestimonialList = () => {
                                                 <th className="py-3 px-4 border-b">Poste</th>
                                                 <th className="py-3 px-4 border-b">Message</th>
                                                 <th className="py-3 px-4 border-b">Date</th>
+                                                <th className="py-3 px-1 border-b">option</th>
                                           </tr>
                                     </thead>
                                     <tbody>
@@ -96,9 +124,29 @@ const TestimonialList = () => {
                                                                   item.createAt
                                                             ).toLocaleDateString()}
                                                       </td>
+                                                      <td className="py-3 px-4 border-b text-sm text-gray-500">
+                                                            <button
+                                                                  className="text-red-600 hover:text-red-800"
+                                                                  onClick={() =>
+                                                                        handleDeleteClick(item.id)
+                                                                  }
+                                                            >
+                                                                  <i className="far fa-trash-can"></i>
+                                                            </button>
+                                                      </td>
                                                 </tr>
                                           ))}
                                     </tbody>
+
+                                    {/* Modal de confirmation */}
+                                    <ConfirmDeleteModal
+                                          isOpen={modalOpen}
+                                          onClose={() => setModalOpen(false)}
+                                          loading={loading}
+                                          onConfirm={handleConfirmDelete}
+                                          title="Suppression d’un article"
+                                          message="Êtes-vous sûr de vouloir supprimer cet article ? Cette action est irréversible."
+                                    />
                               </table>
                         </div>
                   )}

@@ -8,8 +8,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/api/partenaires')]
@@ -24,6 +24,8 @@ class PartenaireController extends AbstractController
             return [
                 'id' => $p->getId(),
                 'logoPath' => $p->getLogoPath(),
+                'fullName' => $p->getFullName(),
+                'link' => $p->getLink(),
             ];
         }, $partenaires);
 
@@ -80,5 +82,57 @@ class PartenaireController extends AbstractController
         $em->flush();
 
         return $this->json(['message' => 'Deleted'], Response::HTTP_OK);
+    }
+
+    #[Route('/update/{id}', name: 'update_partenaire', methods: ['POST'])]
+    public function update(
+        Request $request,
+        EntityManagerInterface $em,
+        SluggerInterface $slugger,
+        int $id
+    ): JsonResponse {
+        $partenaire = $em->getRepository(Partenaire::class)->find($id);
+
+        if (!$partenaire) {
+            return $this->json(['message' => 'Partenaire introuvable'], Response::HTTP_NOT_FOUND);
+        }
+
+        $file = $request->files->get('logo');
+        $fullName = $request->request->get('fullName');
+        $link = $request->request->get('link');
+
+        // Mise à jour du logo si un fichier est fourni
+        if ($file) {
+            $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $safeFilename = $slugger->slug($originalFilename);
+            $newFilename = $safeFilename . '-' . uniqid() . '.' . $file->guessExtension();
+
+            $uploadDir = $this->getParameter('kernel.project_dir') . '/public/uploads/partenaires';
+            $file->move($uploadDir, $newFilename);
+
+            $logoPath = $this->getParameter('back_url') . '/uploads/partenaires/' . $newFilename;
+            $partenaire->setLogoPath($logoPath);
+        }
+
+        // Mise à jour des autres champs
+        if ($fullName !== null) {
+            $partenaire->setFullName($fullName);
+        }
+
+        if ($link !== null) {
+            $partenaire->setLink($link);
+        }
+
+        $partenaire->setUpdatedAt(new \DateTimeImmutable());
+
+        $em->flush();
+
+        return $this->json([
+            'id' => $partenaire->getId(),
+            'logoPath' => $partenaire->getLogoPath(),
+            'fullName' => $partenaire->getFullName(),
+            'link' => $partenaire->getLink(),
+            'updatedAt' => $partenaire->getUpdatedAt()?->format('Y-m-d H:i:s'),
+        ]);
     }
 }

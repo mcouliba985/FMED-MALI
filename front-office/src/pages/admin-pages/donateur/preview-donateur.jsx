@@ -1,11 +1,43 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { API_ENDPOINTS } from '../../../config/API_ENDPOINT';
+import ConfirmDeleteModal from '../../../components/main/confirm-delete-modal';
 
 const DonateurPreview = () => {
       const { donatorID } = useParams();
       const id = parseInt(donatorID);
       const [donator, setDonator] = useState({});
+
+      const [modalOpen, setModalOpen] = useState(false);
+      const [selectedId, setSelectedId] = useState(null);
+      const [loading, setLoading] = useState(false);
+
+      const navigate = useNavigate();
+
+      // Ouvre le modal
+      const handleDeleteClick = (id) => {
+            setSelectedId(id);
+            setModalOpen(true);
+      };
+
+      // Confirmer la suppression
+      const handleConfirmDelete = async () => {
+            setLoading(true);
+
+            try {
+                  await fetch(`${API_ENDPOINTS.getDonators}/delete/${selectedId}`, {
+                        method: 'DELETE',
+                  });
+                  // TODO : Mettre à jour la liste après suppression
+            } catch (error) {
+                  console.error('Erreur lors de la suppression :', error);
+            } finally {
+                  setModalOpen(false);
+                  setSelectedId(null);
+                  setLoading(true);
+                  navigate('/admin/list-donateur');
+            }
+      };
 
       useEffect(() => {
             async function donatorFunc() {
@@ -25,12 +57,21 @@ const DonateurPreview = () => {
 
       return (
             <div className="min-h-screen">
-                  <div className="bg-white rounded-xl py-6 px-2">
-                        <h2 className="text-xl font-semibold mb-1">Donateur details</h2>
-                        <p className="text-sm text-gray-600">
-                              Consultez ici toutes les informations détaillées concernant ce
-                              donateur et ses contributions.
-                        </p>
+                  <div className="flex justify-between bg-white rounded-xl py-6 px-2">
+                        <div>
+                              <h2 className="text-xl font-semibold mb-1">Donateur details</h2>
+                              <p className="text-sm text-gray-600">
+                                    Consultez ici toutes les informations détaillées concernant ce
+                                    donateur et ses contributions.
+                              </p>
+                        </div>
+
+                        <button
+                              className="text-red-600 text-3xl cursor-pointer hover:text-red-800"
+                              onClick={() => handleDeleteClick(donatorID)}
+                        >
+                              <i class="far fa-trash-can"></i>
+                        </button>
                   </div>
                   <div className="max-w-4xl bg-gray-100 rounded-2xl shadow-md p-6 space-y-6">
                         <div className="flex justify-between items-start">
@@ -108,6 +149,16 @@ const DonateurPreview = () => {
                               </button>
                         </div>
                   </div>
+
+                  {/* Modal de confirmation */}
+                  <ConfirmDeleteModal
+                        isOpen={modalOpen}
+                        onClose={() => setModalOpen(false)}
+                        loading={loading}
+                        onConfirm={handleConfirmDelete}
+                        title="Suppression d’un article"
+                        message="Êtes-vous sûr de vouloir supprimer cet article ? Cette action est irréversible."
+                  />
             </div>
       );
 };

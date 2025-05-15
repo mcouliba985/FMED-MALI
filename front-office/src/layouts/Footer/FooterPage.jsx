@@ -46,9 +46,12 @@ const FooterPage = () => {
                                     <FooterLink showIcon={true} href="/gallery">
                                           Nos Realisations
                                     </FooterLink>
-                                    <FooterLink showIcon={true} href="/contact">
+                                    <a
+                                          className="px-4 hidden lg:block hover:text-gold"
+                                          href="/admin/list-article"
+                                    >
                                           Web Meld
-                                    </FooterLink>
+                                    </a>
                               </section>
 
                               <section className="col-12 col-md-6 col-lg-4 mb-4">

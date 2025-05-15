@@ -130,4 +130,30 @@ final class DonorController extends AbstractController
 
         return $this->json($donorArray, Response::HTTP_OK);
     }
+
+    #[Route('/delete/{id}', name: 'delete_donor', methods: ['DELETE'])]
+    public function delete(
+        int $id,
+        EntityManagerInterface $em
+    ): Response {
+        $donor = $em->getRepository(Benevole::class)->find($id);
+
+        if (!$donor) {
+            return $this->json(['message' => 'Donneur non trouvé'], Response::HTTP_NOT_FOUND);
+        }
+
+        // Supprimer le fichier associé s'il existe
+        $filePath = $donor->getFileName()
+            ? $this->getParameter('kernel.project_dir') . '/public/uploads/donors/' . $donor->getFileName()
+            : null;
+
+        if ($filePath && file_exists($filePath)) {
+            @unlink($filePath);
+        }
+
+        $em->remove($donor);
+        $em->flush();
+
+        return $this->json(['message' => 'Donneur supprimé avec succès'], Response::HTTP_OK);
+    }
 }

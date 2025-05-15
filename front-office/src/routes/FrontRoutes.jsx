@@ -13,6 +13,7 @@ import GalleryPage from './../pages/front-office-pages/GalleryPage';
 import Error from './../pages/404/Error';
 import Main from './../layouts/Main/Main';
 import DomainDetail from '../pages/front-office-pages/domain-detail';
+import Login from '../pages/front-office-pages/Login';
 
 const FrontRoutes = () => {
       return (
@@ -30,6 +31,7 @@ const FrontRoutes = () => {
                         <Route path="payment" element={<PaymentForm />} />
                         <Route path="gallery" element={<GalleryPage />} />
                         <Route path="domain/:key" element={<DomainDetail />} />
+                        <Route path="login" element={<Login />} />
                         <Route path="*" element={<Error />} />
                   </Routes>
             </Main>

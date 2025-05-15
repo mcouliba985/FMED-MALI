@@ -5,28 +5,50 @@ import { Pagination } from 'react-bootstrap';
 
 const DonateurList = () => {
       const [donators, setDonators] = useState([]);
+      const [filter, setFilter] = useState('all'); // 'all', 'entreprise', 'particulier'
 
       const itemsPerPage = 10;
       const [currentPage, setCurrentPage] = useState(1);
 
-      const totalPages = Math.ceil(donators.length / itemsPerPage);
-      const paginated = donators.slice(
+      const filteredDonators = donators.filter((d) => {
+            if (filter === 'all') return true;
+            return d.type?.toLowerCase() === filter;
+      });
+
+      const totalPages = Math.ceil(filteredDonators.length / itemsPerPage);
+      const paginated = filteredDonators.slice(
             (currentPage - 1) * itemsPerPage,
             currentPage * itemsPerPage
       );
 
       useEffect(() => {
-            async function donatorFunc() {
+            async function fetchFunc() {
                   try {
                         const fetchRequest = await fetch(API_ENDPOINTS.getDonators);
+
+                        // Vérifie si la réponse HTTP est correcte (status 2xx)
+                        if (!fetchRequest.ok) {
+                              console.error(
+                                    'Erreur HTTP lors du chargement des articles :',
+                                    fetchRequest.status
+                              );
+                              return;
+                        }
+
                         const response = await fetchRequest.json();
-                        setDonators(response);
+
+                        // Vérifie si la réponse est bien un tableau
+                        if (Array.isArray(response)) {
+                              setDonators(response);
+                        } else {
+                              console.warn('Format inattendu reçu pour les articles :', response);
+                        }
                   } catch (error) {
-                        console.log(error);
+                        console.error('Erreur lors de la récupération des articles :', error);
                   }
             }
 
-            donatorFunc();
+            fetchFunc();
       }, []);
       return (
             <div className="bg-white rounded-xl p-6">
@@ -37,9 +59,17 @@ const DonateurList = () => {
                   </p>
 
                   <div className="flex justify-end gap-4 mb-4">
-                        <button className="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 text-sm font-semibold">
-                              Filtrage
-                        </button>
+                        <div className="flex justify-end mb-4">
+                              <select
+                                    value={filter}
+                                    onChange={(e) => setFilter(e.target.value)}
+                                    className="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 text-sm font-semibold"
+                              >
+                                    <option value="all">Tous</option>
+                                    <option value="entreprise">Entreprises</option>
+                                    <option value="particulier">Particuliers</option>
+                              </select>
+                        </div>
                   </div>
 
                   <div className="overflow-auto">
@@ -75,12 +105,6 @@ const DonateurList = () => {
                                                                   to={`/admin/preview-donator/${paginate.id}`}
                                                             >
                                                                   <i class="far fa-eye"></i>
-                                                            </Link>
-                                                            <Link
-                                                                  className="text-red-600 cursor-pointer hover:text-red-800"
-                                                                  to={'/'}
-                                                            >
-                                                                  <i class="far fa-trash-can"></i>
                                                             </Link>
                                                       </div>
                                                 </td>

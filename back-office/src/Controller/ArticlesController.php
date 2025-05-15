@@ -193,4 +193,97 @@ class ArticlesController extends AbstractController
             'status' => $article->getStatus(),
         ], Response::HTTP_OK);
     }
+
+    #[Route('/edit/{id}', name: 'edit_article', methods: ['POST'])]
+    public function edit(
+        int $id,
+        Request $request,
+        EntityManagerInterface $em,
+        SluggerInterface $slugger,
+    ): Response {
+        $article = $em->getRepository(Articles::class)->find($id);
+
+        if (!$article) {
+            return $this->json(['message' => 'Article non trouvé'], Response::HTTP_NOT_FOUND);
+        }
+
+        $data = json_decode($request->request->get('informations'), true);
+        $file = $request->files->get('source');
+
+        if (empty($data['title']) || empty($data['hook']) || empty($data['content'])) {
+            return $this->json(['message' => 'Champs requis manquants'], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Mettre à jour les champs
+        $article->setTitle($data['title']);
+        $article->setHook($data['hook']);
+        $article->setContent($data['content']);
+        $article->setType($data['type'] ?? $article->getType());
+        $article->setArchive($data['archive'] ?? $article->isArchive());
+        $article->setStatus($data['status'] ?? $article->getStatus());
+        $article->setCategory($data['category'] ?? $article->getCategory());
+
+        // Image : si nouvelle image => remplacer l'ancienne
+        if ($file) {
+            $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $safeFilename = $slugger->slug($originalFilename);
+            $newFilename = $safeFilename . '-' . uniqid() . '.' . $file->guessExtension();
+
+            $uploadDir = $this->getParameter('kernel.project_dir') . '/public/uploads/articles';
+            $file->move($uploadDir, $newFilename);
+
+            // Supprimer l'ancienne image du serveur si elle existe
+            if ($article->getImageName()) {
+                $oldImagePath = $uploadDir . '/' . $article->getImageName();
+                if (file_exists($oldImagePath)) {
+                    unlink($oldImagePath);
+                }
+            }
+
+            $article->setImageName($newFilename);
+            $article->setImagePath($this->getParameter('back_url') . '/uploads/articles/' . $newFilename);
+        }
+
+        $em->flush();
+
+        return $this->json([
+            'id' => $article->getId(),
+            'title' => $article->getTitle(),
+            'hook' => $article->getHook(),
+            'content' => $article->getContent(),
+            'type' => $article->getType(),
+            'archive' => $article->isArchive(),
+            'status' => $article->getStatus(),
+            'category' => $article->getCategory(),
+            'imageName' => $article->getImageName(),
+            'imagePath' => $article->getImagePath(),
+            'createAt' => $article->getCreateAt()->format('Y-m-d H:i:s'),
+        ]);
+    }
+
+    #[Route('/delete/{id}', name: 'delete_article', methods: ['DELETE'])]
+    public function delete(
+        int $id,
+        EntityManagerInterface $em
+    ): Response {
+        $article = $em->getRepository(Articles::class)->find($id);
+
+        if (!$article) {
+            return $this->json(['message' => 'Article non trouvé'], Response::HTTP_NOT_FOUND);
+        }
+
+        // Supprimer le fichier image si présent
+        $imagePath = $article->getImageName()
+            ? $this->getParameter('kernel.project_dir') . '/public/uploads/articles/' . $article->getImageName()
+            : null;
+
+        if ($imagePath && file_exists($imagePath)) {
+            @unlink($imagePath);
+        }
+
+        $em->remove($article);
+        $em->flush();
+
+        return $this->json(['message' => 'Article supprimé avec succès'], Response::HTTP_OK);
+    }
 }

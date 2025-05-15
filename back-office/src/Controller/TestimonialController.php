@@ -87,4 +87,31 @@ final class TestimonialController extends AbstractController
 
         return $this->json($testimonialsArray, Response::HTTP_OK);
     }
+
+    #[Route('/delete/{id}', name: 'delete_testimonial', methods: ['DELETE'])]
+    public function delete(
+        int $id,
+        EntityManagerInterface $em
+    ): Response {
+        $testimonial = $em->getRepository(Testimonials::class)->find($id);
+
+        if (!$testimonial) {
+            return $this->json(['message' => 'Témoignage non trouvé'], Response::HTTP_NOT_FOUND);
+        }
+
+        // Supprimer l'image associée si elle existe
+        $filePath = $testimonial->getImageName()
+            ? $this->getParameter('kernel.project_dir') . '/public/uploads/testimonials/' . $testimonial->getImageName()
+            : null;
+
+        if ($filePath && file_exists($filePath)) {
+            @unlink($filePath);
+        }
+
+        // Supprimer l'entité
+        $em->remove($testimonial);
+        $em->flush();
+
+        return $this->json(['message' => 'Témoignage supprimé avec succès'], Response::HTTP_OK);
+    }
 }

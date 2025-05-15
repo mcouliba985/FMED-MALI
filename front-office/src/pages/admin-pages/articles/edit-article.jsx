@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { API_ENDPOINTS } from '../../../config/API_ENDPOINT';
 import Loader from '../../../components/main/loader-component';
 import { CATEGORIES_ENUM } from '../../../datas/constants';
 
-const AddArticleForm = () => {
-      const [loading, setLoading] = useState(false);
+const EditArticleForm = () => {
+      const { id } = useParams(); // ID depuis l'URL
+      const [loading, setLoading] = useState(true);
+      const [errors, setErrors] = useState({});
+
       const [formData, setFormData] = useState({
             title: '',
             category: '',
@@ -15,6 +18,33 @@ const AddArticleForm = () => {
             image: null,
       });
 
+      const navigate = useNavigate();
+
+      useEffect(() => {
+            const fetchArticle = async () => {
+                  try {
+                        const response = await fetch(`${API_ENDPOINTS.getArticles}/${id}`);
+                        const data = await response.json();
+
+                        setFormData({
+                              title: data.title || '',
+                              category: data.category || '',
+                              date: data.date ? data.date.substring(0, 10) : '',
+                              accroche: data.hook || '',
+                              content: data.content || '',
+                              image: null,
+                              imageUrl: data.imagePath || '', // Assure-toi que ton backend envoie bien cette clé
+                        });
+                  } catch (error) {
+                        console.error('Erreur lors du chargement de l’article', error);
+                  } finally {
+                        setLoading(false);
+                  }
+            };
+
+            fetchArticle();
+      }, [id]);
+
       const handleChange = (e) => {
             const { name, value, files } = e.target;
             setFormData((prev) => ({
@@ -23,34 +53,16 @@ const AddArticleForm = () => {
             }));
       };
 
-      const [errors, setErrors] = useState({});
-
-      const validate = () => {
-            const newErrors = {};
-            if (!formData.title.trim()) newErrors.title = 'Le titre est requis';
-            if (!formData.category.trim()) newErrors.category = 'La catégorie est requise';
-            if (!formData.date.trim()) newErrors.date = 'La date est requise';
-            if (!formData.content.trim()) newErrors.content = 'Le contenu est requis';
-            return newErrors;
-      };
-
-      const navigate = useNavigate();
-
       const handleSubmit = async (e) => {
             e.preventDefault();
             setLoading(true);
-
-            const validationErrors = validate();
-            if (Object.keys(validationErrors).length > 0) {
-                  setErrors(validationErrors);
-                  return;
-            }
 
             const informations = {
                   title: formData.title,
                   hook: formData.accroche,
                   content: formData.content,
                   category: formData.category,
+                  date: formData.date,
                   status: 'brouillon',
                   archive: false,
                   type: 'FMED',
@@ -58,34 +70,26 @@ const AddArticleForm = () => {
 
             const dataToSend = new FormData();
             dataToSend.append('informations', JSON.stringify(informations));
-            if (formData.image) {
+
+            // Ajouter l'image seulement si elle a été modifiée
+            if (formData.image instanceof File) {
                   dataToSend.append('source', formData.image);
             }
 
             try {
-                  const response = await fetch(API_ENDPOINTS.createArticle, {
-                        method: 'POST',
+                  const response = await fetch(`${API_ENDPOINTS.getArticles}/edit/${id}`, {
+                        method: 'POST', // REST ne recommande pas POST pour update, mais OK ici car Symfony l'attend
                         body: dataToSend,
                   });
 
                   const result = await response.json();
 
                   if (response.ok) {
-                        const articleID = result.id;
-                        // Réinitialiser le formulaire si nécessaire
-                        setFormData({
-                              title: '',
-                              category: '',
-                              date: '',
-                              accroche: '',
-                              content: '',
-                              image: null,
-                        });
                         setErrors({});
-                        // Redirection vers la page de preview
-                        navigate(`/admin/preview-article/${articleID}`);
+                        navigate(`/admin/preview-article/${id}`);
                   } else {
                         alert(`Erreur : ${result.message}`);
+                        setErrors(result.errors || {});
                   }
             } catch (error) {
                   console.error('Erreur réseau :', error);
@@ -99,11 +103,7 @@ const AddArticleForm = () => {
             <form onSubmit={handleSubmit} className="flex flex-col gap-6 max-w-5xl mx-auto text-sm">
                   {/* Titre + description */}
                   <div>
-                        <h2 className="text-xl font-bold mb-1">Ajouter un nouveau article</h2>
-                        <p className="text-gray-600">
-                              Tous les articles en un seul endroit. Vous pouvez consulter, ajouter
-                              ou archiver chaque publication.
-                        </p>
+                        <h2 className="text-xl font-bold mb-1">Modifier l'article</h2>
                   </div>
 
                   {/* Image + champs de droite */}
@@ -116,14 +116,21 @@ const AddArticleForm = () => {
                                           alt="Preview"
                                           className="h-full object-cover rounded-xl"
                                     />
+                              ) : formData.imageUrl ? (
+                                    <img
+                                          src={formData.imageUrl}
+                                          alt={'alel'}
+                                          className="h-full object-cover rounded-xl"
+                                    />
                               ) : (
                                     <>
                                           <span className="text-yellow-500 text-4xl">
-                                                <i class="fas fa-cloud-arrow-down"></i>
+                                                <i className="fas fa-cloud-arrow-down"></i>
                                           </span>
                                           <p className="font-semibold mt-2">Importez votre image</p>
                                     </>
                               )}
+
                               <input
                                     type="file"
                                     accept="image/*"
@@ -152,7 +159,7 @@ const AddArticleForm = () => {
                                           name="category"
                                           value={formData.category}
                                           onChange={handleChange}
-                                          className={`flex-1 border rounded px-3 py-2 ${errors.category ? 'border-red-500' : 'border-gray-300'}`}
+                                          className={`flex-1 border rounded px-3 py-2 bg-white ${errors.category ? 'border-red-500' : 'border-gray-300'}`}
                                     >
                                           <option value="">-- Sélectionnez une catégorie --</option>
                                           {CATEGORIES_ENUM.map((cat) => (
@@ -161,6 +168,7 @@ const AddArticleForm = () => {
                                                 </option>
                                           ))}
                                     </select>
+
                                     <input
                                           type="date"
                                           name="date"
@@ -169,6 +177,7 @@ const AddArticleForm = () => {
                                           className={`flex-1 border rounded px-3 py-2 ${errors.date ? 'border-red-500' : 'border-gray-300'}`}
                                     />
                               </div>
+
                               {(errors.category || errors.date) && (
                                     <div className="text-red-500 text-xs flex justify-between">
                                           <span>{errors.category}</span>
@@ -195,7 +204,6 @@ const AddArticleForm = () => {
                               onChange={handleChange}
                               className={`w-full border rounded px-3 py-2 h-52 resize-none ${errors.content ? 'border-red-500' : 'border-gray-300'}`}
                         />
-                        {errors.content && <p className="text-red-500 text-xs">{errors.content}</p>}
                   </div>
 
                   {/* Bouton */}
@@ -219,4 +227,4 @@ const AddArticleForm = () => {
       );
 };
 
-export default AddArticleForm;
+export default EditArticleForm;

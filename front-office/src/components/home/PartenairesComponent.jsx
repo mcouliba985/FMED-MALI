@@ -17,17 +17,32 @@ const PartenairesComponent = () => {
       const [partenaires, setImages] = useState([]);
 
       useEffect(() => {
-            const fetchPartners = async () => {
+            async function partnersFunc() {
                   try {
-                        const res = await fetch(API_ENDPOINTS.getPartners);
-                        const data = await res.json();
-                        setImages(data);
-                  } catch (err) {
-                        console.error('Erreur lors du chargement des partenaires :', err);
-                  }
-            };
+                        const fetchRequest = await fetch(API_ENDPOINTS.getPartners);
 
-            fetchPartners();
+                        // Vérifie si la réponse HTTP est correcte (status 2xx)
+                        if (!fetchRequest.ok) {
+                              console.error(
+                                    'Erreur HTTP lors du chargement des articles :',
+                                    fetchRequest.status
+                              );
+                              return;
+                        }
+
+                        const response = await fetchRequest.json();
+
+                        // Vérifie si la réponse est bien un tableau
+                        if (Array.isArray(response)) {
+                              setImages(response);
+                        } else {
+                              console.warn('Format inattendu reçu pour les articles :', response);
+                        }
+                  } catch (error) {
+                        console.error('Erreur lors de la récupération des articles :', error);
+                  }
+            }
+            partnersFunc();
       }, []);
 
       if (partenaires === undefined) return null;
@@ -61,11 +76,20 @@ const PartenairesComponent = () => {
                               return (
                                     <SwiperSlide key={partenaire.id}>
                                           <div className="block w-full h-64">
-                                                <img
-                                                      className="w-full h-full"
-                                                      src={partenaire.logoPath}
-                                                      alt={partenaire.logoName || 'Logo partenaire'}
-                                                />
+                                                <a
+                                                      href={partenaire.link}
+                                                      target="_blank"
+                                                      rel="noopener noreferrer"
+                                                >
+                                                      <img
+                                                            className="w-full h-full"
+                                                            src={partenaire.logoPath}
+                                                            alt={
+                                                                  partenaire.logoName ||
+                                                                  'Logo partenaire'
+                                                            }
+                                                      />
+                                                </a>
                                           </div>
                                     </SwiperSlide>
                               );

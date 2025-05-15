@@ -2,9 +2,19 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Pagination from '../../../components/main/pagination';
 import { API_ENDPOINTS } from '../../../config/API_ENDPOINT';
+import ConfirmDeleteModal from '../../../components/main/confirm-delete-modal';
 
 const ArticleList = () => {
       const [articles, setArticles] = useState([]);
+      const [modalOpen, setModalOpen] = useState(false);
+      const [selectedId, setSelectedId] = useState(null);
+      const [loading, setLoading] = useState(false);
+
+      // Ouvre le modal
+      const handleDeleteClick = (id) => {
+            setSelectedId(id);
+            setModalOpen(true);
+      };
 
       const itemsPerPage = 5;
       const [currentPage, setCurrentPage] = useState(1);
@@ -44,6 +54,25 @@ const ArticleList = () => {
 
             fetchArticles();
       }, []);
+
+      // Confirmer la suppression
+      const handleConfirmDelete = async () => {
+            setLoading(true);
+
+            try {
+                  await fetch(`${API_ENDPOINTS.getArticles}/delete/${selectedId}`, {
+                        method: 'DELETE',
+                  });
+                  // TODO : Mettre à jour la liste après suppression
+            } catch (error) {
+                  console.error('Erreur lors de la suppression :', error);
+            } finally {
+                  setModalOpen(false);
+                  setSelectedId(null);
+                  setLoading(true);
+                  window.location.reload();
+            }
+      };
 
       return (
             <div className="bg-white rounded-xl p-6">
@@ -109,13 +138,27 @@ const ArticleList = () => {
                                                             >
                                                                   <i class="far fa-eye"></i>
                                                             </Link>
-                                                            <Link
-                                                                  className="text-red-600 cursor-pointer hover:text-red-800"
-                                                                  to={'/'}
+                                                            <button
+                                                                  className="text-red-600 hover:text-red-800"
+                                                                  onClick={() =>
+                                                                        handleDeleteClick(
+                                                                              article.id
+                                                                        )
+                                                                  }
                                                             >
-                                                                  <i class="far fa-trash-can"></i>
-                                                            </Link>
+                                                                  <i className="far fa-trash-can"></i>
+                                                            </button>
                                                       </div>
+
+                                                      {/* Modal de confirmation */}
+                                                      <ConfirmDeleteModal
+                                                            isOpen={modalOpen}
+                                                            onClose={() => setModalOpen(false)}
+                                                            loading={loading}
+                                                            onConfirm={handleConfirmDelete}
+                                                            title="Suppression d’un article"
+                                                            message="Êtes-vous sûr de vouloir supprimer cet article ? Cette action est irréversible."
+                                                      />
                                                 </td>
                                           </tr>
                                     ))}

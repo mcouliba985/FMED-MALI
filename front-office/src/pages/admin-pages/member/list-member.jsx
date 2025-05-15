@@ -8,20 +8,34 @@ const MemberList = () => {
       const [members, setMembers] = useState([]);
 
       useEffect(() => {
-            async function memberFunc() {
+            async function fetchFunc() {
                   try {
                         const fetchRequest = await fetch(API_ENDPOINTS.getMembers);
+
+                        // Vérifie si la réponse HTTP est correcte (status 2xx)
+                        if (!fetchRequest.ok) {
+                              console.error(
+                                    'Erreur HTTP lors du chargement des articles :',
+                                    fetchRequest.status
+                              );
+                              return;
+                        }
+
                         const response = await fetchRequest.json();
 
-                        setMembers(response);
+                        // Vérifie si la réponse est bien un tableau
+                        if (Array.isArray(response)) {
+                              setMembers(response);
+                        } else {
+                              console.warn('Format inattendu reçu pour les articles :', response);
+                        }
                   } catch (error) {
-                        console.log(error);
+                        console.error('Erreur lors de la récupération des articles :', error);
                   }
             }
 
-            memberFunc();
+            fetchFunc();
       }, []);
-
       const itemsPerPage = 5;
       const [currentPage, setCurrentPage] = useState(1);
 
