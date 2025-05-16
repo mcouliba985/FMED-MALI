@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { API_ENDPOINTS } from '../../../config/API_ENDPOINT';
 import Modal from '../../../components/main/modal';
+import Loader from '../../../components/main/loader-component';
 
 const CarouselSetting = () => {
       const [slides, setSlides] = useState([]);
@@ -21,6 +22,7 @@ const CarouselSetting = () => {
       }, []);
 
       const [showModal, setShowModal] = useState(false);
+      const [loading, setLoading] = useState(false);
 
       const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -59,6 +61,7 @@ const CarouselSetting = () => {
       };
 
       const handleSave = async () => {
+            setLoading(true);
             for (const [id, changes] of Object.entries(modifiedSlides)) {
                   const formData = new FormData();
 
@@ -97,6 +100,7 @@ const CarouselSetting = () => {
 
             setModifiedSlides({});
             setShowModal(true);
+            setLoading(false);
       };
 
       if (slides === undefined) return null;
@@ -162,7 +166,13 @@ const CarouselSetting = () => {
                                     onClick={handleSave}
                                     className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-full shadow"
                               >
-                                    Enregistrer
+                                    {loading ? (
+                                          <>
+                                                <Loader size={5} color="black" />
+                                          </>
+                                    ) : (
+                                          'Enregistrer'
+                                    )}
                               </button>
                         </div>
                   </section>

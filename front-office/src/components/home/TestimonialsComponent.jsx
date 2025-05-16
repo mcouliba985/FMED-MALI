@@ -7,6 +7,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import { useEffect, useState } from 'react';
 import { API_ENDPOINTS } from '../../config/API_ENDPOINT';
+import { motion } from 'framer-motion';
 
 const TestimonialsComponent = () => {
       const [testimonials, setTestimonials] = useState([]);
@@ -50,7 +51,17 @@ const TestimonialsComponent = () => {
                               <TitleTestimonial>Les témoignages</TitleTestimonial>
 
                               <SpadeDecorator>
-                                    <img className="w-full h-full" src={spade} alt="spade" />
+                                    <motion.img
+                                          className="w-full h-full"
+                                          src={spade}
+                                          alt="spade"
+                                          animate={{ opacity: [1, 0.3, 1] }}
+                                          transition={{
+                                                duration: 1,
+                                                repeat: Infinity,
+                                                ease: 'easeInOut',
+                                          }}
+                                    />
                               </SpadeDecorator>
                         </div>
 

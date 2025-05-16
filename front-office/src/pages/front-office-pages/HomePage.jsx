@@ -7,6 +7,7 @@ import FmedInfo from '../../components/home/fmed-info-component';
 import MemberComponent from '../../components/home/MemberComponent';
 import TestimonialsComponent from '../../components/home/TestimonialsComponent';
 import PartenairesComponent from '../../components/home/PartenairesComponent';
+import { motion } from 'framer-motion';
 
 const ImageDecorator = styled.div`
       position: absolute;
@@ -23,7 +24,18 @@ const Home = () => {
                   </div>
 
                   <ImageDecorator>
-                        <img className="mt-[-130px]" src={shapeHand} alt="shape_hand" />
+                        <motion.img
+                              className="mt-[-130px]"
+                              src={shapeHand}
+                              alt="shape_hand"
+                              animate={{ y: [0, -20, 0] }}
+                              transition={{
+                                    duration: 2,
+                                    repeat: Infinity,
+                                    repeatType: 'loop',
+                                    ease: 'easeInOut',
+                              }}
+                        />
                   </ImageDecorator>
 
                   {/* Section qui passe DEVANT */}

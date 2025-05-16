@@ -7,6 +7,7 @@ import cause from '../../assets/res/cause-bg.png';
 import spade from '../../assets/icons/spade-base.png';
 import { useEffect, useState } from 'react';
 import { API_ENDPOINTS } from '../../config/API_ENDPOINT';
+import { motion } from 'framer-motion';
 
 const FmedInfo = () => {
       const [articleData, setArticleData] = useState([]);
@@ -56,7 +57,17 @@ const FmedInfo = () => {
                               </div>
 
                               <SpadeDecorator>
-                                    <img className="w-full h-full" src={spade} alt="spade" />
+                                    <motion.img
+                                          className="w-full h-full"
+                                          src={spade}
+                                          alt="spade"
+                                          animate={{ opacity: [1, 0, 1] }}
+                                          transition={{
+                                                duration: 2,
+                                                repeat: Infinity,
+                                                ease: 'easeInOut',
+                                          }}
+                                    />
                               </SpadeDecorator>
                         </div>
                         <Swiper

@@ -114,7 +114,6 @@ const TestimonialForm = () => {
                         onChange={handleChange}
                         required
                         rows="5"
-                        maxLength={250}
                         className="w-full border rounded-md p-3 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-400"
                   />
 

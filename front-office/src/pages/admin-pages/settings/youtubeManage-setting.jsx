@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { API_ENDPOINTS } from '../../../config/API_ENDPOINT';
 import Modal from '../../../components/main/modal';
+import Loader from '../../../components/main/loader-component';
 
 const YoutubeManageSetting = () => {
       const [youtube, setYoutube] = useState({});
@@ -12,6 +13,7 @@ const YoutubeManageSetting = () => {
       });
       const fileInputRef = useRef(null);
       const [showModal, setShowModal] = useState(false);
+      const [loading, setLoading] = useState(false);
 
       useEffect(() => {
             async function youtubeFunc() {
@@ -49,6 +51,7 @@ const YoutubeManageSetting = () => {
       };
 
       const handleSubmit = async () => {
+            setLoading(true);
             const form = new FormData();
             form.append('hook', formData.hook);
             form.append('content', formData.content);
@@ -73,6 +76,8 @@ const YoutubeManageSetting = () => {
             } catch (err) {
                   console.error(err);
                   alert('Erreur lors de la mise à jour.');
+            } finally {
+                  setLoading(false);
             }
       };
 
@@ -154,7 +159,13 @@ const YoutubeManageSetting = () => {
                               onClick={handleSubmit}
                               className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-full shadow"
                         >
-                              Enregistrer
+                              {loading ? (
+                                    <>
+                                          <Loader size={5} color="black" />
+                                    </>
+                              ) : (
+                                    'Enregistrer'
+                              )}
                         </button>
                   </div>
 

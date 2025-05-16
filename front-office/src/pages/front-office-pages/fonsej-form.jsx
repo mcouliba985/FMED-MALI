@@ -17,7 +17,7 @@ const FonsejForm = () => {
       useEffect(() => {
             async function fetchArticles() {
                   try {
-                        const fetchArticle = await fetch(API_ENDPOINTS.getArticles);
+                        const fetchArticle = await fetch(API_ENDPOINTS.getPublishedArticles);
 
                         // Vérifie si la réponse HTTP est correcte (status 2xx)
                         if (!fetchArticle.ok) {

@@ -6,6 +6,7 @@ import { CATEGORIES_ENUM } from '../../../datas/constants';
 
 const AddArticleForm = () => {
       const [loading, setLoading] = useState(false);
+
       const [formData, setFormData] = useState({
             title: '',
             category: '',

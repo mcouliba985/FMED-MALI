@@ -2,6 +2,7 @@ import { useState } from 'react';
 import CoverPageComponent from '../../components/main/cover-page-component';
 import { API_ENDPOINTS } from '../../config/API_ENDPOINT';
 import Modal from '../../components/main/modal';
+import Loader from '../../components/main/loader-component';
 
 const FormMember = () => {
       const [formData, setFormData] = useState({
@@ -18,6 +19,8 @@ const FormMember = () => {
             file: null, // Utilisation de "file"
       });
 
+      const [loading, setLoading] = useState(false);
+
       const [showModal, setShowModal] = useState(false);
 
       const handleChange = (e) => {
@@ -31,7 +34,7 @@ const FormMember = () => {
 
       const handleSubmit = async (e) => {
             e.preventDefault();
-
+            setLoading(true);
             const form = new FormData();
             const infos = { ...formData };
             delete infos.file; // Retirer le fichier de l'objet de données
@@ -74,6 +77,8 @@ const FormMember = () => {
             } catch (err) {
                   console.error(err);
                   alert('Network error.');
+            } finally {
+                  setLoading(false);
             }
       };
 
@@ -211,7 +216,13 @@ const FormMember = () => {
                                     type="submit"
                                     className="bg-yellow-400 hover:bg-yellow-300 px-6 py-2 rounded-xl shadow font-semibold"
                               >
-                                    Envoyer
+                                    {loading ? (
+                                          <>
+                                                <Loader size={5} color="black" />
+                                          </>
+                                    ) : (
+                                          'Envoyer'
+                                    )}
                               </button>
                         </form>
 

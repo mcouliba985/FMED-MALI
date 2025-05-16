@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { API_ENDPOINTS } from '../../config/API_ENDPOINT';
+import Loader from './loader-component';
 
 const AideForm = () => {
+      const [loading, setLoading] = useState(false);
+
       const [formData, setFormData] = useState({
             nom: '',
             prenom: '',
@@ -28,6 +31,7 @@ const AideForm = () => {
             data.append('file', formData.fichier);
 
             console.log(data);
+            setLoading(true);
 
             try {
                   const response = await fetch(API_ENDPOINTS.fonsejSubmit, {
@@ -56,6 +60,8 @@ const AideForm = () => {
                   setIsError(true);
                   setMessage("Une erreur s'est produite. Veuillez réessayer.");
                   console.error(error);
+            } finally {
+                  setLoading(false);
             }
       };
 
@@ -155,7 +161,13 @@ const AideForm = () => {
                                     type="submit"
                                     className="py-2 px-12 bg-gold text-black font-semibold rounded-xl shadow-md hover:bg-yellow-300 transition"
                               >
-                                    Envoyer
+                                    {loading ? (
+                                          <>
+                                                <Loader size={5} color="black" />
+                                          </>
+                                    ) : (
+                                          'Envoyer'
+                                    )}
                               </button>
                         </div>
                   </form>

@@ -60,8 +60,8 @@ class AideController extends AbstractController
 
         // Envoi d’email
         $email = (new TemplatedEmail())
-            ->from('info@fmed.ml')
-            ->to('mag.services.mali.tech@gmail.com')
+            ->from($this->getParameter('mail_system'))
+            ->to($this->getParameter('account_mail'))
             ->subject('Nouvelle demande d’inscription au FONSEJ')
             ->text("Nouvelle demande reçue de $prenom $nom. Fichier : $fichierPath")
             ->htmlTemplate('emails/demande_fonsej.html.twig')
