@@ -105,9 +105,9 @@ const FmedInfo = () => {
                                                                   href={`/article/${data.id}`}
                                                                   className="font-roboto text-lg py-2 font-light p-2 hover:text-red-600 block"
                                                             >
-                                                                  {data.content.length > 180
-                                                                        ? `${data.content.slice(0, data.content.indexOf(' ', 180))}...`
-                                                                        : data.content}
+                                                                  {data.hook.length > 180
+                                                                        ? `${data.content.slice(0, data.hook.indexOf(' ', 180))}...`
+                                                                        : data.hook}
                                                             </a>
                                                       </div>
                                                 </ArticleSwiper>

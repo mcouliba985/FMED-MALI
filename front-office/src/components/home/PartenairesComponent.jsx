@@ -84,10 +84,7 @@ const PartenairesComponent = () => {
                                                       <img
                                                             className="w-full h-full"
                                                             src={partenaire.logoPath}
-                                                            alt={
-                                                                  partenaire.logoName ||
-                                                                  'Logo partenaire'
-                                                            }
+                                                            alt={partenaire.fullName}
                                                       />
                                                 </a>
                                           </div>
