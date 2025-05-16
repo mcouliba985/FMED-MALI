@@ -111,6 +111,8 @@ const FooterWrapper = styled.footer`
       background-color: #122f2a; /* gray-900 */
       color: white;
       padding: 32px;
+      padding-left: 16px;
+      padding-right: 16px;
       padding-bottom: 12px;
       width: 100%;
       height: auto;
