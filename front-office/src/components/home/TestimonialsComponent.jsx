@@ -153,7 +153,7 @@ const TestimonialsComponent = () => {
                                           {selectedTestimonial.fullName}
                                     </h2>
                                     <p className="text-gray-500 mb-1">
-                                          {selectedTestimonial.poste}
+                                          {selectedTestimonial.poste.slice(0, 10)}
                                     </p>
                                     <p className="text-gray-800">{selectedTestimonial.message}</p>
                               </div>
