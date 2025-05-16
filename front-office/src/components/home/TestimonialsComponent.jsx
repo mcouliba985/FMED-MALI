@@ -101,7 +101,7 @@ const TestimonialsComponent = () => {
                                                             setSelectedTestimonial(testimonial)
                                                       }
                                                 >
-                                                      Voir le commentaire
+                                                      Voir le plus
                                                 </button>
 
                                                 <div className="flex gap-4 mt-4 items-center absolute bottom-8">
@@ -115,7 +115,7 @@ const TestimonialsComponent = () => {
                                                             <h2 className="uppercase font-bold font-nunito">
                                                                   {testimonial.fullName}
                                                             </h2>
-                                                            <p>{testimonial.poste}</p>
+                                                            <p>{testimonial.poste.slice(0, 25)}</p>
                                                       </div>
                                                 </div>
                                           </Testimonialcontent>
@@ -153,7 +153,7 @@ const TestimonialsComponent = () => {
                                           {selectedTestimonial.fullName}
                                     </h2>
                                     <p className="text-gray-500 mb-1">
-                                          {selectedTestimonial.poste.slice(0, 10)}
+                                          {selectedTestimonial.poste}
                                     </p>
                                     <p className="text-gray-800">{selectedTestimonial.message}</p>
                               </div>
