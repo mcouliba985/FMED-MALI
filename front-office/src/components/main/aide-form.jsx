@@ -85,7 +85,7 @@ const AideForm = () => {
                         de remplir le formulaire.
                   </p>
                   <a
-                        href="https://back.fmed.ml/public/uploads/res_telechargable/fiche_fonsej.doc"
+                        href="https://back.fmed.ml/public/uploads/res_telechargable/fiche_fonsej.pdf"
                         className="text-gold hover:text-yellow-300 my-2 mb-4 block"
                         download
                         target="_blank"
