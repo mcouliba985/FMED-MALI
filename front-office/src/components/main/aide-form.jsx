@@ -30,7 +30,7 @@ const AideForm = () => {
             data.append('firstName', formData.prenom);
             data.append('file', formData.fichier);
 
-            console.log(data);
+            console.log(formData);
             setLoading(true);
 
             try {
