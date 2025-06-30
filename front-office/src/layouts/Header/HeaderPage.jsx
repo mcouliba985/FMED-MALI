@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import fmed_logo from '../../assets/logo/FMED LOGO.png';
 import DesktopMenu from '../../components/header/DesktopMenu';
 import DrawerMenu from '../../components/header/DrawerMenu';
@@ -7,6 +8,7 @@ import { useEffect, useState } from 'react';
 export default function HeaderPage() {
       const [isSticky, setIsSticky] = useState(false);
 
+      const { t } = useTranslation();
       useEffect(() => {
             const handleScroll = () => {
                   if (window.scrollY > 50) {
@@ -54,7 +56,7 @@ export default function HeaderPage() {
                                           href="/payment"
                                           className="hidden md:flex bg-gold hover:bg-yellow-400 text-black font-semibold py-2 px-6 rounded-full shadow-md transition duration-300"
                                     >
-                                          Faire un don
+                                          {t('donateNow')}
                                     </a>
 
                                     <div className="lg:hidden text-[3px]">

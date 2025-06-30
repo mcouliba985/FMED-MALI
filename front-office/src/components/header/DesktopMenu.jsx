@@ -1,30 +1,33 @@
+import { useTranslation } from 'react-i18next';
+
 const DesktopMenu = () => {
+      const { t } = useTranslation();
       return (
             <nav className="hidden lg:flex items-center gap-8 text-[18px] font-poppins font-light">
                   {/* Réutilise les menus ici (copiés depuis ton code) */}
                   {/* Qui sommes-nous */}
                   <div className="relative group">
                         <button className="text-gray-800 hover:text-medgreen">
-                              Qui sommes-nous
+                              {t('whoWeAre')}
                         </button>
                         <div className="absolute top-full left-0 hidden w-56 rounded-md bg-white shadow-lg group-hover:block z-20">
                               <a
                                     href="/about/history"
                                     className="block px-4 py-2 hover:bg-medgreen hover:text-white"
                               >
-                                    Notre histoire
+                                    {t('ourStory')}
                               </a>
                               <a
                                     href="/about/mission"
                                     className="block px-4 py-2 hover:bg-medgreen hover:text-white"
                               >
-                                    Notre mission
+                                    {t('ourMission')}
                               </a>
                               <a
                                     href="/our-teams"
                                     className="block px-4 py-2 hover:bg-medgreen hover:text-white"
                               >
-                                    Équipe
+                                    {t('team')}
                               </a>
                         </div>
                   </div>
@@ -32,33 +35,35 @@ const DesktopMenu = () => {
                   {/* S’engager à nos côtés */}
                   <div className="relative group">
                         <button className="text-gray-800 hover:text-medgreen">
-                              S’engager à nos côtés
+                              {t('getInvolved')}
                         </button>
                         <div className="absolute top-full left-0 hidden w-56 rounded-md bg-white shadow-lg group-hover:block z-20">
                               <a
                                     href="/member-form"
                                     className="block px-4 py-2 hover:bg-medgreen hover:text-white"
                               >
-                                    Devenir bénévole
+                                    {t('becomeVolunteer')}
                               </a>
                         </div>
                   </div>
 
                   {/* Vous informer */}
                   <div className="relative group">
-                        <button className="text-gray-800 hover:text-medgreen">Vous informer</button>
+                        <button className="text-gray-800 hover:text-medgreen">
+                              {t('stayInformed')}
+                        </button>
                         <div className="absolute top-full left-0 hidden w-56 rounded-md bg-white shadow-lg group-hover:block z-20">
                               <a
                                     href="/gallery"
                                     className="block px-4 py-2 hover:bg-medgreen hover:text-white"
                               >
-                                    Nos Réalisations
+                                    {t('achievements')}
                               </a>
                               <a
                                     href="/list-event"
                                     className="block px-4 py-2 hover:bg-medgreen hover:text-white"
                               >
-                                    Nos Evénements
+                                    {t('events')}
                               </a>
                         </div>
                   </div>
@@ -71,19 +76,19 @@ const DesktopMenu = () => {
                                     href="/about/fonsej"
                                     className="block px-4 py-2 hover:bg-medgreen hover:text-white"
                               >
-                                    Présentation
+                                    {t('overview')}
                               </a>
                               <a
                                     href="/fonsej-news"
                                     className="block px-4 py-2 hover:bg-medgreen hover:text-white"
                               >
-                                    Actualités
+                                    {t('news')}
                               </a>
                               <a
                                     href="/fonsej-form"
                                     className="block px-4 py-2 hover:bg-medgreen hover:text-white"
                               >
-                                    Formulaire Fonsej
+                                    {t('fonsejForm')}
                               </a>
                         </div>
                   </div>

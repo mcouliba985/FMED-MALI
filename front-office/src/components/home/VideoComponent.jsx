@@ -5,9 +5,11 @@ import don2 from '../../assets/icons/don2.png';
 import check from '../../assets/icons/check.png';
 import { useEffect, useState } from 'react';
 import { API_ENDPOINTS } from '../../config/API_ENDPOINT';
+import { useTranslation } from 'react-i18next';
 
 const VideoComponent = () => {
       const [youtube, setYoutube] = useState({});
+      const { t } = useTranslation();
 
       useEffect(() => {
             async function youtubeFunc() {
@@ -74,12 +76,9 @@ const VideoComponent = () => {
 
                                                 <div className="font-roboto ">
                                                       <h3 className="font-bold">
-                                                            Commencer à les aider
+                                                            {t('startHelping')}
                                                       </h3>
-                                                      <p>
-                                                            Sensibilisation à la mission et à la
-                                                            cause de l'organisation caritative.
-                                                      </p>
+                                                      <p>{t('awareness')}</p>
                                                 </div>
                                           </div>
 
@@ -93,8 +92,8 @@ const VideoComponent = () => {
                                                 </div>
 
                                                 <div className="font-roboto ">
-                                                      <h3 className="font-bold">Faire des dons</h3>
-                                                      <p>Aidez-nous à aider nos compatriotes.</p>
+                                                      <h3 className="font-bold">{t('donate')}</h3>
+                                                      <p>{t('helpOthers')}</p>
                                                 </div>
                                           </div>
                                     </div>
@@ -111,8 +110,9 @@ const VideoComponent = () => {
 
                                     <div className="font-roboto ">
                                           <h3 className="font-bold border-b-2 border-black text-2xl">
-                                                3 Raisons de faire les{' '}
-                                                <span className="text-gold">dons</span> à la FMED
+                                                {t('reasonsToDonate')}{' '}
+                                                <span className="text-gold">{t('don')}</span>{' '}
+                                                {t('fmed')}
                                           </h3>
 
                                           <ul className="flex flex-col mt-4 gap-6">
@@ -124,9 +124,7 @@ const VideoComponent = () => {
                                                             className="w-8"
                                                       />
                                                       <span className="text-base md:text-lg font-medium">
-                                                            Nous sommes une organisation humanitaire
-                                                            créée par les maliens et pour venir en
-                                                            aide aux maliens.
+                                                            {t('aboutFMED')}
                                                       </span>
                                                 </li>
 
@@ -138,9 +136,7 @@ const VideoComponent = () => {
                                                             className="w-8"
                                                       />
                                                       <span className="text-base md:text-lg font-medium">
-                                                            Aidez-nous à aider nos compatriotes qui
-                                                            sont dans le besoin afin qu’ils ne se
-                                                            sentent pas exclus.
+                                                            {t('supportInclusion')}
                                                       </span>
                                                 </li>
 
@@ -153,11 +149,7 @@ const VideoComponent = () => {
                                                       />
 
                                                       <span className="text-base md:text-lg font-medium">
-                                                            Le Mali, un pays légendaire de
-                                                            solidarité et la FMED ne dérobera pas à
-                                                            cette règle. Nous travaillerons à
-                                                            maintenir cet équilibre entre les
-                                                            maliens.
+                                                            {t('maliSolidarity')}
                                                       </span>
                                                 </li>
 
@@ -168,7 +160,7 @@ const VideoComponent = () => {
 
                               <div className="flex flex-col md:flex-row mt-4 gap-4">
                                     <button className="bg-gold text-gray-600 hover:bg-gray-600 hover:text-gold transition-all px-4 py-2 rounded-lg">
-                                          A propos de nous
+                                          {t('aboutUs')}
                                     </button>
 
                                     <button className="bg-transparent text-gray-600 hover:bg-gray-600 hover:text-gold transition-all px-4 py-2 rounded-lg">

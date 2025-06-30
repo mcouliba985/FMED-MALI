@@ -2,6 +2,7 @@ import facebook from '../../assets/icons/facebook.png';
 import twitter from '../../assets/icons/twitter.png';
 import youtube from '../../assets/icons/youtube.png';
 import instagram from '../../assets/icons/insta.png';
+import LanguageSelector from '../main/language-selector';
 
 const Toolbar = () => {
       return (
@@ -58,6 +59,8 @@ const Toolbar = () => {
                                     <img src={instagram} alt="logo for instagram" />
                               </a>
                         </div>
+
+                        <LanguageSelector />
                   </div>
             </div>
       );

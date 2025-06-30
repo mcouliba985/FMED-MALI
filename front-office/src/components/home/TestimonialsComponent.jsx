@@ -8,10 +8,13 @@ import 'swiper/css/navigation';
 import { useEffect, useState } from 'react';
 import { API_ENDPOINTS } from '../../config/API_ENDPOINT';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 const TestimonialsComponent = () => {
       const [testimonials, setTestimonials] = useState([]);
       const [selectedTestimonial, setSelectedTestimonial] = useState(null);
+
+      const { t } = useTranslation();
 
       useEffect(() => {
             async function TestimonialFunc() {
@@ -48,7 +51,7 @@ const TestimonialsComponent = () => {
             <TestimonialsWrapper>
                   <section className="container py-8">
                         <div className="flex justify-between items-end pb-4">
-                              <TitleTestimonial>Les témoignages</TitleTestimonial>
+                              <TitleTestimonial>{t('testimonials')}</TitleTestimonial>
 
                               <SpadeDecorator>
                                     <motion.img

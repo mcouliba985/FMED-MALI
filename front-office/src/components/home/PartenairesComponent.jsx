@@ -5,6 +5,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import { useEffect, useState } from 'react';
 import { API_ENDPOINTS } from '../../config/API_ENDPOINT';
+import { useTranslation } from 'react-i18next';
 
 const Title = styled.h2`
       text-transform: capitalize;
@@ -15,6 +16,7 @@ const Title = styled.h2`
 
 const PartenairesComponent = () => {
       const [partenaires, setImages] = useState([]);
+      const { t } = useTranslation();
 
       useEffect(() => {
             async function partnersFunc() {
@@ -49,7 +51,7 @@ const PartenairesComponent = () => {
 
       return (
             <section className="container">
-                  <Title>Nos Partenaires</Title>
+                  <Title>{t('ourPartners')} </Title>
 
                   <Swiper
                         modules={[Navigation, Autoplay]}

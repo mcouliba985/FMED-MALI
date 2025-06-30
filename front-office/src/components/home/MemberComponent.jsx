@@ -5,6 +5,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import { useEffect, useState } from 'react';
 import { API_ENDPOINTS } from '../../config/API_ENDPOINT';
+import { useTranslation } from 'react-i18next';
 
 const TitleMember = styled.h2`
       text-transform: normal;
@@ -15,6 +16,7 @@ const TitleMember = styled.h2`
 
 const MemberComponent = () => {
       const [members, setMembers] = useState([]);
+      const { t } = useTranslation();
 
       useEffect(() => {
             async function TestimonialFunc() {
@@ -50,7 +52,7 @@ const MemberComponent = () => {
       return (
             <section className="container">
                   <div>
-                        <TitleMember>Les membres d’équipe FMED</TitleMember>
+                        <TitleMember>{t('teamMembers')}</TitleMember>
                   </div>
                   <Swiper
                         modules={[Navigation, Autoplay]}
@@ -88,7 +90,7 @@ const MemberComponent = () => {
                               className="bg-gold hover:bg-black text-white
                           px-4 py-3 rounded-2xl"
                         >
-                              Voir plus
+                              {t('seeMore')}
                         </a>
                   </div>
             </section>

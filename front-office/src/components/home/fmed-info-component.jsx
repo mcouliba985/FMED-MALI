@@ -8,9 +8,11 @@ import spade from '../../assets/icons/spade-base.png';
 import { useEffect, useState } from 'react';
 import { API_ENDPOINTS } from '../../config/API_ENDPOINT';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 const FmedInfo = () => {
       const [articleData, setArticleData] = useState([]);
+      const { t } = useTranslation();
 
       useEffect(() => {
             async function TestimonialFunc() {
@@ -49,10 +51,10 @@ const FmedInfo = () => {
                               <div>
                                     <TitleArticle>
                                           <i class="fas fa-circle-info me-2"></i>
-                                          FMED INFO
+                                          {t('fmedInfo')}
                                     </TitleArticle>
                                     <h3 className="font-nunito text-2xl my-2 font-bold">
-                                          Suivez nos actualités en temps réel
+                                          {t('realTimeNews')}
                                     </h3>
                               </div>
 

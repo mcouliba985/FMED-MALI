@@ -8,6 +8,7 @@ import MemberComponent from '../../components/home/MemberComponent';
 import TestimonialsComponent from '../../components/home/TestimonialsComponent';
 import PartenairesComponent from '../../components/home/PartenairesComponent';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 const ImageDecorator = styled.div`
       position: absolute;
@@ -16,6 +17,7 @@ const ImageDecorator = styled.div`
 `;
 
 const Home = () => {
+      const { t } = useTranslation();
       return (
             <section className="relative">
                   {/* Carousel */}
@@ -42,16 +44,13 @@ const Home = () => {
                   <div className="container mb-16">
                         <section className="bg-light w-[90%] md:w-[100%] lg:w-[80%] mx-auto -mt-20 p-6 rounded-xl shadow-lg relative z-10">
                               <h4 className="text-medgreen text-center font-poppins font-bold mb-4 text-lg md:text-xl">
-                                    Commencer à donner aux pauvres
+                                    {t('startGiving')}
                               </h4>
                               <h2 className="text-center font-poppins font-bold text-2xl md:text-4xl mb-4">
-                                    Nos domaines d’interventions
+                                    {t('interventionAreas')}
                               </h2>
                               <p className="font-roboto text-center text-sm md:text-base lg:text-[20px] leading-5 text-gray-700">
-                                    Rejoignez notre programme de dons mensuels afin d'apporter un
-                                    soutien constant à nos initiatives. Les contributions
-                                    régulières, quel que soit leur montant, nous aident à planifier
-                                    et à soutenir des projets à long terme.
+                                    {t('monthlySupport')}
                               </p>
                         </section>
                   </div>

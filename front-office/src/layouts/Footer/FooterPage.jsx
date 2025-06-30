@@ -2,8 +2,10 @@ import styled from 'styled-components';
 import spadeBaseYellow from '../../assets/icons/spade-base.png';
 import decorateur from '../../assets/icons/decorator.png';
 import NewsletterForm from '../../components/footer/NewsleeterForm';
+import { useTranslation } from 'react-i18next';
 
 const FooterPage = () => {
+      const { t } = useTranslation();
       return (
             <FooterWrapper>
                   <div className="container relative">
@@ -11,11 +13,10 @@ const FooterPage = () => {
                               <NewsletterWrapper>
                                     <div>
                                           <h2 className="font-nunito font-bold text-2xl sm:text-3xl lg:text-4xl">
-                                                S'abonner à notre Newsletter
+                                                {t('newsletterSubscribe')}
                                           </h2>
                                           <p className="font-nunito font-light text-base mt-2">
-                                                Inspections régulières et mécanismes de retour
-                                                d'information
+                                                {t('newsletterSubscribe')}
                                           </p>
                                     </div>
                               </NewsletterWrapper>
@@ -32,19 +33,19 @@ const FooterPage = () => {
                               <section className="col-12 col-md-6 col-lg-4 mb-4">
                                     <SectionTitle>Quick Links</SectionTitle>
                                     <FooterLink href="/about/history" showIcon={true}>
-                                          Notre historie
+                                          {t('ourStory')}
                                     </FooterLink>
                                     <FooterLink href="/about/mission" showIcon={true}>
-                                          Notre mission
+                                          {t('ourMission')}
                                     </FooterLink>
                                     <FooterLink showIcon={true} href="/fonsej-news">
-                                          Actualités Fonsej
+                                          {t('fonsejNews')}
                                     </FooterLink>
                                     <FooterLink showIcon={true} href="/list-event">
-                                          Evenements
+                                          {t('events')}
                                     </FooterLink>
                                     <FooterLink showIcon={true} href="/gallery">
-                                          Nos Realisations
+                                          {t('achievements')}
                                     </FooterLink>
                                     <a
                                           className="px-4 hidden lg:block hover:text-gold"
@@ -55,27 +56,26 @@ const FooterPage = () => {
                               </section>
 
                               <section className="col-12 col-md-6 col-lg-4 mb-4">
-                                    <SectionTitle>Nos Domaines</SectionTitle>
+                                    <SectionTitle>{t('ourFields')}</SectionTitle>
                                     <FooterLink showIcon={true} href="/domain/humanitaire">
-                                          Humanitaires
+                                          {t('humanitarian')}
                                     </FooterLink>
                                     <FooterLink showIcon={true} href="/domain/socio-professional">
-                                          Socio-profesionels
+                                          {t('socioProfessional')}
                                     </FooterLink>
                                     <FooterLink showIcon={true} href="/domain/population">
-                                          Soutiens au populations
+                                          {t('supportPopulations')}
                                     </FooterLink>
                                     <FooterLink showIcon={true} href="/domain/vivre-ensemble">
-                                          Soutiens vivre ensemble
+                                          {t('supportCohesion')}
                                     </FooterLink>
                               </section>
 
                               <section className="col-12 col-md-6 col-lg-4 mb-4">
-                                    <SectionTitle>Rejoingez-nous</SectionTitle>
+                                    <SectionTitle>{t('joinUs')}</SectionTitle>
                                     <div className="block text-white text-base mb-5 relative pl-6 font-poppins font-extralight hover:text-[#2ecc71] transition-colors duration-200">
                                           <i className="fas fa-map-location-dot absolute left-0 top-1 text-white"></i>
-                                          Siège social : Hamdallaye ACI Immeuble Alfarouk non loin
-                                          de CANAL+
+                                          {t('headOffice')}
                                     </div>
 
                                     <div className="block text-white text-base mb-5 relative pl-6 font-poppins font-extralight hover:text-[#2ecc71] transition-colors duration-200">
@@ -96,8 +96,7 @@ const FooterPage = () => {
                                     href="https://magservices-mali.org/"
                                     showIcon={false}
                               >
-                                    &copy; {new Date().getFullYear()} FMED Mali. Tous droits
-                                    réservés — Site développé par MAG SERVICES MALI
+                                    &copy; {new Date().getFullYear()} {t('footerCopyright')}
                               </FooterLink>
                         </FooterBottom>
                   </div>

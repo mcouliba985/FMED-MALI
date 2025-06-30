@@ -5,11 +5,15 @@ import twitter from '../../assets/icons/twitter.png';
 import youtube from '../../assets/icons/youtube.png';
 import instagram from '../../assets/icons/insta.png';
 import DrawerSubMenu from './DrawerSubMenu';
+import { useTranslation } from 'react-i18next';
+import LanguageSelector from './../main/language-selector';
 
 function DrawerMenu() {
       const [isOpen, setIsOpen] = useState(false);
 
       const toggleDrawer = () => setIsOpen(!isOpen);
+
+      const { t } = useTranslation();
 
       return (
             <div>
@@ -47,33 +51,33 @@ function DrawerMenu() {
                         </div>
                         <ul className="list-unstyled fs-5 mb-4">
                               <DrawerSubMenu
-                                    title="Qui sommes-nous"
+                                    title={t('whoWeAre')}
                                     links={[
-                                          { href: '/about/history', label: 'Notre histoire' },
-                                          { href: '/about/mission', label: 'Notre mission' },
-                                          { href: '/our-teams', label: 'Équipe' },
+                                          { href: '/about/history', label: t('ourStory') },
+                                          { href: '/about/mission', label: t('ourMission') },
+                                          { href: '/our-teams', label: t('team') },
                                     ]}
                               />
 
                               <DrawerSubMenu
-                                    title="S’engager avec nous"
-                                    links={[{ href: '/member-form', label: 'Devenir bénévole' }]}
+                                    title={t('getInvolved')}
+                                    links={[{ href: '/member-form', label: t('becomeVolunteer') }]}
                               />
 
                               <DrawerSubMenu
-                                    title="Vous informer"
+                                    title={t('stayInformed')}
                                     links={[
-                                          { href: '/gallery', label: 'Nos Réalisations' },
-                                          { href: '/list-event', label: 'Nos Evénements' },
+                                          { href: '/gallery', label: t('achievements') },
+                                          { href: '/list-event', label: t('events') },
                                     ]}
                               />
 
                               <DrawerSubMenu
                                     title="FONSEJ"
                                     links={[
-                                          { href: '/about/fonsej', label: 'Presentation' },
-                                          { href: '/fonsej-news', label: 'Actualités' },
-                                          { href: '/fonsej-form', label: 'Formulaire Fonsej' },
+                                          { href: '/about/fonsej', label: t('overview') },
+                                          { href: '/fonsej-news', label: t('news') },
+                                          { href: '/fonsej-form', label: t('fonsejForm') },
                                     ]}
                               />
                         </ul>
@@ -85,7 +89,7 @@ function DrawerMenu() {
                                text-black font-semibold py-2 px-6 rounded-full shadow-md 
                                transition duration-300 text-center"
                               >
-                                    Faire un don
+                                    {t('donateNow')}
                               </a>
 
                               <div className="flex items-center justify-center gap-3">
@@ -126,6 +130,8 @@ function DrawerMenu() {
                                           </a>
                                     </div>
                               </div>
+
+                              <LanguageSelector />
                         </div>
                   </div>
 
