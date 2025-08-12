@@ -85,7 +85,7 @@ class CarouselSlideController extends AbstractController
     #[Route('/update/{id}', name: 'update_carousel_slide', methods: ['POST'])]
     public function update(int $id, Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
     {
-        $text = $request->request->get('text');
+        $text = json_decode($request->request->get('text'), true);
         $file = $request->files->get('image');
 
         $slide = $em->getRepository(CarouselSlide::class)->find($id);

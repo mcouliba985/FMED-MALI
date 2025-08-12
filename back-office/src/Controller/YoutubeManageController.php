@@ -101,8 +101,8 @@ class YoutubeManageController extends AbstractController
     #[Route('/update/{id}', name: 'update_youtube_manage', methods: ['POST'])]
     public function update(int $id, Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
     {
-        $hook = $request->request->get('hook');
-        $content = $request->request->get('content');
+        $hook = json_decode($request->request->get('hook'), true);
+        $content = json_decode($request->request->get('content'), true);
         $youtubeLink = $request->request->get('youtubeLink');
         $file = $request->files->get('image');
 

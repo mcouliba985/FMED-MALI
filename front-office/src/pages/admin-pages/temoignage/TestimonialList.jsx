@@ -2,12 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { API_ENDPOINTS } from '../../../config/API_ENDPOINT';
 import { Link } from 'react-router-dom';
 import ConfirmDeleteModal from '../../../components/main/confirm-delete-modal';
+import { useTranslation } from 'react-i18next';
 
 const TestimonialList = () => {
       const [testimonials, setTestimonials] = useState([]);
       const [modalOpen, setModalOpen] = useState(false);
       const [selectedId, setSelectedId] = useState(null);
       const [loading, setLoading] = useState(false);
+
+      const { i18n } = useTranslation();
 
       // Ouvre le modal
       const handleDeleteClick = (id) => {
@@ -18,19 +21,18 @@ const TestimonialList = () => {
       // Confirmer la suppression
       const handleConfirmDelete = async () => {
             setLoading(true);
-
             try {
                   await fetch(`${API_ENDPOINTS.getTestimonial}/delete/${selectedId}`, {
                         method: 'DELETE',
                   });
-                  // TODO : Mettre à jour la liste après suppression
+                  // Mise à jour de la liste après suppression
+                  setTestimonials((prev) => prev.filter((t) => t.id !== selectedId));
             } catch (error) {
                   console.error('Erreur lors de la suppression :', error);
             } finally {
                   setModalOpen(false);
                   setSelectedId(null);
-                  setLoading(true);
-                  window.location.reload();
+                  setLoading(false);
             }
       };
 
@@ -38,8 +40,6 @@ const TestimonialList = () => {
             async function TestimonialFunc() {
                   try {
                         const fetchRequest = await fetch(API_ENDPOINTS.getTestimonial);
-
-                        // Vérifie si la réponse HTTP est correcte (status 2xx)
                         if (!fetchRequest.ok) {
                               console.error(
                                     'Erreur HTTP lors du chargement des articles :',
@@ -47,10 +47,7 @@ const TestimonialList = () => {
                               );
                               return;
                         }
-
                         const response = await fetchRequest.json();
-
-                        // Vérifie si la réponse est bien un tableau
                         if (Array.isArray(response)) {
                               setTestimonials(response);
                         } else {
@@ -91,7 +88,7 @@ const TestimonialList = () => {
                                                 <th className="py-3 px-4 border-b">Poste</th>
                                                 <th className="py-3 px-4 border-b">Message</th>
                                                 <th className="py-3 px-4 border-b">Date</th>
-                                                <th className="py-3 px-1 border-b">option</th>
+                                                <th className="py-3 px-1 border-b">Option</th>
                                           </tr>
                                     </thead>
                                     <tbody>
@@ -114,15 +111,25 @@ const TestimonialList = () => {
                                                             {item.fullName}
                                                       </td>
                                                       <td className="py-3 px-4 border-b">
-                                                            {item.poste}
+                                                            {item.poste?.[i18n.language] || 'N/A'}
                                                       </td>
                                                       <td className="py-3 px-4 border-b text-gray-700">
-                                                            {item.message.slice(0, 20)}
+                                                            {item.message?.[i18n.language]
+                                                                  ? item.message[
+                                                                          i18n.language
+                                                                    ].slice(0, 50) +
+                                                                    (item.message[i18n.language]
+                                                                          .length > 50
+                                                                          ? '...'
+                                                                          : '')
+                                                                  : 'N/A'}
                                                       </td>
                                                       <td className="py-3 px-4 border-b text-sm text-gray-500">
-                                                            {new Date(
-                                                                  item.createAt
-                                                            ).toLocaleDateString()}
+                                                            {item.createAt
+                                                                  ? new Date(
+                                                                          item.createAt
+                                                                    ).toLocaleDateString()
+                                                                  : 'N/A'}
                                                       </td>
                                                       <td className="py-3 px-4 border-b text-sm text-gray-500">
                                                             <button

@@ -6,25 +6,28 @@ import Loader from '../../../components/main/loader-component';
 const CarouselSetting = () => {
       const [slides, setSlides] = useState([]);
       const [modifiedSlides, setModifiedSlides] = useState({});
+      const [showModal, setShowModal] = useState(false);
+      const [loading, setLoading] = useState(false);
+      const [selectedIndex, setSelectedIndex] = useState(0);
+      const [lang, setLang] = useState('fr'); // langue affichée
 
       useEffect(() => {
             async function slideFunc() {
                   try {
                         const fetchRequest = await fetch(`${API_ENDPOINTS.getCarouselElement}`);
                         const data = await fetchRequest.json();
-                        setSlides(data);
+                        if (Array.isArray(data)) {
+                              setSlides(data);
+                              console.log(data);
+                        } else {
+                              console.warn('Format inattendu reçu :', data);
+                        }
                   } catch (error) {
                         console.log(error);
                   }
             }
-
             slideFunc();
       }, []);
-
-      const [showModal, setShowModal] = useState(false);
-      const [loading, setLoading] = useState(false);
-
-      const [selectedIndex, setSelectedIndex] = useState(0);
 
       const handleImageChange = (e) => {
             const file = e.target.files[0];
@@ -34,8 +37,6 @@ const CarouselSetting = () => {
                   updatedSlides[selectedIndex].imagePath = newImageUrl;
 
                   setSlides(updatedSlides);
-
-                  // Enregistrer la modification en mémoire
                   setModifiedSlides((prev) => ({
                         ...prev,
                         [updatedSlides[selectedIndex].id]: {
@@ -48,14 +49,17 @@ const CarouselSetting = () => {
 
       const handleTextChange = (e) => {
             const updatedSlides = [...slides];
-            updatedSlides[selectedIndex].text = e.target.value;
+            if (!updatedSlides[selectedIndex].text) {
+                  updatedSlides[selectedIndex].text = {};
+            }
+            updatedSlides[selectedIndex].text[lang] = e.target.value;
             setSlides(updatedSlides);
 
             setModifiedSlides((prev) => ({
                   ...prev,
                   [updatedSlides[selectedIndex].id]: {
                         ...prev[updatedSlides[selectedIndex].id],
-                        text: e.target.value,
+                        text: updatedSlides[selectedIndex].text, // on stocke tout l'objet text
                   },
             }));
       };
@@ -65,16 +69,14 @@ const CarouselSetting = () => {
             for (const [id, changes] of Object.entries(modifiedSlides)) {
                   const formData = new FormData();
 
-                  if (changes.text) {
-                        formData.append('text', changes.text);
-                  }
-                  if (changes.image) {
-                        formData.append('image', changes.image);
+                  // Trouve le slide complet pour récupérer tout l'objet text (fr+en)
+                  const slide = slides.find((s) => s.id.toString() === id.toString());
+                  if (slide && slide.text) {
+                        formData.append('text', JSON.stringify(slide.text));
                   }
 
-                  // Pour debug
-                  for (let [key, value] of formData.entries()) {
-                        console.log(`${key}:`, value);
+                  if (changes.image) {
+                        formData.append('image', changes.image);
                   }
 
                   try {
@@ -89,26 +91,42 @@ const CarouselSetting = () => {
                         if (!response.ok) {
                               const errorData = await response.json();
                               console.error(`Erreur pour le slide ${id} :`, errorData.message);
-                        } else {
-                              const updatedSlide = await response.json();
-                              console.log(`Slide ${id} mis à jour :`, updatedSlide);
                         }
                   } catch (error) {
                         console.error(`Erreur réseau pour le slide ${id} :`, error);
                   }
             }
-
             setModifiedSlides({});
             setShowModal(true);
             setLoading(false);
       };
 
-      if (slides === undefined) return null;
+      if (!slides.length) return null;
 
       return (
             <section>
                   <section className="bg-gray-50 p-6 rounded-xl border space-y-6">
                         <h2 className="text-xl font-semibold mb-2">Carrousel</h2>
+
+                        {/* Sélecteur de langue */}
+                        <div className="flex gap-2 mb-4">
+                              <button
+                                    onClick={() => setLang('fr')}
+                                    className={`px-3 py-1 rounded ${
+                                          lang === 'fr' ? 'bg-green-600 text-white' : 'bg-gray-200'
+                                    }`}
+                              >
+                                    Français
+                              </button>
+                              <button
+                                    onClick={() => setLang('en')}
+                                    className={`px-3 py-1 rounded ${
+                                          lang === 'en' ? 'bg-green-600 text-white' : 'bg-gray-200'
+                                    }`}
+                              >
+                                    English
+                              </button>
+                        </div>
 
                         {/* Images */}
                         <div>
@@ -116,7 +134,7 @@ const CarouselSetting = () => {
                               <div className="flex gap-4 overflow-x-auto">
                                     {slides.map((slide, index) => (
                                           <div
-                                                key={index}
+                                                key={slide.id}
                                                 className={`relative w-24 h-24 rounded overflow-hidden border shadow-sm cursor-pointer ${
                                                       index === selectedIndex
                                                             ? 'ring-2 ring-green-500'
@@ -146,15 +164,15 @@ const CarouselSetting = () => {
                         {/* Texte du slide sélectionné */}
                         <div>
                               <h3 className="font-medium mb-1">
-                                    Texte du Slide {selectedIndex + 1}
+                                    Texte du Slide {selectedIndex + 1} ({lang.toUpperCase()})
                               </h3>
-                              <p className="mb-2">entrer un accroche court</p>
+                              <p className="mb-2">Entrez un accroche court</p>
                               {slides[selectedIndex] && (
                                     <textarea
                                           className="w-full border rounded-md p-3 text-sm"
                                           rows="3"
                                           maxLength={76}
-                                          value={slides[selectedIndex].text}
+                                          value={slides[selectedIndex].text?.[lang] || ''}
                                           onChange={handleTextChange}
                                     />
                               )}
@@ -166,13 +184,7 @@ const CarouselSetting = () => {
                                     onClick={handleSave}
                                     className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-full shadow"
                               >
-                                    {loading ? (
-                                          <>
-                                                <Loader size={5} color="black" />
-                                          </>
-                                    ) : (
-                                          'Enregistrer'
-                                    )}
+                                    {loading ? <Loader size={5} color="black" /> : 'Enregistrer'}
                               </button>
                         </div>
                   </section>
@@ -181,7 +193,7 @@ const CarouselSetting = () => {
                         isOpen={showModal}
                         onClose={() => setShowModal(false)}
                         title="Succès"
-                        message="Votre mise à jour a ete apporte avec succès !"
+                        message="Votre mise à jour a été apportée avec succès !"
                   />
             </section>
       );

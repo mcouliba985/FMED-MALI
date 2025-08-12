@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Pagination from '../../../components/main/pagination';
 import { API_ENDPOINTS } from '../../../config/API_ENDPOINT';
 import ConfirmDeleteModal from '../../../components/main/confirm-delete-modal';
+import { useTranslation } from 'react-i18next';
 
 const ArticleList = () => {
       const [articles, setArticles] = useState([]);
@@ -10,73 +11,73 @@ const ArticleList = () => {
       const [selectedId, setSelectedId] = useState(null);
       const [loading, setLoading] = useState(false);
 
-      // Ouvre le modal
-      const handleDeleteClick = (id) => {
-            setSelectedId(id);
-            setModalOpen(true);
-      };
-
       const itemsPerPage = 5;
       const [currentPage, setCurrentPage] = useState(1);
 
+      const { i18n } = useTranslation();
+      const currentLang = i18n.language || 'fr';
+
+      // Pagination calculée
       const totalPages = Math.ceil(articles.length / itemsPerPage);
       const paginatedArticles = articles.slice(
             (currentPage - 1) * itemsPerPage,
             currentPage * itemsPerPage
       );
 
+      // Ouvrir la modale de confirmation
+      const handleDeleteClick = (id) => {
+            setSelectedId(id);
+            setModalOpen(true);
+      };
+
+      // Récupération des articles
       useEffect(() => {
             async function fetchArticles() {
                   try {
-                        const fetchArticle = await fetch(API_ENDPOINTS.getArticles);
+                        const res = await fetch(API_ENDPOINTS.getArticles);
 
-                        // Vérifie si la réponse HTTP est correcte (status 2xx)
-                        if (!fetchArticle.ok) {
-                              console.error(
-                                    'Erreur HTTP lors du chargement des articles :',
-                                    fetchArticle.status
-                              );
+                        if (!res.ok) {
+                              console.error('Erreur HTTP :', res.status);
                               return;
                         }
 
-                        const response = await fetchArticle.json();
+                        const data = await res.json();
 
-                        // Vérifie si la réponse est bien un tableau
-                        if (Array.isArray(response)) {
-                              setArticles(response);
+                        if (Array.isArray(data)) {
+                              setArticles(data);
                         } else {
-                              console.warn('Format inattendu reçu pour les articles :', response);
+                              console.warn('Format inattendu :', data);
                         }
                   } catch (error) {
-                        console.error('Erreur lors de la récupération des articles :', error);
+                        console.error('Erreur récupération articles :', error);
                   }
             }
 
             fetchArticles();
       }, []);
 
-      // Confirmer la suppression
+      // Suppression article
       const handleConfirmDelete = async () => {
+            if (!selectedId) return;
             setLoading(true);
 
             try {
                   await fetch(`${API_ENDPOINTS.getArticles}/delete/${selectedId}`, {
                         method: 'DELETE',
                   });
-                  // TODO : Mettre à jour la liste après suppression
+                  setArticles((prev) => prev.filter((art) => art.id !== selectedId));
             } catch (error) {
-                  console.error('Erreur lors de la suppression :', error);
+                  console.error('Erreur suppression :', error);
             } finally {
                   setModalOpen(false);
                   setSelectedId(null);
-                  setLoading(true);
-                  window.location.reload();
+                  setLoading(false);
             }
       };
 
       return (
             <div className="bg-white rounded-xl p-6">
-                  <h2 className="text-xl font-semibold mb-1">Liste des article FMED</h2>
+                  <h2 className="text-xl font-semibold mb-1">Liste des articles FMED</h2>
                   <p className="text-sm text-gray-600 mb-4">
                         Tous les articles en un seul endroit. Vous pouvez consulter, ajouter ou
                         archiver chaque publication.
@@ -90,7 +91,7 @@ const ArticleList = () => {
                               Ajouter un article
                         </Link>
                         <button className="hidden bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 text-sm font-semibold">
-                              Filtrer les article
+                              Filtrer les articles
                         </button>
                   </div>
 
@@ -99,17 +100,20 @@ const ArticleList = () => {
                               <thead className="bg-gray-100 text-gray-700">
                                     <tr>
                                           <th className="px-4 py-2">N°</th>
-                                          <th className="px-4 py-2">image</th>
+                                          <th className="px-4 py-2">Image</th>
                                           <th className="px-4 py-2">Titre</th>
+                                          <th className="px-4 py-2">Catégorie</th>
                                           <th className="px-4 py-2">Date</th>
                                           <th className="px-4 py-2">Status</th>
-                                          <th className="px-4 py-2">option</th>
+                                          <th className="px-4 py-2">Option</th>
                                     </tr>
                               </thead>
                               <tbody>
                                     {paginatedArticles.map((article, index) => (
                                           <tr key={article.id} className="border-t">
-                                                <td className="px-4 py-2">{index + 1}</td>
+                                                <td className="px-4 py-2">
+                                                      {(currentPage - 1) * itemsPerPage + index + 1}
+                                                </td>
                                                 <td className="px-4 py-2">
                                                       <img
                                                             src={article.imagePath}
@@ -117,7 +121,13 @@ const ArticleList = () => {
                                                             className="w-10 h-10 rounded object-cover"
                                                       />
                                                 </td>
-                                                <td className="px-4 py-2">{article.title}</td>
+                                                <td className="px-4 py-2">
+                                                      {article.title?.[currentLang] ||
+                                                            article.title?.fr}
+                                                </td>
+                                                <td className="px-4 py-2 capitalize">
+                                                      {article.category}
+                                                </td>
                                                 <td className="px-4 py-2">
                                                       {new Date(
                                                             article.createAt
@@ -136,7 +146,7 @@ const ArticleList = () => {
                                                                   className="text-blue-600 cursor-pointer hover:text-blue-800"
                                                                   to={`/admin/preview-article/${article.id}`}
                                                             >
-                                                                  <i class="far fa-eye"></i>
+                                                                  <i className="far fa-eye"></i>
                                                             </Link>
                                                             <button
                                                                   className="text-red-600 hover:text-red-800"
@@ -150,7 +160,6 @@ const ArticleList = () => {
                                                             </button>
                                                       </div>
 
-                                                      {/* Modal de confirmation */}
                                                       <ConfirmDeleteModal
                                                             isOpen={modalOpen}
                                                             onClose={() => setModalOpen(false)}

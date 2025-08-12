@@ -7,10 +7,11 @@ const YoutubeManageSetting = () => {
       const [youtube, setYoutube] = useState({});
       const [preview, setPreview] = useState(null);
       const [formData, setFormData] = useState({
-            hook: '',
-            content: '',
+            hook: { en: '', fr: '' },
+            content: { en: '', fr: '' },
             youtubeLink: '',
       });
+      const [lang, setLang] = useState('fr'); // <-- État pour la langue sélectionnée
       const fileInputRef = useRef(null);
       const [showModal, setShowModal] = useState(false);
       const [loading, setLoading] = useState(false);
@@ -23,8 +24,8 @@ const YoutubeManageSetting = () => {
                         const item = data[0];
                         setYoutube(item);
                         setFormData({
-                              hook: item.hook || '',
-                              content: item.content || '',
+                              hook: item.hook || { en: '', fr: '' },
+                              content: item.content || { en: '', fr: '' },
                               youtubeLink: item.youtubeLink || '',
                         });
                         setPreview(item.imagePath);
@@ -32,15 +33,26 @@ const YoutubeManageSetting = () => {
                         console.log(error);
                   }
             }
-
             youtubeFunc();
       }, []);
 
       const handleChange = (e) => {
-            setFormData((prev) => ({
-                  ...prev,
-                  [e.target.name]: e.target.value,
-            }));
+            const { name, value } = e.target;
+            if (name.startsWith('hook.') || name.startsWith('content.')) {
+                  const [field, fieldLang] = name.split('.');
+                  setFormData((prev) => ({
+                        ...prev,
+                        [field]: {
+                              ...prev[field],
+                              [fieldLang]: value,
+                        },
+                  }));
+            } else {
+                  setFormData((prev) => ({
+                        ...prev,
+                        [name]: value,
+                  }));
+            }
       };
 
       const handleImageChange = (e) => {
@@ -53,8 +65,8 @@ const YoutubeManageSetting = () => {
       const handleSubmit = async () => {
             setLoading(true);
             const form = new FormData();
-            form.append('hook', formData.hook);
-            form.append('content', formData.content);
+            form.append('hook', JSON.stringify(formData.hook));
+            form.append('content', JSON.stringify(formData.content));
             form.append('youtubeLink', formData.youtubeLink);
 
             if (fileInputRef.current.files[0]) {
@@ -70,12 +82,16 @@ const YoutubeManageSetting = () => {
                         }
                   );
 
+                  if (!res.ok) {
+                        throw new Error('Erreur lors de la mise à jour.');
+                  }
+
                   const result = await res.json();
                   console.log('Mise à jour réussie :', result);
                   setShowModal(true);
             } catch (err) {
                   console.error(err);
-                  alert('Erreur lors de la mise à jour.');
+                  alert(err.message || 'Erreur lors de la mise à jour.');
             } finally {
                   setLoading(false);
             }
@@ -85,6 +101,26 @@ const YoutubeManageSetting = () => {
 
       return (
             <section>
+                  {/* Sélecteur de langue */}
+                  <div className="flex gap-2 mb-4">
+                        <button
+                              onClick={() => setLang('fr')}
+                              className={`px-3 py-1 rounded ${
+                                    lang === 'fr' ? 'bg-green-600 text-white' : 'bg-gray-200'
+                              }`}
+                        >
+                              Français
+                        </button>
+                        <button
+                              onClick={() => setLang('en')}
+                              className={`px-3 py-1 rounded ${
+                                    lang === 'en' ? 'bg-green-600 text-white' : 'bg-gray-200'
+                              }`}
+                        >
+                              English
+                        </button>
+                  </div>
+
                   {/* Section Vidéo */}
                   <section className="bg-gray-50 p-6 rounded-xl border space-y-6">
                         <h2 className="text-xl font-semibold mb-2">Vidéo</h2>
@@ -111,6 +147,7 @@ const YoutubeManageSetting = () => {
 
                               {/* Champs texte */}
                               <div className="w-full md:w-2/3 space-y-3">
+                                    {/* Youtube Link */}
                                     <div>
                                           <label className="block text-sm font-medium">
                                                 Lien Youtube
@@ -123,26 +160,29 @@ const YoutubeManageSetting = () => {
                                                 className="w-full border rounded-md p-2 text-sm"
                                           />
                                     </div>
+
+                                    {/* Accroche et Description selon la langue sélectionnée */}
                                     <div>
                                           <label className="block text-sm font-medium">
-                                                Accroche
+                                                Accroche ({lang.toUpperCase()})
                                           </label>
                                           <input
                                                 type="text"
-                                                name="hook"
-                                                value={formData.hook}
+                                                name={`hook.${lang}`}
+                                                value={formData.hook[lang]}
                                                 maxLength={40}
                                                 onChange={handleChange}
                                                 className="w-full border rounded-md p-2 text-sm"
                                           />
                                     </div>
+
                                     <div>
                                           <label className="block text-sm font-medium">
-                                                Description
+                                                Description ({lang.toUpperCase()})
                                           </label>
                                           <textarea
-                                                name="content"
-                                                value={formData.content}
+                                                name={`content.${lang}`}
+                                                value={formData.content[lang]}
                                                 onChange={handleChange}
                                                 maxLength={235}
                                                 className="w-full border rounded-md p-2 text-sm"
@@ -157,15 +197,12 @@ const YoutubeManageSetting = () => {
                   <div className="text-right mt-4">
                         <button
                               onClick={handleSubmit}
-                              className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-full shadow"
+                              disabled={loading}
+                              className={`${
+                                    loading ? 'cursor-not-allowed opacity-70' : ''
+                              } bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-full shadow`}
                         >
-                              {loading ? (
-                                    <>
-                                          <Loader size={5} color="black" />
-                                    </>
-                              ) : (
-                                    'Enregistrer'
-                              )}
+                              {loading ? <Loader size={5} color="black" /> : 'Enregistrer'}
                         </button>
                   </div>
 
@@ -173,7 +210,7 @@ const YoutubeManageSetting = () => {
                         isOpen={showModal}
                         onClose={() => setShowModal(false)}
                         title="Succès"
-                        message="Votre mise à jour a ete apporte avec succès !"
+                        message="Votre mise à jour a été apportée avec succès !"
                   />
             </section>
       );
