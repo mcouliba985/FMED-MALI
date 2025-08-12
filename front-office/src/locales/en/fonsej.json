@@ -1,0 +1,10 @@
+{
+      "cover": {
+            "title": "Fonsej Application Form",
+            "label": "Send your FONSEJ application.",
+            "hook": "Would you like to benefit from the FONSEJ program? Fill out the form and submit your application in just a few clicks."
+      },
+      "sidebar": {
+            "latestNews": "Latest FMED News"
+      }
+}

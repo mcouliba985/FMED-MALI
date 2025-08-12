@@ -11,6 +11,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
+import { useTranslation } from 'react-i18next';
 
 const ServiceWrapper = styled.div`
       background-image: ${({ res }) => `url(${res})`};
@@ -23,6 +24,8 @@ const ServiceWrapper = styled.div`
 `;
 
 const ServiceComponent = () => {
+      const { t } = useTranslation();
+
       return (
             <section className="container">
                   <Swiper
@@ -53,11 +56,10 @@ const ServiceComponent = () => {
                                                 href="/domain/humanitaire"
                                                 className="font-nunito text-lg hover:text-green-700 font-extrabold"
                                           >
-                                                HUMANITAIRES
+                                                {t('humanitarianTitle')}
                                           </a>
                                           <p className="text-center font-roboto text-lg p-4">
-                                                Le Mali est classé parmi les vingt pays les plus
-                                                pauvres de la planète.
+                                                {t('humanitarianDesc')}
                                           </p>
                                     </div>
                               </ServiceWrapper>
@@ -71,10 +73,10 @@ const ServiceComponent = () => {
                                                 href="/domain/socio-professional"
                                                 className="font-nunito text-lg hover:text-yellow-400 font-extrabold"
                                           >
-                                                SOCIO-PROFESSIONAL
+                                                {t('socioTitle')}
                                           </a>
                                           <p className="text-center font-roboto text-lg p-4">
-                                                AIDE A L’INSERTION SOCIO PROFESSIONNELLE
+                                                {t('socioDesc')}
                                           </p>
                                     </div>
                               </ServiceWrapper>
@@ -88,10 +90,10 @@ const ServiceComponent = () => {
                                                 href="/domain/population"
                                                 className="font-nunito text-lg hover:text-red-700 font-extrabold"
                                           >
-                                                POPULATIONS
+                                                {t('populationTitle')}
                                           </a>
                                           <p className="text-center font-roboto text-lg p-4">
-                                                SOUTIEN AUX SERVICES DE LA POPULATIONS
+                                                {t('populationDesc')}
                                           </p>
                                     </div>
                               </ServiceWrapper>
@@ -105,11 +107,10 @@ const ServiceComponent = () => {
                                                 href="/domain/vivre-ensemble"
                                                 className="font-nunito text-lg hover:text-green-600 font-extrabold"
                                           >
-                                                VIVRE ENSEMBLE
+                                                {t('cohesionTitle')}
                                           </a>
                                           <p className="text-center font-roboto text-lg p-4">
-                                                ACTIVITES CULTURELLES ET DE SOUTIEN AU VIVRE
-                                                ENSEMBLE
+                                                {t('cohesionDesc')}
                                           </p>
                                     </div>
                               </ServiceWrapper>

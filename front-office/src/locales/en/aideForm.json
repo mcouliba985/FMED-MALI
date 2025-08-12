@@ -1,0 +1,20 @@
+{
+      "title": "Help children out of poverty",
+      "instructions": "Please <strong>download and complete the FONSEJ application form</strong> before filling out the form.",
+      "downloadFile": "Download the file",
+      "fileNote": "Note: After completing the FONSEJ application form, please send it back by uploading it below, then enter your name and first name.",
+      "importLabel": "Upload your FONSEJ application form",
+      "noFile": "No file chosen",
+      "placeholder": {
+            "nom": "Last Name",
+            "prenom": "First Name"
+      },
+      "button": {
+            "send": "Send"
+      },
+      "messages": {
+            "success": "Your application has been successfully submitted!",
+            "error": "Error submitting the form.",
+            "genericError": "An error occurred. Please try again."
+      }
+}

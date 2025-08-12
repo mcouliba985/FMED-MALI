@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react';
 import CoverPageComponent from '../../components/main/cover-page-component';
 import { API_ENDPOINTS } from '../../config/API_ENDPOINT';
+import { useTranslation } from 'react-i18next';
 
 const MemberPage = () => {
+      const { t } = useTranslation();
+
       const coverContent = {
-            title: 'Les membres',
+            title: t('members.cover.title'),
             show: true,
-            label: 'Rencontrez les membres de notre équipe de bénévoles',
-            hook: 'Derrière chaque action, il y a des visages engagés. Découvrez les femmes et les hommes qui donnent de leur temps et de leur cœur pour FMED MALI.',
+            label: t('members.cover.label'),
+            hook: t('members.cover.hook'),
       };
 
       const [members, setMembers] = useState([]);

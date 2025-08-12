@@ -1,0 +1,20 @@
+{
+      "title": "Aider les enfants à sortir de la pauvreté",
+      "instructions": "Veuillez d'abord <strong>télécharger et remplir la fiche de candidature FONSEJ</strong> avant de remplir le formulaire.",
+      "downloadFile": "Télécharger le fichier",
+      "fileNote": "Remarque : Après avoir rempli la fiche de candidature FONSEJ, veuillez nous la renvoyer en l’important ci-dessous, puis renseignez votre nom et prénom.",
+      "importLabel": "Importer votre fiche de candidature FONSEJ",
+      "noFile": "Aucun fichier choisi",
+      "placeholder": {
+            "nom": "Nom",
+            "prenom": "Prénom"
+      },
+      "button": {
+            "send": "Envoyer"
+      },
+      "messages": {
+            "success": "Votre candidature a bien été envoyée !",
+            "error": "Erreur lors de l’envoi du formulaire.",
+            "genericError": "Une erreur s'est produite. Veuillez réessayer."
+      }
+}

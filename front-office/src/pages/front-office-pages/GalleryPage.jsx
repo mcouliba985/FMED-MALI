@@ -4,13 +4,16 @@ import 'react-photo-view/dist/react-photo-view.css';
 import { motion } from 'framer-motion';
 import CoverPageComponent from '../../components/main/cover-page-component';
 import { API_ENDPOINTS } from '../../config/API_ENDPOINT';
+import { useTranslation } from 'react-i18next';
 
 const GalleryPage = () => {
+      const { t } = useTranslation(); // Namespace gallery.json
+
       const coverContent = {
-            title: 'Galerie FMED MALI',
+            title: t('gallery.cover.title'),
             show: true,
-            label: 'Ce que nous avons construit, ensemble',
-            hook: 'Chaque photo témoigne d’un engagement, d’un projet accompli, d’un sourire retrouvé. Découvrez les actions concrètes menées par FMED MALI.',
+            label: t('gallery.cover.label'),
+            hook: t('gallery.cover.hook'),
       };
 
       const [images, setImages] = useState([]);
@@ -20,38 +23,36 @@ const GalleryPage = () => {
                   try {
                         const fetchRequest = await fetch(API_ENDPOINTS.getPublishedArticles);
 
-                        // Vérifie si la réponse HTTP est correcte (status 2xx)
                         if (!fetchRequest.ok) {
-                              console.error(
-                                    'Erreur HTTP lors du chargement des articles :',
-                                    fetchRequest.status
-                              );
+                              console.error('Erreur HTTP :', fetchRequest.status);
                               return;
                         }
 
                         const response = await fetchRequest.json();
 
-                        // Vérifie si la réponse est bien un tableau
                         if (Array.isArray(response)) {
                               setImages(response);
                         } else {
-                              console.warn('Format inattendu reçu pour les articles :', response);
+                              console.warn('Format inattendu :', response);
                         }
                   } catch (error) {
-                        console.error('Erreur lors de la récupération des articles :', error);
+                        console.error('Erreur fetch :', error);
                   }
             }
 
             fetchFunc();
       }, []);
 
-      const categories = ['Tous', ...Array.from(new Set(images.map((img) => img.category)))];
-      const [selectedCategory, setSelectedCategory] = useState('Tous');
+      const categories = [
+            t('gallery.categories.all'),
+            ...Array.from(new Set(images.map((img) => img.category))),
+      ];
+      const [selectedCategory, setSelectedCategory] = useState(t('gallery.categories.all'));
       const [currentPage, setCurrentPage] = useState(1);
       const itemsPerPage = 12;
 
       const filteredImages =
-            selectedCategory === 'Tous'
+            selectedCategory === t('gallery.categories.all')
                   ? images
                   : images.filter((img) => img.category === selectedCategory);
 
@@ -86,7 +87,7 @@ const GalleryPage = () => {
                                                 key={cat}
                                                 onClick={() => {
                                                       setSelectedCategory(cat);
-                                                      setCurrentPage(1); // reset page on category change
+                                                      setCurrentPage(1);
                                                 }}
                                                 className={`px-4 py-2 rounded-full border transition font-medium ${
                                                       selectedCategory === cat
@@ -131,7 +132,7 @@ const GalleryPage = () => {
                                                 disabled={currentPage === 1}
                                                 className="px-4 py-2 border rounded hover:bg-black hover:text-white disabled:opacity-50"
                                           >
-                                                Précédent
+                                                {t('gallery.pagination.prev')}
                                           </button>
                                           {[...Array(totalPages)].map((_, i) => (
                                                 <button
@@ -151,7 +152,7 @@ const GalleryPage = () => {
                                                 disabled={currentPage === totalPages}
                                                 className="px-4 py-2 border rounded hover:bg-black hover:text-white disabled:opacity-50"
                                           >
-                                                Suivant
+                                                {t('gallery.pagination.next')}
                                           </button>
                                     </div>
                               )}

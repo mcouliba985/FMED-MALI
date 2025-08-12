@@ -3,18 +3,20 @@ import CoverPageComponent from '../../components/main/cover-page-component';
 import { motion } from 'framer-motion';
 import aboutInformation from '../../datas/about-information.json';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const About = () => {
-      const title = 'A propos de nous';
+      const { t } = useTranslation(); // i18next hook
+      const title = t('about.pageTitle', 'A propos de nous'); // fallback si non traduit
       const { aboutKey } = useParams();
       const [about, setAbout] = useState({});
 
       useEffect(() => {
             if (aboutKey && aboutInformation.length > 0) {
                   const matchedAbout = aboutInformation.find((item) => item.key === aboutKey);
-                  setAbout(matchedAbout || {}); // met un objet vide si non trouvé
+                  setAbout(matchedAbout || {}); // objet vide si non trouvé
             }
-      }, [aboutKey]); // Ne pas inclure `aboutInformation`, il est statique
+      }, [aboutKey]);
 
       return (
             <section>
@@ -34,11 +36,11 @@ const About = () => {
 
                               <div className="col-12 col-lg-7">
                                     <h1 className="font-poppins font-black text-2xl md:text-4xl leading-normal mb-4 px-4">
-                                          {about.hookTitle}
+                                          {t(`about.${aboutKey}.hookTitle`, about.hookTitle)}
                                     </h1>
 
                                     <p className="text-justify font-roboto leading-7 px-4 md:px-7">
-                                          {about.hook}
+                                          {t(`about.${aboutKey}.hook`, about.hook)}
                                     </p>
                               </div>
                         </div>
@@ -46,10 +48,10 @@ const About = () => {
                         <div className="row px-4 lg:px-10 mt-4">
                               <div className="col-12 col-lg-10">
                                     <h1 className="font-poppins font-black text-2xl md:text-4xl  mb-4">
-                                          {about.title}
+                                          {t(`about.${aboutKey}.title`, about.title)}
                                     </h1>
                                     <p className="text-justify font-roboto leading-7">
-                                          {about.content}
+                                          {t(`about.${aboutKey}.content`, about.content)}
                                     </p>
                               </div>
 

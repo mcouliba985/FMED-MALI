@@ -1,0 +1,37 @@
+{
+      "cover": {
+            "title": "Devenir donateur",
+            "label": "Besoin d’aide ou de plus d’informations ?",
+            "hook": "N’hésitez pas à nous contacter pour toute question concernant votre inscription en tant que donateur. Notre équipe se fera un plaisir de vous accompagner."
+      },
+      "form": {
+            "title": "Remplir le formulaire",
+            "privacy": "Vos informations personnelles ne seront pas publiées. Les champs obligatoires sont marqués *",
+            "type": {
+                  "company": "Entreprise",
+                  "individual": "Particulier"
+            },
+            "fields": {
+                  "firstName": "Prénom",
+                  "lastName": "Nom",
+                  "email": "Email",
+                  "phone": "Téléphone",
+                  "address": "Adresse physique",
+                  "donationFrequency": "Fréquence du don",
+                  "paymentMethod": "Moyen de paiement préféré",
+                  "profession": "Profession",
+                  "motivation": "Motivation du don"
+            },
+            "file": {
+                  "label": "Votre pièce d'identité",
+                  "noFile": "Aucun fichier choisi"
+            },
+            "submit": "Envoyer"
+      },
+      "modal": {
+            "successTitle": "Succès",
+            "successMessage": "Le donateur a été enregistré avec succès !",
+            "error": "Erreur lors de l'envoi du formulaire.",
+            "networkError": "Erreur réseau."
+      }
+}

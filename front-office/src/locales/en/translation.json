@@ -46,5 +46,13 @@
       "supportCohesion": "Support for social cohesion",
       "joinUs": "Join us",
       "headOffice": "Head Office: Hamdallaye ACI, Alfarouk Building, near CANAL+",
-      "footerCopyright": "FMED Mali. All rights reserved — Site developed by MAG SERVICES MALI"
+      "footerCopyright": "FMED Mali. All rights reserved — Site developed by MAG SERVICES MALI",
+      "humanitarianTitle": "HUMANITARIAN",
+      "humanitarianDesc": "Mali is ranked among the twenty poorest countries in the world.",
+      "socioTitle": "SOCIO-PROFESSIONAL",
+      "socioDesc": "SUPPORT FOR SOCIO-PROFESSIONAL INTEGRATION",
+      "populationTitle": "POPULATIONS",
+      "populationDesc": "SUPPORT TO POPULATION SERVICES",
+      "cohesionTitle": "LIVING TOGETHER",
+      "cohesionDesc": "CULTURAL AND SUPPORT ACTIVITIES FOR LIVING TOGETHER"
 }

@@ -1,0 +1,14 @@
+{
+      "cover": {
+            "title": "FMED MALI Gallery",
+            "label": "What we have built together",
+            "hook": "Each photo tells a story of commitment, a completed project, a smile regained. Discover the concrete actions carried out by FMED MALI."
+      },
+      "categories": {
+            "all": "All"
+      },
+      "pagination": {
+            "prev": "Previous",
+            "next": "Next"
+      }
+}

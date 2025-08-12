@@ -1,0 +1,10 @@
+{
+      "cover": {
+            "title": "Formulaire Fonsej",
+            "label": "Envoyer votre candidature FONSEJ.",
+            "hook": "Vous souhaitez bénéficier du programme FONSEJ ? Remplissez le formulaire et envoyez votre candidature en quelques clics."
+      },
+      "sidebar": {
+            "latestNews": "Dernières actualités du FMED"
+      }
+}

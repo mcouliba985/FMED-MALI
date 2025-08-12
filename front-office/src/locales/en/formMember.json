@@ -1,0 +1,37 @@
+{
+      "cover": {
+            "title": "Become a Donor",
+            "label": "Need help or more information?",
+            "hook": "Feel free to contact us for any questions regarding your donor registration. Our team will be happy to assist you."
+      },
+      "form": {
+            "title": "Fill out the form",
+            "privacy": "Your personal information will not be published. Required fields are marked *",
+            "type": {
+                  "company": "Company",
+                  "individual": "Individual"
+            },
+            "fields": {
+                  "firstName": "First name",
+                  "lastName": "Last name",
+                  "email": "Email",
+                  "phone": "Phone",
+                  "address": "Physical address",
+                  "donationFrequency": "Donation frequency",
+                  "paymentMethod": "Preferred payment method",
+                  "profession": "Profession",
+                  "motivation": "Reason for donating"
+            },
+            "file": {
+                  "label": "Your ID",
+                  "noFile": "No file chosen"
+            },
+            "submit": "Send"
+      },
+      "modal": {
+            "successTitle": "Success",
+            "successMessage": "The donor has been successfully registered!",
+            "error": "Error while submitting form.",
+            "networkError": "Network error."
+      }
+}

@@ -1,0 +1,14 @@
+{
+      "cover": {
+            "title": "Galerie FMED MALI",
+            "label": "Ce que nous avons construit, ensemble",
+            "hook": "Chaque photo témoigne d’un engagement, d’un projet accompli, d’un sourire retrouvé. Découvrez les actions concrètes menées par FMED MALI."
+      },
+      "categories": {
+            "all": "Tous"
+      },
+      "pagination": {
+            "prev": "Précédent",
+            "next": "Suivant"
+      }
+}
