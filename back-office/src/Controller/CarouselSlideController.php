@@ -7,7 +7,6 @@ namespace App\Controller;
 use App\Entity\CarouselSlide;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -19,7 +18,7 @@ class CarouselSlideController extends AbstractController
     #[Route('/create', name: 'create_carousel_slide', methods: ['POST'])]
     public function create(Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
     {
-        $text = $request->request->get('text');  // directement le champ texte
+        $text = json_decode($request->request->get('text'), true);  // directement le champ texte
         $file = $request->files->get('image');  // fichier image
 
         if (empty($text)) {

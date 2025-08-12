@@ -13,11 +13,11 @@ class YoutubeManage
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $hook = null;
+    #[ORM\Column(type: 'json')]
+    private array $hook = [];  // { "fr": "...", "en": "..." }
 
-    #[ORM\Column(length: 255)]
-    private ?string $content = null;
+    #[ORM\Column(type: 'json')]
+    private array $content = [];  // { "fr": "...", "en": "..." }
 
     #[ORM\Column(length: 255)]
     private ?string $youtubeLink = null;
@@ -33,27 +33,25 @@ class YoutubeManage
         return $this->id;
     }
 
-    public function getHook(): ?string
+    public function getHook(?string $locale = null): mixed
     {
-        return $this->hook;
+        return $locale ? ($this->hook[$locale] ?? null) : $this->hook;
     }
 
-    public function setHook(string $hook): static
+    public function setHook(array $hook): static
     {
         $this->hook = $hook;
-
         return $this;
     }
 
-    public function getContent(): ?string
+    public function getContent(?string $locale = null): mixed
     {
-        return $this->content;
+        return $locale ? ($this->content[$locale] ?? null) : $this->content;
     }
 
-    public function setContent(string $content): static
+    public function setContent(array $content): static
     {
         $this->content = $content;
-
         return $this;
     }
 
@@ -65,7 +63,6 @@ class YoutubeManage
     public function setYoutubeLink(string $youtubeLink): static
     {
         $this->youtubeLink = $youtubeLink;
-
         return $this;
     }
 
@@ -77,7 +74,6 @@ class YoutubeManage
     public function setImagePath(string $imagePath): static
     {
         $this->imagePath = $imagePath;
-
         return $this;
     }
 
@@ -89,7 +85,6 @@ class YoutubeManage
     public function setImageName(string $imageName): static
     {
         $this->imageName = $imageName;
-
         return $this;
     }
 }

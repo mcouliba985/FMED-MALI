@@ -2,29 +2,27 @@ import React, { useEffect, useState } from 'react';
 import { Carousel } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { API_ENDPOINTS } from '../../config/API_ENDPOINT';
+import { useTranslation } from 'react-i18next';
 
 const CustomCarousel = () => {
       const [slides, setSlides] = useState([]);
+      const { i18n } = useTranslation(); // récupère la langue active
+      const { t } = useTranslation();
 
       useEffect(() => {
             async function slideFunc() {
-                  console.log('API_ENDPOINTS:', API_ENDPOINTS);
-
                   try {
-                        const fetchRequest = await fetch(API_ENDPOINTS.getCarouselElement);
-
-                        // Vérifie si la requête s'est bien passée
-                        if (!fetchRequest.ok) {
+                        const res = await fetch(API_ENDPOINTS.getCarouselElement);
+                        if (!res.ok) {
                               console.error(
                                     'Erreur HTTP lors du chargement des slides :',
-                                    fetchRequest.status
+                                    res.status
                               );
                               return;
                         }
 
-                        const data = await fetchRequest.json();
+                        const data = await res.json();
 
-                        // Vérifie que le format de données est correct
                         if (Array.isArray(data)) {
                               setSlides(data);
                         } else {
@@ -38,12 +36,12 @@ const CustomCarousel = () => {
             slideFunc();
       }, []);
 
-      if (slides === undefined) return null;
+      if (!slides || slides.length === 0) return null;
 
       return (
             <Carousel fade controls={false} indicators={false} interval={3000}>
                   {slides.map((slide, index) => (
-                        <Carousel.Item key={index}>
+                        <Carousel.Item key={slide.id || index}>
                               <div
                                     className="relative w-full h-[575px] lg:h-[820px] bg-center bg-cover"
                                     style={{ backgroundImage: `url(${slide.imagePath})` }}
@@ -56,7 +54,8 @@ const CustomCarousel = () => {
                                           <div className="flex flex-col lg:flex-row items-center justify-between w-full px-4">
                                                 {/* Texte à gauche */}
                                                 <h2 className="text-white font-bold w-full lg:w-1/2 text-[clamp(30px,5vw,60px)] leading-[1.4]">
-                                                      {slide.text}
+                                                      {slide.text?.[i18n.language] ||
+                                                            slide.text?.en}
                                                 </h2>
 
                                                 {/* Boutons à droite */}
@@ -65,10 +64,10 @@ const CustomCarousel = () => {
                                                             to={'/about/mission'}
                                                             className="bg-deepgreen text-white px-6 lg:px-16 py-3 hover:bg-green-800 transition-all rounded-2xl text-lg font-roboto"
                                                       >
-                                                            En savoir plus
+                                                            {t('learnMore')}
                                                       </Link>
                                                       <button className="bg-gold text-white px-6 lg:px-16 py-3 hover:bg-yellow-600 transition-all rounded-2xl text-lg font-roboto">
-                                                            Contactez-Nous
+                                                            {t('contact')}
                                                       </button>
                                                 </div>
                                           </div>

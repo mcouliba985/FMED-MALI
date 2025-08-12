@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\CarouselSlideRepository;
 use Doctrine\ORM\Mapping as ORM;
 
+
 #[ORM\Entity(repositoryClass: CarouselSlideRepository::class)]
 class CarouselSlide
 {
@@ -16,8 +17,9 @@ class CarouselSlide
     #[ORM\Column(length: 255)]
     private ?string $imagePath = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $text = null;
+    // On passe en type JSON pour stocker plusieurs langues
+    #[ORM\Column(type: 'json', nullable: true)]
+    private ?array $text = [];
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createAt = null;
@@ -35,19 +37,40 @@ class CarouselSlide
     public function setImagePath(string $imagePath): static
     {
         $this->imagePath = $imagePath;
-
         return $this;
     }
 
-    public function getText(): ?string
+    /**
+     * Retourne le texte complet (toutes langues)
+     */
+    public function getText(): ?array
     {
         return $this->text;
     }
 
-    public function setText(string $text): static
+    /**
+     * Retourne uniquement le texte dans une langue précise
+     */
+    public function getTextByLang(string $lang): ?string
+    {
+        return $this->text[$lang] ?? null;
+    }
+
+    /**
+     * Définit tout le tableau multi-langue
+     */
+    public function setText(?array $text): static
     {
         $this->text = $text;
+        return $this;
+    }
 
+    /**
+     * Définit une seule langue
+     */
+    public function setTextForLang(string $lang, string $value): static
+    {
+        $this->text[$lang] = $value;
         return $this;
     }
 
@@ -59,7 +82,7 @@ class CarouselSlide
     public function setCreateAt(\DateTimeImmutable $createAt): static
     {
         $this->createAt = $createAt;
-
         return $this;
     }
 }
+

@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 
 const VideoComponent = () => {
       const [youtube, setYoutube] = useState({});
-      const { t } = useTranslation();
+      const { t, i18n } = useTranslation(); // récupère la langue active
 
       useEffect(() => {
             async function youtubeFunc() {
@@ -26,7 +26,7 @@ const VideoComponent = () => {
             youtubeFunc();
       }, []);
 
-      if (youtube === undefined) return null;
+      if (!youtube || !youtube.hook) return null;
 
       return (
             <section className="container">
@@ -60,9 +60,11 @@ const VideoComponent = () => {
                         <div className="col-12 col-lg-7 px-4">
                               <div>
                                     <h2 className="font-poppins font-bold text-2xl md:text-4xl leading-[normal] mb-4 w-full pt-10 ">
-                                          {youtube.hook}
+                                          {youtube.hook?.[i18n.language] || youtube.hook?.en}
                                     </h2>
-                                    <p className="font-roboto text-base">{youtube.content}</p>
+                                    <p className="font-roboto text-base">
+                                          {youtube.content?.[i18n.language] || youtube.content?.en}
+                                    </p>
 
                                     <div className="flex flex-col md:flex-row mt-3 gap-4">
                                           <div className="flex flex-row gap-2">
@@ -116,7 +118,6 @@ const VideoComponent = () => {
                                           </h3>
 
                                           <ul className="flex flex-col mt-4 gap-6">
-                                                {/* Item 1 */}
                                                 <li className="flex items-center gap-3">
                                                       <img
                                                             src={check}
@@ -128,7 +129,6 @@ const VideoComponent = () => {
                                                       </span>
                                                 </li>
 
-                                                {/* Item 2 */}
                                                 <li className="flex items-center gap-3">
                                                       <img
                                                             src={check}
@@ -140,20 +140,16 @@ const VideoComponent = () => {
                                                       </span>
                                                 </li>
 
-                                                {/* Item 3 */}
                                                 <li className="flex items-center gap-3">
                                                       <img
                                                             src={check}
                                                             alt="check"
                                                             className="w-8"
                                                       />
-
                                                       <span className="text-base md:text-lg font-medium">
                                                             {t('maliSolidarity')}
                                                       </span>
                                                 </li>
-
-                                                {/* Ajoute d'autres items si besoin */}
                                           </ul>
                                     </div>
                               </div>

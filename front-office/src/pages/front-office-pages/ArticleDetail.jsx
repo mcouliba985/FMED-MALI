@@ -2,19 +2,23 @@ import { useParams } from 'react-router-dom';
 import CoverPageComponent from '../../components/main/cover-page-component';
 import { useEffect, useState } from 'react';
 import { API_ENDPOINTS } from '../../config/API_ENDPOINT';
+import { useTranslation } from 'react-i18next';
 
 const ArticleDetail = () => {
       const coverContent = {
             title: 'Article blog',
       };
 
-      const { articleID } = useParams(); // ✅ extraction correcte
+      const { i18n } = useTranslation(); // pour savoir la langue active
+      const currentLang = i18n.language || 'fr';
+
+      const { articleID } = useParams();
       const IDint = parseInt(articleID);
       const [article, setArticle] = useState({});
       const [recentArticle, setRecentArticle] = useState([]);
 
       useEffect(() => {
-            if (!articleID) return; // ✅ évite le fetch si l'ID est manquant
+            if (!articleID) return;
 
             async function previewArticle() {
                   try {
@@ -23,8 +27,6 @@ const ArticleDetail = () => {
                         );
                         const data = await fetchRequest.json();
                         setArticle(data);
-
-                        console.log(data);
                   } catch (error) {
                         console.error('Erreur de chargement :', error);
                   }
@@ -34,7 +36,7 @@ const ArticleDetail = () => {
       }, [articleID]);
 
       useEffect(() => {
-            async function artilces() {
+            async function articles() {
                   try {
                         const fetchArticle = await fetch(API_ENDPOINTS.getPublishedArticles);
                         const responseData = await fetchArticle.json();
@@ -44,7 +46,7 @@ const ArticleDetail = () => {
                   }
             }
 
-            artilces();
+            articles();
       }, []);
 
       return (
@@ -61,19 +63,23 @@ const ArticleDetail = () => {
                                     />
                                     <h4 className="py-3 px-2 font-nunito font-bold text-base lg:text-lg">
                                           <i className="far fa-calendar-days text-gold me-2"></i>
-                                          {new Date(article.createAt).toLocaleDateString('fr-FR', {
-                                                day: '2-digit',
-                                                month: 'long',
-                                                year: 'numeric',
-                                          })}
+                                          {article.createAt &&
+                                                new Date(article.createAt).toLocaleDateString(
+                                                      'fr-FR',
+                                                      {
+                                                            day: '2-digit',
+                                                            month: 'long',
+                                                            year: 'numeric',
+                                                      }
+                                                )}
                                     </h4>
                               </div>
 
-                              {/* Catégories */}
+                              {/* Catégories (placeholder pour l’instant) */}
                               <div className="col-12 col-md-6 col-lg-4">
                                     <div className="p-4 bg-light rounded-2xl">
                                           <h2 className="font-nunito text-xl font-black mb-2">
-                                                Fonsej actualite
+                                                Fonsej actualité
                                           </h2>
                                           {[...Array(3)].map((_, i) => (
                                                 <div key={i} className="flex gap-4 mb-4">
@@ -105,14 +111,14 @@ const ArticleDetail = () => {
                         <div className="row mb-4">
                               <div className="col-12">
                                     <h2 className="font-nunito font-bold text-2xl sm:text-3xl lg:text-4xl mb-4 w-100 sm:w-2/3">
-                                          {article.title}
+                                          {article.title?.[currentLang]}
                                     </h2>
                                     <p className="mb-4 font-roboto text-justify text-base leading-7">
-                                          {article.hook}
+                                          {article.hook?.[currentLang]}
                                     </p>
 
                                     <p className="font-roboto text-justify text-base leading-7">
-                                          {article.content}
+                                          {article.content?.[currentLang]}
                                     </p>
                               </div>
                         </div>
@@ -120,7 +126,7 @@ const ArticleDetail = () => {
                         {/* Recent posts */}
                         <div className="row">
                               <h2 className="col-12 font-nunito font-bold text-2xl sm:text-3xl lg:text-4xl mb-4">
-                                    Les recent posts
+                                    Les récents posts
                               </h2>
 
                               {recentArticle
@@ -139,19 +145,24 @@ const ArticleDetail = () => {
                                                       />
                                                       <h4 className="py-3 px-2 font-nunito font-bold text-sm lg:text-base">
                                                             <i className="far fa-calendar-days text-gold me-2"></i>
-                                                            {new Date(
-                                                                  recent.createAt
-                                                            ).toLocaleDateString('fr-FR', {
-                                                                  day: '2-digit',
-                                                                  month: 'long',
-                                                                  year: 'numeric',
-                                                            })}
+                                                            {recent.createAt &&
+                                                                  new Date(
+                                                                        recent.createAt
+                                                                  ).toLocaleDateString('fr-FR', {
+                                                                        day: '2-digit',
+                                                                        month: 'long',
+                                                                        year: 'numeric',
+                                                                  })}
                                                       </h4>
                                                       <a
                                                             href={`/article/${recent.id}`}
                                                             className="font-bold font-poppins text-lg hover:text-gold"
                                                       >
-                                                            {recent.hook.slice(0, 35)} ...
+                                                            {recent.hook?.[currentLang]?.slice(
+                                                                  0,
+                                                                  35
+                                                            )}{' '}
+                                                            ...
                                                       </a>
                                                 </div>
                                           </div>

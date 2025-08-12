@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\YoutubeManage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -15,16 +14,16 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 class YoutubeManageController extends AbstractController
 {
     #[Route('/create', name: 'create_youtube_manage', methods: ['POST'])]
-    public function create(Request $request, EntityManagerInterface $em, 
-    SluggerInterface $slugger): Response
+    public function create(Request $request, EntityManagerInterface $em,
+        SluggerInterface $slugger): Response
     {
-        $hook = $request->request->get('hook');
-        $content = $request->request->get('content');
+        $hook = json_decode($request->request->get('hook'), true);
+        $content = json_decode($request->request->get('content'), true);
         $youtubeLink = $request->request->get('youtubeLink');
         $file = $request->files->get('image');
 
-        if (empty($hook) || empty($content) || empty($youtubeLink)) {
-            return $this->json(['message' => 'Tous les champs texte sont requis'], Response::HTTP_BAD_REQUEST);
+        if (!is_array($hook) || !is_array($content) || empty($youtubeLink)) {
+            return $this->json(['message' => 'Hook et Content doivent être en JSON {fr:..., en:...}'], Response::HTTP_BAD_REQUEST);
         }
 
         if (!$file) {
@@ -66,7 +65,7 @@ class YoutubeManageController extends AbstractController
 
         $array = array_map(fn($item) => [
             'id' => $item->getId(),
-            'hook' => $item->getHook(),
+            'hook' => $item->getHook(),  // { fr: "...", en: "..." }
             'content' => $item->getContent(),
             'youtubeLink' => $item->getYoutubeLink(),
             'imagePath' => $item->getImagePath(),

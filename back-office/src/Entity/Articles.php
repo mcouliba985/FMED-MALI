@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\ArticlesRepository;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ArticlesRepository::class)]
@@ -14,31 +13,31 @@ class Articles
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $title = null;
+    #[ORM\Column(type: 'json')]
+    private array $title = []; // tableau au lieu de string
 
-    #[ORM\Column(length: 255)]
-    private ?string $hook = null;
+    #[ORM\Column(type: 'json')]
+    private array $hook = [];
 
-    #[ORM\Column(type: Types::TEXT)]
-    private ?string $content = null;
+    #[ORM\Column(type: 'json')]
+    private array $content = [];
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $imageName = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $imagePath = null;
 
-    #[ORM\Column(length: 20)]
+    #[ORM\Column(length: 20, nullable: true)]
     private ?string $type = null;
 
     #[ORM\Column]
-    private ?bool $archive = null;
+    private bool $archive = false;
 
-    #[ORM\Column(length: 20)]
+    #[ORM\Column(length: 20, nullable: true)]
     private ?string $status = null;
 
-    #[ORM\Column(length: 60)]
+    #[ORM\Column(length: 60, nullable: true)]
     private ?string $category = null;
 
     #[ORM\Column]
@@ -49,46 +48,36 @@ class Articles
         return $this->id;
     }
 
-    public function setId(int $id): static
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    public function getTitle(): ?string
+    public function getTitle(): array
     {
         return $this->title;
     }
 
-    public function setTitle(string $title): static
+    public function setTitle(array $title): static
     {
         $this->title = $title;
-
         return $this;
     }
 
-    public function getHook(): ?string
+    public function getHook(): array
     {
         return $this->hook;
     }
 
-    public function setHook(string $hook): static
+    public function setHook(array $hook): static
     {
         $this->hook = $hook;
-
         return $this;
     }
 
-    public function getContent(): ?string
+    public function getContent(): array
     {
         return $this->content;
     }
 
-    public function setContent(string $content): static
+    public function setContent(array $content): static
     {
         $this->content = $content;
-
         return $this;
     }
 

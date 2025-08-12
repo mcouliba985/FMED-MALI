@@ -14,19 +14,22 @@ class Testimonials
     #[ORM\Column]
     private ?int $id = null;
 
+    // Garder fullName en string simple
     #[ORM\Column(length: 255)]
     private ?string $fullName = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $poste = null;
+    // Poste multilingue JSON
+    #[ORM\Column(type: 'json')]
+    private array $poste = [];
 
-    #[ORM\Column(type: Types::TEXT)]
-    private ?string $message = null;
+    // Message multilingue JSON
+    #[ORM\Column(type: 'json')]
+    private array $message = [];
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $imagePath = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $imageName = null;
 
     #[ORM\Column]
@@ -45,32 +48,30 @@ class Testimonials
     public function setFullName(string $fullName): static
     {
         $this->fullName = $fullName;
-
         return $this;
     }
 
-    public function getPoste(): ?string
+    public function getPoste(): array
     {
         return $this->poste;
     }
 
-    public function setPoste(string $poste): static
+    public function setPoste(array $poste): static
     {
         $this->poste = $poste;
-
         return $this;
     }
 
-    public function getMessage(): ?string
+    public function getMessage(): array
     {
         return $this->message;
     }
 
-    public function setMessage(string $message): static
+    public function setMessage(array $message): static
     {
         $this->message = $message;
-
         return $this;
+    
     }
 
     public function getImagePath(): ?string
@@ -78,7 +79,7 @@ class Testimonials
         return $this->imagePath;
     }
 
-    public function setImagePath(string $imagePath): static
+    public function setImagePath(?string $imagePath): static
     {
         $this->imagePath = $imagePath;
 
@@ -90,7 +91,7 @@ class Testimonials
         return $this->imageName;
     }
 
-    public function setImageName(string $imageName): static
+    public function setImageName(?string $imageName): static
     {
         $this->imageName = $imageName;
 
@@ -109,3 +110,4 @@ class Testimonials
         return $this;
     }
 }
+

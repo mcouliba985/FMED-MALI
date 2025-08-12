@@ -20,29 +20,24 @@ final class TestimonialController extends AbstractController
         EntityManagerInterface $em,
         SluggerInterface $slugger
     ): Response {
-        // Récupérer les données JSON depuis la clé "informations"
         $data = json_decode($request->request->get('informations'), true);
         $file = $request->files->get('file');
 
-        // Vérifier que les champs requis sont présents
         if (empty($data['fullName']) || empty($data['poste']) || empty($data['message'])) {
             return $this->json(['message' => 'Champs requis manquants'], Response::HTTP_BAD_REQUEST);
         }
 
-        // Créer le témoignage
         $testimonial = new Testimonials();
-        $testimonial->setFullName($data['fullName']);
-        $testimonial->setPoste($data['poste']);
-        $testimonial->setMessage($data['message']);
+        $testimonial->setFullName($data['fullName']);  
+        $testimonial->setPoste((array) $data['poste']);
+        $testimonial->setMessage((array) $data['message']);
         $testimonial->setCreateAt(new \DateTimeImmutable());
 
-        // Gérer l'image si elle est présente
         if ($file) {
             $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
             $safeFilename = $slugger->slug($originalFilename);
             $newFilename = $safeFilename . '-' . uniqid() . '.' . $file->guessExtension();
 
-            // Déplacer le fichier dans le dossier public/uploads/testimonials
             $destination = $this->getParameter('kernel.project_dir') . '/public/uploads/testimonials';
             $file->move($destination, $newFilename);
 
@@ -50,7 +45,6 @@ final class TestimonialController extends AbstractController
             $testimonial->setImagePath($this->getParameter('back_url') . '/uploads/testimonials/' . $newFilename);
         }
 
-        // Sauvegarder en base de données
         $em->persist($testimonial);
         $em->flush();
 
@@ -68,7 +62,6 @@ final class TestimonialController extends AbstractController
     #[Route('', name: 'read_all_testimonials', methods: ['GET'])]
     public function readAll(EntityManagerInterface $em): Response
     {
-        // On récupère les témoignages triés par date de création décroissante
         $testimonials = $em->getRepository(Testimonials::class)->findBy([], ['createAt' => 'DESC']);
 
         if (empty($testimonials)) {
@@ -99,7 +92,6 @@ final class TestimonialController extends AbstractController
             return $this->json(['message' => 'Témoignage non trouvé'], Response::HTTP_NOT_FOUND);
         }
 
-        // Supprimer l'image associée si elle existe
         $filePath = $testimonial->getImageName()
             ? $this->getParameter('kernel.project_dir') . '/public/uploads/testimonials/' . $testimonial->getImageName()
             : null;
@@ -108,10 +100,10 @@ final class TestimonialController extends AbstractController
             @unlink($filePath);
         }
 
-        // Supprimer l'entité
         $em->remove($testimonial);
         $em->flush();
 
         return $this->json(['message' => 'Témoignage supprimé avec succès'], Response::HTTP_OK);
     }
 }
+

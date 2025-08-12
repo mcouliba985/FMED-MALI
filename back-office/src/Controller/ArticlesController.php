@@ -26,16 +26,14 @@ class ArticlesController extends AbstractController
         $data = json_decode($request->request->get('informations'), true);
         $file = $request->files->get('source');
 
-        // Vérifier si les données nécessaires sont présentes
         if (empty($data['title']) || empty($data['hook']) || empty($data['content'])) {
             return $this->json(['message' => 'Missing required fields'], Response::HTTP_BAD_REQUEST);
         }
 
-        // Créer l'article
         $article = new Articles();
-        $article->setTitle($data['title']);
-        $article->setHook($data['hook']);
-        $article->setContent($data['content']);
+        $article->setTitle((array) $data['title']);  // cast en array
+        $article->setHook((array) $data['hook']);
+        $article->setContent((array) $data['content']);
         $article->setType($data['type'] ?? '');
         $article->setArchive($data['archive'] ?? false);
         $article->setStatus($data['status'] ?? '');

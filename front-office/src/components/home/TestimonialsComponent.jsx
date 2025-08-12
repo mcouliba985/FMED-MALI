@@ -14,45 +14,37 @@ const TestimonialsComponent = () => {
       const [testimonials, setTestimonials] = useState([]);
       const [selectedTestimonial, setSelectedTestimonial] = useState(null);
 
-      const { t } = useTranslation();
+      const { t, i18n } = useTranslation();
 
       useEffect(() => {
-            async function TestimonialFunc() {
+            async function fetchTestimonials() {
                   try {
-                        const fetchRequest = await fetch(API_ENDPOINTS.getTestimonial);
-
-                        // Vérifie si la réponse HTTP est correcte (status 2xx)
-                        if (!fetchRequest.ok) {
-                              console.error(
-                                    'Erreur HTTP lors du chargement des articles :',
-                                    fetchRequest.status
-                              );
+                        const res = await fetch(API_ENDPOINTS.getTestimonial);
+                        if (!res.ok) {
+                              console.error('Erreur HTTP :', res.status);
                               return;
                         }
-
-                        const response = await fetchRequest.json();
-
-                        // Vérifie si la réponse est bien un tableau
-                        if (Array.isArray(response)) {
-                              setTestimonials(response);
+                        const data = await res.json();
+                        if (Array.isArray(data)) {
+                              setTestimonials(data);
                         } else {
-                              console.warn('Format inattendu reçu pour les articles :', response);
+                              console.warn('Format inattendu :', data);
                         }
                   } catch (error) {
-                        console.error('Erreur lors de la récupération des articles :', error);
+                        console.error('Erreur lors de la récupération des témoignages :', error);
                   }
             }
-            TestimonialFunc();
+            fetchTestimonials();
       }, []);
 
-      if (testimonials === undefined) return null;
+      if (!testimonials || testimonials.length === 0) return null;
 
       return (
             <TestimonialsWrapper>
                   <section className="container py-8">
+                        {/* Titre */}
                         <div className="flex justify-between items-end pb-4">
                               <TitleTestimonial>{t('testimonials')}</TitleTestimonial>
-
                               <SpadeDecorator>
                                     <motion.img
                                           className="w-full h-full"
@@ -68,6 +60,7 @@ const TestimonialsComponent = () => {
                               </SpadeDecorator>
                         </div>
 
+                        {/* Slider */}
                         <Swiper
                               modules={[Navigation, Autoplay]}
                               spaceBetween={20}
@@ -89,43 +82,55 @@ const TestimonialsComponent = () => {
                               loop={true}
                               className="relative mt-5"
                         >
-                              {testimonials.map((testimonial) => (
-                                    <SwiperSlide key={testimonial.id}>
-                                          <Testimonialcontent className="rounded-2xl p-4">
-                                                <p>
-                                                      {testimonial.message.length > 250
-                                                            ? `${testimonial.message.slice(0, testimonial.message.indexOf(' ', 250))}...`
-                                                            : testimonial.message}
-                                                </p>
+                              {testimonials.map((testimonial) => {
+                                    const lang = i18n.language;
+                                    const message =
+                                          testimonial.message?.[lang] ||
+                                          testimonial.message?.en ||
+                                          '';
+                                    const poste =
+                                          testimonial.poste?.[lang] || testimonial.poste?.en || '';
 
-                                                <button
-                                                      className="see-more-btn"
-                                                      onClick={() =>
-                                                            setSelectedTestimonial(testimonial)
-                                                      }
-                                                >
-                                                      Voir le plus
-                                                </button>
+                                    return (
+                                          <SwiperSlide key={testimonial.id}>
+                                                <Testimonialcontent className="rounded-2xl p-4">
+                                                      <p>
+                                                            {message.length > 250
+                                                                  ? `${message.slice(0, message.indexOf(' ', 250))}...`
+                                                                  : message}
+                                                      </p>
 
-                                                <div className="flex gap-4 mt-4 items-center absolute bottom-8">
-                                                      <img
-                                                            className="w-12 h-12 rounded-full"
-                                                            src={testimonial.imagePath}
-                                                            alt={testimonial.imageName}
-                                                      />
+                                                      <button
+                                                            className="see-more-btn"
+                                                            onClick={() =>
+                                                                  setSelectedTestimonial(
+                                                                        testimonial
+                                                                  )
+                                                            }
+                                                      >
+                                                            {t('seeMore')}
+                                                      </button>
 
-                                                      <div>
-                                                            <h2 className="uppercase font-bold font-nunito">
-                                                                  {testimonial.fullName}
-                                                            </h2>
-                                                            <p>{testimonial.poste.slice(0, 25)}</p>
+                                                      <div className="flex gap-4 mt-4 items-center absolute bottom-8">
+                                                            <img
+                                                                  className="w-12 h-12 rounded-full"
+                                                                  src={testimonial.imagePath}
+                                                                  alt={testimonial.imageName}
+                                                            />
+                                                            <div>
+                                                                  <h2 className="uppercase font-bold font-nunito">
+                                                                        {testimonial.fullName}
+                                                                  </h2>
+                                                                  <p>{poste.slice(0, 25)}</p>
+                                                            </div>
                                                       </div>
-                                                </div>
-                                          </Testimonialcontent>
-                                    </SwiperSlide>
-                              ))}
+                                                </Testimonialcontent>
+                                          </SwiperSlide>
+                                    );
+                              })}
                         </Swiper>
 
+                        {/* Boutons navigation */}
                         <div className="flex justify-center gap-6 my-6">
                               <button className="prev-button rounded-[64px] bg-gold hover:bg-yellow-300 text-white w-12 h-12 flex items-center justify-center">
                                     <i className="fas fa-arrow-left"></i>
@@ -136,7 +141,7 @@ const TestimonialsComponent = () => {
                         </div>
                   </section>
 
-                  {/* Modal affichant le commentaire complet */}
+                  {/* Modal */}
                   {selectedTestimonial && (
                         <div
                               className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
@@ -156,9 +161,15 @@ const TestimonialsComponent = () => {
                                           {selectedTestimonial.fullName}
                                     </h2>
                                     <p className="text-gray-500 mb-1">
-                                          {selectedTestimonial.poste}
+                                          {selectedTestimonial.poste?.[i18n.language] ||
+                                                selectedTestimonial.poste?.en ||
+                                                ''}
                                     </p>
-                                    <p className="text-gray-800">{selectedTestimonial.message}</p>
+                                    <p className="text-gray-800">
+                                          {selectedTestimonial.message?.[i18n.language] ||
+                                                selectedTestimonial.message?.en ||
+                                                ''}
+                                    </p>
                               </div>
                         </div>
                   )}

@@ -12,45 +12,41 @@ import { useTranslation } from 'react-i18next';
 
 const FmedInfo = () => {
       const [articleData, setArticleData] = useState([]);
-      const { t } = useTranslation();
+      const { t, i18n } = useTranslation();
 
       useEffect(() => {
-            async function TestimonialFunc() {
+            async function fetchArticles() {
                   try {
-                        const fetchRequest = await fetch(API_ENDPOINTS.getPublishedArticles);
-
-                        // Vérifie si la réponse HTTP est correcte (status 2xx)
-                        if (!fetchRequest.ok) {
+                        const res = await fetch(API_ENDPOINTS.getPublishedArticles);
+                        if (!res.ok) {
                               console.error(
                                     'Erreur HTTP lors du chargement des articles :',
-                                    fetchRequest.status
+                                    res.status
                               );
                               return;
                         }
-
-                        const response = await fetchRequest.json();
-
-                        // Vérifie si la réponse est bien un tableau
-                        if (Array.isArray(response)) {
-                              setArticleData(response);
+                        const data = await res.json();
+                        if (Array.isArray(data)) {
+                              setArticleData(data);
                         } else {
-                              console.warn('Format inattendu reçu pour les articles :', response);
+                              console.warn('Format inattendu reçu pour les articles :', data);
                         }
                   } catch (error) {
                         console.error('Erreur lors de la récupération des articles :', error);
                   }
             }
-            TestimonialFunc();
+            fetchArticles();
       }, []);
 
-      if (articleData === undefined) return null;
+      if (!articleData || articleData.length === 0) return null;
+
       return (
             <ArticleWrapper className="py-4">
                   <div className="container relative">
                         <div className="flex flex-row justify-between">
                               <div>
                                     <TitleArticle>
-                                          <i class="fas fa-circle-info me-2"></i>
+                                          <i className="fas fa-circle-info me-2"></i>
                                           {t('fmedInfo')}
                                     </TitleArticle>
                                     <h3 className="font-nunito text-2xl my-2 font-bold">
@@ -72,6 +68,7 @@ const FmedInfo = () => {
                                     />
                               </SpadeDecorator>
                         </div>
+
                         <Swiper
                               modules={[Navigation, Autoplay]}
                               spaceBetween={20}
@@ -93,6 +90,16 @@ const FmedInfo = () => {
                               className="relative px-4"
                         >
                               {articleData.map((data) => {
+                                    const hookText =
+                                          data.hook?.[i18n.language] || data.hook?.en || '';
+                                    const titleText =
+                                          data.title?.[i18n.language] || data.title?.en || '';
+
+                                    const shortHook =
+                                          hookText.length > 180
+                                                ? `${hookText.slice(0, hookText.indexOf(' ', 180))}...`
+                                                : hookText;
+
                                     return (
                                           <SwiperSlide key={data.id}>
                                                 <ArticleSwiper className="lg:w-[285px] xl:w-[350px]">
@@ -107,9 +114,9 @@ const FmedInfo = () => {
                                                                   href={`/article/${data.id}`}
                                                                   className="font-roboto text-lg py-2 font-light p-2 hover:text-red-600 block"
                                                             >
-                                                                  {data.hook.length > 180
-                                                                        ? `${data.content.slice(0, data.hook.indexOf(' ', 180))}...`
-                                                                        : data.hook}
+                                                                  <strong>{titleText}</strong>
+                                                                  <br />
+                                                                  {shortHook}
                                                             </a>
                                                       </div>
                                                 </ArticleSwiper>
