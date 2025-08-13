@@ -23,8 +23,6 @@ function Login() {
                         body: JSON.stringify({ email, password }),
                   });
 
-                  console.log(JSON.stringify({ email, password }));
-
                   if (!response.ok) throw new Error('Email ou mot de passe incorrect');
 
                   const data = await response.json();

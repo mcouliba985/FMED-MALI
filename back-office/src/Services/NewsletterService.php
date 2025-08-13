@@ -26,6 +26,12 @@ class NewsletterService
     {
         $subscribers = $this->em->getRepository(NewsletterSubscriber::class)->findAll();
 
+        // Récupération sécurisée du titre
+        $title = $article->getTitle();
+        if (is_array($title)) {
+            $title = $title['fr'] ?? reset($title);  // FR sinon première dispo
+        }
+
         foreach ($subscribers as $subscriber) {
             $unsubscribeUrl = $this->router->generate('newsletter_unsubscribe', [
                 'id' => $subscriber->getId(),
@@ -34,14 +40,13 @@ class NewsletterService
             $email = (new TemplatedEmail())
                 ->from('info@fmed.ml')
                 ->to($subscriber->getEmail())
-                ->subject('📰 Nouvel article : ' . $article->getTitle())
+                ->subject('📰 Nouvel article : ' . $title)
                 ->htmlTemplate('newsletter/newsletter_article.html.twig')
                 ->context([
                     'article' => $article,
                     'unsubscribeUrl' => $unsubscribeUrl,
                 ]);
 
-            // Ajout d’un en-tête utile
             $email->getHeaders()->addTextHeader('X-Mailer', 'Symfony Mailer');
 
             $this->mailer->send($email);

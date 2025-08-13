@@ -2,14 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { API_ENDPOINTS } from '../../../config/API_ENDPOINT';
 import Loader from '../../../components/main/loader-component';
+import { useTranslation } from 'react-i18next';
 
 export default function PreviewArticle() {
-      const { articleID } = useParams(); // ✅ extraction correcte
-      const [article, setArticle] = useState({});
+      const { articleID } = useParams();
+      const [article, setArticle] = useState(null);
       const [loading, setLoading] = useState(false);
+      const { i18n } = useTranslation();
 
       useEffect(() => {
-            if (!articleID) return; // ✅ évite le fetch si l'ID est manquant
+            if (!articleID) return;
 
             async function previewArticle() {
                   try {
@@ -18,7 +20,6 @@ export default function PreviewArticle() {
                         );
                         const data = await fetchRequest.json();
                         setArticle(data);
-
                         console.log(data);
                   } catch (error) {
                         console.error('Erreur de chargement :', error);
@@ -33,16 +34,14 @@ export default function PreviewArticle() {
             try {
                   const response = await fetch(`${API_ENDPOINTS.getArticles}/${articleID}/status`, {
                         method: 'PUT',
-                        headers: {
-                              'Content-Type': 'application/json',
-                        },
+                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ status: newStatus }),
                   });
 
                   if (!response.ok) throw new Error('Erreur de mise à jour');
 
                   const updated = await response.json();
-                  setArticle(updated); // mise à jour de l'état local
+                  setArticle(updated);
                   window.location.reload();
             } catch (error) {
                   console.error('Erreur de mise à jour du statut :', error);
@@ -52,6 +51,11 @@ export default function PreviewArticle() {
       };
 
       if (!article) return <p className="text-center mt-6">Chargement de l'article...</p>;
+
+      const currentLang = i18n.language || 'fr';
+      const articleTitle = article.title?.[currentLang] || '';
+      const articleHook = article.hook?.[currentLang] || '';
+      const articleContent = article.content?.[currentLang] || '';
 
       return (
             <div className="max-w-4xl mx-auto bg-white p-6">
@@ -63,7 +67,7 @@ export default function PreviewArticle() {
                         />
                         <div>
                               <h1 className="text-2xl font-bold text-gray-800 mb-2">
-                                    {article.title}
+                                    {articleTitle}
                               </h1>
                               <p className="text-sm text-gray-500">
                                     <strong>
@@ -78,12 +82,12 @@ export default function PreviewArticle() {
                                           catégorie {article.category}
                                     </span>
                               </p>
-                              <p className="mt-2 text-gray-700">{article.hook}</p>
+                              <p className="mt-2 text-gray-700">{articleHook}</p>
                         </div>
                   </div>
 
                   <div className="mt-6 space-y-4 text-gray-800">
-                        <p>{article.content}</p>
+                        <p>{articleContent}</p>
                   </div>
 
                   <div className="flex justify-end gap-4 mt-6">
@@ -95,7 +99,7 @@ export default function PreviewArticle() {
                               Modifier
                         </a>
 
-                        {article.status === 'draft' && (
+                        {article.status === 'brouillon' && (
                               <button
                                     className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 flex items-center gap-2"
                                     onClick={() => handleStatusChange('published')}
@@ -124,7 +128,7 @@ export default function PreviewArticle() {
                                                 <span>Enregistrement...</span>
                                           </>
                                     ) : (
-                                          'Desactiver'
+                                          'Désactiver'
                                     )}
                               </button>
                         )}
@@ -141,12 +145,12 @@ export default function PreviewArticle() {
                                                 <span>Enregistrement...</span>
                                           </>
                                     ) : (
-                                          'Reactiver'
+                                          'Réactiver'
                                     )}
                               </button>
                         )}
 
-                        {!['draft', 'published', 'disabled'].includes(article.status) && (
+                        {!['brouillon', 'published', 'disabled'].includes(article.status) && (
                               <button
                                     className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 flex items-center gap-2"
                                     onClick={() => handleStatusChange('published')}

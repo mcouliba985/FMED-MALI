@@ -6,32 +6,45 @@ import { CATEGORIES_ENUM } from '../../../datas/constants';
 
 const AddArticleForm = () => {
       const [loading, setLoading] = useState(false);
+      const [activeLang, setActiveLang] = useState('fr'); // Sélecteur de langue
 
       const [formData, setFormData] = useState({
-            title: '',
+            title: { fr: '', en: '' },
+            hook: { fr: '', en: '' },
+            content: { fr: '', en: '' },
             category: '',
             date: '',
-            accroche: '',
-            content: '',
             image: null,
       });
 
-      const handleChange = (e) => {
+      const handleChange = (e, lang = null, field = null) => {
             const { name, value, files } = e.target;
-            setFormData((prev) => ({
-                  ...prev,
-                  [name]: files ? files[0] : value,
-            }));
+            setFormData((prev) => {
+                  if (field && lang) {
+                        return {
+                              ...prev,
+                              [field]: { ...prev[field], [lang]: value },
+                        };
+                  }
+                  return {
+                        ...prev,
+                        [name]: files ? files[0] : value,
+                  };
+            });
       };
 
       const [errors, setErrors] = useState({});
 
       const validate = () => {
             const newErrors = {};
-            if (!formData.title.trim()) newErrors.title = 'Le titre est requis';
+            if (!formData.title.fr.trim()) newErrors.titleFr = 'Le titre FR est requis';
+            if (!formData.title.en.trim()) newErrors.titleEn = 'Le titre EN est requis';
+            if (!formData.hook.fr.trim()) newErrors.hookFr = 'L’accroche FR est requise';
+            if (!formData.hook.en.trim()) newErrors.hookEn = 'L’accroche EN est requise';
+            if (!formData.content.fr.trim()) newErrors.contentFr = 'Le contenu FR est requis';
+            if (!formData.content.en.trim()) newErrors.contentEn = 'Le contenu EN est requis';
             if (!formData.category.trim()) newErrors.category = 'La catégorie est requise';
             if (!formData.date.trim()) newErrors.date = 'La date est requise';
-            if (!formData.content.trim()) newErrors.content = 'Le contenu est requis';
             return newErrors;
       };
 
@@ -44,17 +57,18 @@ const AddArticleForm = () => {
             const validationErrors = validate();
             if (Object.keys(validationErrors).length > 0) {
                   setErrors(validationErrors);
+                  setLoading(false);
                   return;
             }
 
             const informations = {
                   title: formData.title,
-                  hook: formData.accroche,
+                  hook: formData.hook,
                   content: formData.content,
                   category: formData.category,
                   status: 'brouillon',
                   archive: false,
-                  type: 'FMED',
+                  type: 'news',
             };
 
             const dataToSend = new FormData();
@@ -73,17 +87,15 @@ const AddArticleForm = () => {
 
                   if (response.ok) {
                         const articleID = result.id;
-                        // Réinitialiser le formulaire si nécessaire
                         setFormData({
-                              title: '',
+                              title: { fr: '', en: '' },
+                              hook: { fr: '', en: '' },
+                              content: { fr: '', en: '' },
                               category: '',
                               date: '',
-                              accroche: '',
-                              content: '',
                               image: null,
                         });
                         setErrors({});
-                        // Redirection vers la page de preview
                         navigate(`/admin/preview-article/${articleID}`);
                   } else {
                         alert(`Erreur : ${result.message}`);
@@ -100,11 +112,29 @@ const AddArticleForm = () => {
             <form onSubmit={handleSubmit} className="flex flex-col gap-6 max-w-5xl mx-auto text-sm">
                   {/* Titre + description */}
                   <div>
-                        <h2 className="text-xl font-bold mb-1">Ajouter un nouveau article</h2>
+                        <h2 className="text-xl font-bold mb-1">Ajouter un nouvel article</h2>
                         <p className="text-gray-600">
                               Tous les articles en un seul endroit. Vous pouvez consulter, ajouter
                               ou archiver chaque publication.
                         </p>
+                  </div>
+
+                  {/* Sélecteur de langue */}
+                  <div className="flex gap-2">
+                        {['fr', 'en'].map((lang) => (
+                              <button
+                                    type="button"
+                                    key={lang}
+                                    onClick={() => setActiveLang(lang)}
+                                    className={`px-4 py-1 rounded border ${
+                                          activeLang === lang
+                                                ? 'bg-yellow-400 border-yellow-500'
+                                                : 'bg-gray-200 border-gray-300'
+                                    }`}
+                              >
+                                    {lang.toUpperCase()}
+                              </button>
+                        ))}
                   </div>
 
                   {/* Image + champs de droite */}
@@ -120,7 +150,7 @@ const AddArticleForm = () => {
                               ) : (
                                     <>
                                           <span className="text-yellow-500 text-4xl">
-                                                <i class="fas fa-cloud-arrow-down"></i>
+                                                <i className="fas fa-cloud-arrow-down"></i>
                                           </span>
                                           <p className="font-semibold mt-2">Importez votre image</p>
                                     </>
@@ -134,18 +164,23 @@ const AddArticleForm = () => {
                               />
                         </label>
 
-                        {/* Titre / catégorie / date / accroche */}
+                        {/* Champs texte */}
                         <div className="flex-1 flex flex-col gap-3">
                               <input
                                     type="text"
-                                    name="title"
-                                    placeholder="Titre"
-                                    value={formData.title}
-                                    onChange={handleChange}
-                                    className={`border rounded px-3 py-2 ${errors.title ? 'border-red-500' : 'border-gray-300'}`}
+                                    placeholder={`Titre (${activeLang.toUpperCase()})`}
+                                    value={formData.title[activeLang]}
+                                    onChange={(e) => handleChange(e, activeLang, 'title')}
+                                    className={`border rounded px-3 py-2 ${
+                                          errors[`title${activeLang.toUpperCase()}`]
+                                                ? 'border-red-500'
+                                                : 'border-gray-300'
+                                    }`}
                               />
-                              {errors.title && (
-                                    <p className="text-red-500 text-xs">{errors.title}</p>
+                              {errors[`title${activeLang.toUpperCase()}`] && (
+                                    <p className="text-red-500 text-xs">
+                                          {errors[`title${activeLang.toUpperCase()}`]}
+                                    </p>
                               )}
 
                               <div className="flex gap-2">
@@ -153,7 +188,11 @@ const AddArticleForm = () => {
                                           name="category"
                                           value={formData.category}
                                           onChange={handleChange}
-                                          className={`flex-1 border rounded px-3 py-2 ${errors.category ? 'border-red-500' : 'border-gray-300'}`}
+                                          className={`flex-1 border rounded px-3 py-2 ${
+                                                errors.category
+                                                      ? 'border-red-500'
+                                                      : 'border-gray-300'
+                                          }`}
                                     >
                                           <option value="">-- Sélectionnez une catégorie --</option>
                                           {CATEGORIES_ENUM.map((cat) => (
@@ -167,36 +206,48 @@ const AddArticleForm = () => {
                                           name="date"
                                           value={formData.date}
                                           onChange={handleChange}
-                                          className={`flex-1 border rounded px-3 py-2 ${errors.date ? 'border-red-500' : 'border-gray-300'}`}
+                                          className={`flex-1 border rounded px-3 py-2 ${
+                                                errors.date ? 'border-red-500' : 'border-gray-300'
+                                          }`}
                                     />
                               </div>
-                              {(errors.category || errors.date) && (
-                                    <div className="text-red-500 text-xs flex justify-between">
-                                          <span>{errors.category}</span>
-                                          <span>{errors.date}</span>
-                                    </div>
-                              )}
 
+                              {/* Accroche */}
                               <textarea
-                                    name="accroche"
-                                    placeholder="Accroche captivant de l’article"
-                                    value={formData.accroche}
-                                    onChange={handleChange}
-                                    className="border border-gray-300 rounded px-3 py-2 h-44 resize-none"
+                                    placeholder={`Accroche / Hook (${activeLang.toUpperCase()})`}
+                                    value={formData.hook[activeLang]}
+                                    onChange={(e) => handleChange(e, activeLang, 'hook')}
+                                    className={`border rounded px-3 py-2 h-20 resize-none ${
+                                          errors[`hook${activeLang.toUpperCase()}`]
+                                                ? 'border-red-500'
+                                                : 'border-gray-300'
+                                    }`}
                               />
+                              {errors[`hook${activeLang.toUpperCase()}`] && (
+                                    <p className="text-red-500 text-xs">
+                                          {errors[`hook${activeLang.toUpperCase()}`]}
+                                    </p>
+                              )}
                         </div>
                   </div>
 
                   {/* Contenu principal */}
                   <div>
                         <textarea
-                              name="content"
-                              placeholder="Contenus de l’article"
-                              value={formData.content}
-                              onChange={handleChange}
-                              className={`w-full border rounded px-3 py-2 h-52 resize-none ${errors.content ? 'border-red-500' : 'border-gray-300'}`}
+                              placeholder={`Contenu / Content (${activeLang.toUpperCase()})`}
+                              value={formData.content[activeLang]}
+                              onChange={(e) => handleChange(e, activeLang, 'content')}
+                              className={`w-full border rounded px-3 py-2 h-40 resize-none ${
+                                    errors[`content${activeLang.toUpperCase()}`]
+                                          ? 'border-red-500'
+                                          : 'border-gray-300'
+                              }`}
                         />
-                        {errors.content && <p className="text-red-500 text-xs">{errors.content}</p>}
+                        {errors[`content${activeLang.toUpperCase()}`] && (
+                              <p className="text-red-500 text-xs">
+                                    {errors[`content${activeLang.toUpperCase()}`]}
+                              </p>
+                        )}
                   </div>
 
                   {/* Bouton */}

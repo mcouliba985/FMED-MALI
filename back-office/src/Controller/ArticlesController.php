@@ -16,13 +16,24 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 #[Route('/api/articles')]
 class ArticlesController extends AbstractController
 {
+    private function normalizeLangArray($value): array
+    {
+        if (!is_array($value)) {
+            return [
+                'fr' => $value ?? '',
+                'en' => ''
+            ];
+        }
+        // Merge avec valeurs vides pour garantir les deux clés
+        return array_merge(['fr' => '', 'en' => ''], $value);
+    }
+
     #[Route('/create', name: 'create_article', methods: ['POST'])]
     public function create(
         Request $request,
         EntityManagerInterface $em,
         SluggerInterface $slugger,
     ): Response {
-        // Récupérer les données JSON depuis la clé "informations"
         $data = json_decode($request->request->get('informations'), true);
         $file = $request->files->get('source');
 
@@ -31,30 +42,26 @@ class ArticlesController extends AbstractController
         }
 
         $article = new Articles();
-        $article->setTitle((array) $data['title']);  // cast en array
-        $article->setHook((array) $data['hook']);
-        $article->setContent((array) $data['content']);
+        $article->setTitle($this->normalizeLangArray($data['title']));
+        $article->setHook($this->normalizeLangArray($data['hook']));
+        $article->setContent($this->normalizeLangArray($data['content']));
         $article->setType($data['type'] ?? '');
         $article->setArchive($data['archive'] ?? false);
         $article->setStatus($data['status'] ?? '');
         $article->setCategory($data['category'] ?? '');
         $article->setCreateAt(new \DateTimeImmutable());
 
-        // Gestion du fichier image
         if ($file) {
             $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
             $safeFilename = $slugger->slug($originalFilename);
             $newFilename = $safeFilename . '-' . uniqid() . '.' . $file->guessExtension();
 
-            // Déplacer le fichier dans le dossier des uploads
             $file->move($this->getParameter('kernel.project_dir') . '/public/uploads/articles', $newFilename);
 
-            // Mettre à jour les informations de l'image dans l'article
             $article->setImageName($newFilename);
             $article->setImagePath($this->getParameter('back_url') . '/uploads/articles/' . $newFilename);
         }
 
-        // Enregistrer l'article en base de données
         $em->persist($article);
         $em->flush();
 
@@ -71,6 +78,70 @@ class ArticlesController extends AbstractController
             'imagePath' => $article->getImagePath(),
             'createAt' => $article->getCreateAt()->format('Y-m-d H:i:s'),
         ], Response::HTTP_CREATED);
+    }
+
+    #[Route('/edit/{id}', name: 'edit_article', methods: ['POST'])]
+    public function edit(
+        int $id,
+        Request $request,
+        EntityManagerInterface $em,
+        SluggerInterface $slugger,
+    ): Response {
+        $article = $em->getRepository(Articles::class)->find($id);
+
+        if (!$article) {
+            return $this->json(['message' => 'Article non trouvé'], Response::HTTP_NOT_FOUND);
+        }
+
+        $data = json_decode($request->request->get('informations'), true);
+        $file = $request->files->get('source');
+
+        if (empty($data['title']) || empty($data['hook']) || empty($data['content'])) {
+            return $this->json(['message' => 'Champs requis manquants'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $article->setTitle($this->normalizeLangArray($data['title']));
+        $article->setHook($this->normalizeLangArray($data['hook']));
+        $article->setContent($this->normalizeLangArray($data['content']));
+        $article->setType($data['type'] ?? $article->getType());
+        $article->setArchive($data['archive'] ?? $article->isArchive());
+        $article->setStatus($data['status'] ?? $article->getStatus());
+        $article->setCategory($data['category'] ?? $article->getCategory());
+
+        if ($file) {
+            $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $safeFilename = $slugger->slug($originalFilename);
+            $newFilename = $safeFilename . '-' . uniqid() . '.' . $file->guessExtension();
+
+            $uploadDir = $this->getParameter('kernel.project_dir') . '/public/uploads/articles';
+            $file->move($uploadDir, $newFilename);
+
+            if ($article->getImageName()) {
+                $oldImagePath = $uploadDir . '/' . $article->getImageName();
+                if (file_exists($oldImagePath)) {
+                    unlink($oldImagePath);
+                }
+            }
+
+            $article->setImageName($newFilename);
+            $article->setImagePath($this->getParameter('back_url') . '/uploads/articles/' . $newFilename);
+        }
+
+        $em->flush();
+
+        return $this->json([
+            'id' => $article->getId(),
+            'title' => $article->getTitle(),
+            'hook' => $article->getHook(),
+            'content' => $article->getContent(),
+            'type' => $article->getType(),
+            'archive' => $article->isArchive(),
+            'status' => $article->getStatus(),
+            'category' => $article->getCategory(),
+            'imageName' => $article->getImageName(),
+            'imagePath' => $article->getImagePath(),
+            'createAt' => $article->getCreateAt()->format('Y-m-d H:i:s'),
+        ]);
     }
 
     #[Route('/published', name: 'read_published_articles', methods: ['GET'])]
@@ -170,7 +241,9 @@ class ArticlesController extends AbstractController
         $data = json_decode($request->getContent(), true);
         $newStatus = $data['status'] ?? null;
 
-        $allowedStatuses = ['draft', 'published', 'disabled'];
+        
+
+        $allowedStatuses = ['brouillon', 'published', 'disabled'];
         if (!in_array($newStatus, $allowedStatuses, true)) {
             return new JsonResponse(['message' => 'Statut invalide'], Response::HTTP_BAD_REQUEST);
         }
@@ -179,9 +252,7 @@ class ArticlesController extends AbstractController
         $article->setStatus($newStatus);
 
         // Envoyer aux abonnés uniquement si l'article est publié
-        if ($newStatus === 'published') {
-            $newsletterService->sendArticleToSubscribers($article);
-        }
+        
 
         $em->flush();
 
@@ -190,73 +261,6 @@ class ArticlesController extends AbstractController
             'title' => $article->getTitle(),
             'status' => $article->getStatus(),
         ], Response::HTTP_OK);
-    }
-
-    #[Route('/edit/{id}', name: 'edit_article', methods: ['POST'])]
-    public function edit(
-        int $id,
-        Request $request,
-        EntityManagerInterface $em,
-        SluggerInterface $slugger,
-    ): Response {
-        $article = $em->getRepository(Articles::class)->find($id);
-
-        if (!$article) {
-            return $this->json(['message' => 'Article non trouvé'], Response::HTTP_NOT_FOUND);
-        }
-
-        $data = json_decode($request->request->get('informations'), true);
-        $file = $request->files->get('source');
-
-        if (empty($data['title']) || empty($data['hook']) || empty($data['content'])) {
-            return $this->json(['message' => 'Champs requis manquants'], Response::HTTP_BAD_REQUEST);
-        }
-
-        // Mettre à jour les champs
-        $article->setTitle($data['title']);
-        $article->setHook($data['hook']);
-        $article->setContent($data['content']);
-        $article->setType($data['type'] ?? $article->getType());
-        $article->setArchive($data['archive'] ?? $article->isArchive());
-        $article->setStatus($data['status'] ?? $article->getStatus());
-        $article->setCategory($data['category'] ?? $article->getCategory());
-
-        // Image : si nouvelle image => remplacer l'ancienne
-        if ($file) {
-            $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-            $safeFilename = $slugger->slug($originalFilename);
-            $newFilename = $safeFilename . '-' . uniqid() . '.' . $file->guessExtension();
-
-            $uploadDir = $this->getParameter('kernel.project_dir') . '/public/uploads/articles';
-            $file->move($uploadDir, $newFilename);
-
-            // Supprimer l'ancienne image du serveur si elle existe
-            if ($article->getImageName()) {
-                $oldImagePath = $uploadDir . '/' . $article->getImageName();
-                if (file_exists($oldImagePath)) {
-                    unlink($oldImagePath);
-                }
-            }
-
-            $article->setImageName($newFilename);
-            $article->setImagePath($this->getParameter('back_url') . '/uploads/articles/' . $newFilename);
-        }
-
-        $em->flush();
-
-        return $this->json([
-            'id' => $article->getId(),
-            'title' => $article->getTitle(),
-            'hook' => $article->getHook(),
-            'content' => $article->getContent(),
-            'type' => $article->getType(),
-            'archive' => $article->isArchive(),
-            'status' => $article->getStatus(),
-            'category' => $article->getCategory(),
-            'imageName' => $article->getImageName(),
-            'imagePath' => $article->getImagePath(),
-            'createAt' => $article->getCreateAt()->format('Y-m-d H:i:s'),
-        ]);
     }
 
     #[Route('/delete/{id}', name: 'delete_article', methods: ['DELETE'])]
