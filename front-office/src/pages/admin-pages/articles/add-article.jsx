@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API_ENDPOINTS } from '../../../config/API_ENDPOINT';
 import Loader from '../../../components/main/loader-component';
-import { CATEGORIES_ENUM } from '../../../datas/constants';
+import { CATEGORIES_ENUM, TYPE_ENUM } from '../../../datas/constants';
 
 const AddArticleForm = () => {
       const [loading, setLoading] = useState(false);
@@ -13,6 +13,7 @@ const AddArticleForm = () => {
             hook: { fr: '', en: '' },
             content: { fr: '', en: '' },
             category: '',
+            type: '',
             date: '',
             image: null,
       });
@@ -44,6 +45,7 @@ const AddArticleForm = () => {
             if (!formData.content.fr.trim()) newErrors.contentFr = 'Le contenu FR est requis';
             if (!formData.content.en.trim()) newErrors.contentEn = 'Le contenu EN est requis';
             if (!formData.category.trim()) newErrors.category = 'La catégorie est requise';
+            if (!formData.type.trim()) newErrors.type = "le type d'article est requise";
             if (!formData.date.trim()) newErrors.date = 'La date est requise';
             return newErrors;
       };
@@ -68,7 +70,7 @@ const AddArticleForm = () => {
                   category: formData.category,
                   status: 'brouillon',
                   archive: false,
-                  type: 'news',
+                  type: formData.type,
             };
 
             const dataToSend = new FormData();
@@ -92,6 +94,7 @@ const AddArticleForm = () => {
                               hook: { fr: '', en: '' },
                               content: { fr: '', en: '' },
                               category: '',
+                              type: '',
                               date: '',
                               image: null,
                         });
@@ -185,6 +188,22 @@ const AddArticleForm = () => {
 
                               <div className="flex gap-2">
                                     <select
+                                          name="type"
+                                          value={formData.type}
+                                          onChange={handleChange}
+                                          className={`flex-1 border rounded px-3 py-2 ${
+                                                errors.type ? 'border-red-500' : 'border-gray-300'
+                                          }`}
+                                    >
+                                          <option value="">-- type d'article --</option>
+                                          {TYPE_ENUM.map((type) => (
+                                                <option key={type.value} value={type.value}>
+                                                      {type.label}
+                                                </option>
+                                          ))}
+                                    </select>
+
+                                    <select
                                           name="category"
                                           value={formData.category}
                                           onChange={handleChange}
@@ -201,6 +220,7 @@ const AddArticleForm = () => {
                                                 </option>
                                           ))}
                                     </select>
+
                                     <input
                                           type="date"
                                           name="date"

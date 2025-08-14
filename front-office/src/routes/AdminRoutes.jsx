@@ -15,6 +15,9 @@ import TestimonialList from '../pages/admin-pages/temoignage/TestimonialList';
 import SiteSettings from '../pages/admin-pages/settings/site-setting';
 import ProtectedRoute from '../utils/ProtectedRoute';
 import EditArticleForm from '../pages/admin-pages/articles/edit-article';
+import AddEventForm from '../pages/admin-pages/Events/add-event';
+import PreviewEvent from '../pages/admin-pages/Events/preview-event';
+import EditEventForm from '../pages/admin-pages/Events/edit-event';
 
 const AdminRoutes = () => {
       return (
@@ -32,6 +35,9 @@ const AdminRoutes = () => {
                   <Route path="preview-article/:articleID" element={<PreviewArticle />} />
                   <Route path="list-member" element={<MemberList />} />
                   <Route path="event-list" element={<EventList />} />
+                  <Route path="add-event" element={<AddEventForm />} />
+                  <Route path="preview-event/:eventID" element={<PreviewEvent />} />
+                  <Route path="edit-event/:eventID" element={<EditEventForm />} />
                   <Route path="list-donateur" element={<DonateurList />} />
                   <Route path="preview-donator/:donatorID" element={<DonateurPreview />} />
                   <Route path="payment-register" element={<PaymentRegister />} />

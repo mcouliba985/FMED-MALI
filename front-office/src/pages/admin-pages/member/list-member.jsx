@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Pagination } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { API_ENDPOINTS } from '../../../config/API_ENDPOINT';
-import OverlayBlocker from './../../../components/main/overlay-blocked';
 
 const MemberList = () => {
       const [members, setMembers] = useState([]);
@@ -121,8 +120,6 @@ const MemberList = () => {
                               </div>
                         </div>
                   </div>
-
-                  <OverlayBlocker />
             </div>
       );
 };

@@ -23,7 +23,7 @@ const FrontRoutes = () => {
                         <Route path="about/:aboutKey" element={<About />} />
                         <Route path="article/:articleID" element={<ArticleDetail />} />
                         <Route path="list-event" element={<EventsPage />} />
-                        <Route path="event/:eventId" element={<EventDetail />} />
+                        <Route path="event/:eventID" element={<EventDetail />} />
                         <Route path="our-teams" element={<MemberPage />} />
                         <Route path="fonsej-news" element={<FonsejArticle />} />
                         <Route path="fonsej-form" element={<FonsejForm />} />

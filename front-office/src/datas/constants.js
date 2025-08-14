@@ -6,3 +6,8 @@ export const CATEGORIES_ENUM = [
       { label: 'Économie', value: 'economie' },
       { label: 'Autre', value: 'autre' },
 ];
+
+export const TYPE_ENUM = [
+      { label: 'fmed', value: 'FMED' },
+      { label: 'fonsej', value: 'FONSEJ' },
+];

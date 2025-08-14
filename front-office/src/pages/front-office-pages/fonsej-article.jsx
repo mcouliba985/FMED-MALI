@@ -1,16 +1,46 @@
+import { useEffect, useState } from 'react';
 import CoverPageComponent from '../../components/main/cover-page-component';
-import LockComponent from './../../components/main/lock-component';
+import { useTranslation } from 'react-i18next';
+import { API_ENDPOINTS } from '../../config/API_ENDPOINT';
 
 const FonsejArticle = () => {
+      const [articleData, setArticleData] = useState([]);
+      const { t, i18n } = useTranslation();
+
+      useEffect(() => {
+            async function fetchArticles() {
+                  try {
+                        const res = await fetch(API_ENDPOINTS.getArticlesfonsej);
+                        if (!res.ok) {
+                              console.error(
+                                    'Erreur HTTP lors du chargement des articles :',
+                                    res.status
+                              );
+                              return;
+                        }
+                        const data = await res.json();
+                        if (Array.isArray(data)) {
+                              setArticleData(data);
+                        } else {
+                              console.warn('Format inattendu reçu pour les articles :', data);
+                        }
+                  } catch (error) {
+                        console.error('Erreur lors de la récupération des articles :', error);
+                  }
+            }
+            fetchArticles();
+      }, []);
+
+      if (!articleData || articleData.length === 0) return null;
+
       const coverContent = {
-            title: 'Les articles Fonsej',
+            title: t('fonsejB'),
             show: true,
-            label: 'Suivez ici toutes les actualités du FONSEJ.',
-            hook: 'Tenez-vous informé des dernières initiatives, projets et annonces du FONSEJ à travers nos actualités régulièrement mises à jour.',
+            label: t('fonsejT'),
+            hook: t('fonsejH'),
       };
       return (
             <section>
-                  <LockComponent />
                   <section>
                         <CoverPageComponent
                               title={coverContent.title}
@@ -19,27 +49,41 @@ const FonsejArticle = () => {
                               hook={coverContent.hook}
                         />
 
-                        <section className="conrainer px-8">
+                        <section className="container px-8">
                               <div className="row mb-4">
-                                    {[...Array(20)].map((_, i) => (
+                                    {articleData.map((article) => (
                                           <div
-                                                key={i}
+                                                key={article.id}
                                                 className="col-12 col-md-6 col-lg-4 col-xl-3 mb-4"
                                           >
                                                 <div className="bg-light shadow-lg p-4 rounded-2xl h-100 d-flex flex-column">
                                                       <img
                                                             className="w-100 h-64 rounded-2xl object-cover"
-                                                            src="https://scontent-lhr6-1.xx.fbcdn.net/v/t39.30808-6/489464830_667649472621914_3156975079092902195_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=833d8c&_nc_ohc=6C82uCu568kQ7kNvwG9Zmer&_nc_oc=AdmRIDPGEiVBrbbBq25GuHM0au8jpTkR-VoaOb68skq9rj5qUTsbqVW5ZYZnAMr686hq_RlgKvkhkIgR-w0DfqLz&_nc_zt=23&_nc_ht=scontent-lhr6-1.xx&_nc_gid=MEB8h7FiNYsdLp5J8UWl6Q&oh=00_AfHRnhnfVVT440gvcHQNC0zPSEFut1OzR7hd20WJhRr8ug&oe=681AC4E6"
-                                                            alt="img recent article"
+                                                            src={article.imagePath}
+                                                            alt={
+                                                                  article.title?.[i18n.language] ||
+                                                                  ''
+                                                            }
                                                       />
                                                       <h4 className="py-3 px-2 font-nunito font-bold text-sm lg:text-base">
                                                             <i className="far fa-calendar-days text-gold me-2"></i>
-                                                            01 juin 2025
+                                                            {new Date(
+                                                                  article.createAt
+                                                            ).toLocaleDateString(i18n.language, {
+                                                                  year: 'numeric',
+                                                                  month: 'long',
+                                                                  day: 'numeric',
+                                                            })}
                                                       </h4>
-                                                      <h2 className="font-bold font-poppins text-lg">
-                                                            Études de cas sur les services
-                                                            informatiques...
-                                                      </h2>
+                                                      <a
+                                                            href={`/article/${article.id}`}
+                                                            className="font-bold font-poppins text-lg"
+                                                      >
+                                                            {article.title?.[i18n.language] || ''}
+                                                      </a>
+                                                      <p className="text-sm mt-2 text-muted">
+                                                            {article.hook?.[i18n.language] || ''}
+                                                      </p>
                                                 </div>
                                           </div>
                                     ))}

@@ -1,50 +1,77 @@
 import { useEffect, useState } from 'react';
-import { Pagination } from 'react-bootstrap';
+import { Pagination, Modal, Button } from 'react-bootstrap';
 import { API_ENDPOINTS } from '../../../config/API_ENDPOINT';
 import { Link } from 'react-router-dom';
-import OverlayBlocker from '../../../components/main/overlay-blocked';
+import { useTranslation } from 'react-i18next';
 
 const EventList = () => {
-      const [articles, setArticles] = useState([]);
+      const { t, i18n } = useTranslation();
+      const currentLang = i18n.language; // ex: 'fr' ou 'en'
 
-      const itemsPerPage = 5;
+      const [events, setEvents] = useState([]);
       const [currentPage, setCurrentPage] = useState(1);
+      const itemsPerPage = 5;
 
-      const totalPages = Math.ceil(articles.length / itemsPerPage);
-      const paginatedArticles = articles.slice(
+      const [showDeleteModal, setShowDeleteModal] = useState(false);
+      const [eventToDelete, setEventToDelete] = useState(null);
+
+      const totalPages = Math.ceil(events.length / itemsPerPage);
+      const paginatedEvents = events.slice(
             (currentPage - 1) * itemsPerPage,
             currentPage * itemsPerPage
       );
 
       useEffect(() => {
-            async function fetchArticles() {
+            async function fetchEvents() {
                   try {
-                        const fetchArticle = await fetch(API_ENDPOINTS.getArticles);
-
-                        // Vérifie si la réponse HTTP est correcte (status 2xx)
-                        if (!fetchArticle.ok) {
+                        const res = await fetch(API_ENDPOINTS.getEvents);
+                        if (!res.ok) {
                               console.error(
-                                    'Erreur HTTP lors du chargement des articles :',
-                                    fetchArticle.status
+                                    'Erreur HTTP lors du chargement des événements :',
+                                    res.status
                               );
                               return;
                         }
 
-                        const response = await fetchArticle.json();
-
-                        // Vérifie si la réponse est bien un tableau
-                        if (Array.isArray(response)) {
-                              setArticles(response);
+                        const data = await res.json();
+                        if (Array.isArray(data)) {
+                              setEvents(data);
                         } else {
-                              console.warn('Format inattendu reçu pour les articles :', response);
+                              console.warn('Format inattendu reçu pour les événements :', data);
                         }
                   } catch (error) {
-                        console.error('Erreur lors de la récupération des articles :', error);
+                        console.error('Erreur lors de la récupération des événements :', error);
                   }
             }
 
-            fetchArticles();
+            fetchEvents();
       }, []);
+
+      const handleDeleteClick = (eventId) => {
+            setEventToDelete(eventId);
+            setShowDeleteModal(true);
+      };
+
+      const confirmDelete = async () => {
+            if (!eventToDelete) return;
+
+            try {
+                  const res = await fetch(`${API_ENDPOINTS.deleteEvent}/${eventToDelete}`, {
+                        method: 'DELETE',
+                  });
+
+                  if (!res.ok) {
+                        console.error('Erreur lors de la suppression');
+                        return;
+                  }
+
+                  setEvents((prev) => prev.filter((ev) => ev.id !== eventToDelete));
+                  setShowDeleteModal(false);
+                  setEventToDelete(null);
+            } catch (err) {
+                  console.error('Erreur réseau lors de la suppression', err);
+            }
+      };
 
       return (
             <div>
@@ -57,14 +84,11 @@ const EventList = () => {
 
                         <div className="flex justify-end gap-4 mb-4">
                               <Link
-                                    to={'/admin/add-article'}
+                                    to={'/admin/add-event'}
                                     className="bg-yellow-400 text-black px-4 py-2 rounded hover:bg-yellow-500 text-sm font-semibold"
                               >
                                     Ajouter un evenement
                               </Link>
-                              <button className="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 text-sm font-semibold">
-                                    Filtrer les evenement
-                              </button>
                         </div>
 
                         <div className="overflow-auto">
@@ -80,43 +104,53 @@ const EventList = () => {
                                           </tr>
                                     </thead>
                                     <tbody>
-                                          {paginatedArticles.map((article, index) => (
-                                                <tr key={article.id} className="border-t">
-                                                      <td className="px-4 py-2">{index + 1}</td>
+                                          {paginatedEvents.map((event, index) => (
+                                                <tr key={event.id} className="border-t">
+                                                      <td className="px-4 py-2">
+                                                            {(currentPage - 1) * itemsPerPage +
+                                                                  index +
+                                                                  1}
+                                                      </td>
                                                       <td className="px-4 py-2">
                                                             <img
-                                                                  src={article.imagePath}
-                                                                  alt={article.imageName}
+                                                                  src={event.imagePath}
+                                                                  alt={event.imageName}
                                                                   className="w-10 h-10 rounded object-cover"
                                                             />
                                                       </td>
-                                                      <td className="px-4 py-2">{article.title}</td>
+                                                      <td className="px-4 py-2">
+                                                            {event.title?.[currentLang]}
+                                                      </td>
                                                       <td className="px-4 py-2">
                                                             {new Date(
-                                                                  article.createAt
-                                                            ).toLocaleDateString('fr-FR', {
+                                                                  event.eventDate
+                                                            ).toLocaleDateString(currentLang, {
                                                                   day: '2-digit',
                                                                   month: 'long',
                                                                   year: 'numeric',
                                                             })}
                                                       </td>
                                                       <td className="px-4 py-2 capitalize">
-                                                            {article.status}
+                                                            {t(`status.${event.status}`)}
                                                       </td>
                                                       <td className="px-4 py-2">
                                                             <div className="flex justify-center gap-2">
                                                                   <Link
                                                                         className="text-blue-600 cursor-pointer hover:text-blue-800"
-                                                                        to={`/admin/preview-article/${article.id}`}
+                                                                        to={`/admin/preview-event/${event.id}`}
                                                                   >
-                                                                        <i class="far fa-eye"></i>
+                                                                        <i className="far fa-eye"></i>
                                                                   </Link>
-                                                                  <Link
+                                                                  <span
                                                                         className="text-red-600 cursor-pointer hover:text-red-800"
-                                                                        to={'/'}
+                                                                        onClick={() =>
+                                                                              handleDeleteClick(
+                                                                                    event.id
+                                                                              )
+                                                                        }
                                                                   >
-                                                                        <i class="far fa-trash-can"></i>
-                                                                  </Link>
+                                                                        <i className="far fa-trash-can"></i>
+                                                                  </span>
                                                             </div>
                                                       </td>
                                                 </tr>
@@ -124,7 +158,7 @@ const EventList = () => {
                                     </tbody>
                               </table>
 
-                              <div className="flex justify-end">
+                              <div className="flex justify-end mt-4">
                                     <Pagination
                                           currentPage={currentPage}
                                           totalPages={totalPages}
@@ -134,7 +168,24 @@ const EventList = () => {
                         </div>
                   </div>
 
-                  <OverlayBlocker />
+                  {/* Modal de confirmation */}
+                  <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+                        <Modal.Header closeButton>
+                              <Modal.Title>Confirmer la suppression</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                              Êtes-vous sûr de vouloir supprimer cet événement ? Cette action est
+                              irréversible.
+                        </Modal.Body>
+                        <Modal.Footer>
+                              <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+                                    Annuler
+                              </Button>
+                              <Button variant="danger" onClick={confirmDelete}>
+                                    Supprimer
+                              </Button>
+                        </Modal.Footer>
+                  </Modal>
             </div>
       );
 };

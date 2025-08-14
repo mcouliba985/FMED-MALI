@@ -1,105 +1,121 @@
+import { useEffect, useState } from 'react';
 import CoverPageComponent from '../../components/main/cover-page-component';
 import GoogleMapComponent from './../../components/main/google-map-component';
+import { API_ENDPOINTS } from '../../config/API_ENDPOINT';
+import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
 
 const EventDetail = () => {
+      const { i18n } = useTranslation(); // pour savoir la langue active
+      const { eventID } = useParams();
+      const [event, setEvent] = useState(null);
+
+      useEffect(() => {
+            if (!eventID) return;
+
+            async function fetchEvent() {
+                  try {
+                        const res = await fetch(`${API_ENDPOINTS.getEvents}/${eventID}`);
+                        const data = await res.json();
+
+                        console.log(res);
+
+                        setEvent(data);
+                  } catch (error) {
+                        console.error('Erreur de chargement :', error);
+                  }
+            }
+
+            fetchEvent();
+      }, [eventID]);
+
+      if (!event) {
+            return <p className="text-center py-8">Chargement en cours...</p>;
+      }
+
+      // langue active
+      const lang = i18n.language || 'fr';
+
       const coverContent = {
-            title: 'Evénements blog',
+            title: lang === 'fr' ? "Détails de l'événement" : 'Event details',
       };
 
       return (
             <section>
                   <CoverPageComponent title={coverContent.title} />
+
                   <section className="container py-8 lg:px-8">
                         <div className="row">
-                              {/* Image + Date */}
+                              {/* Image + Date + Lieu */}
                               <div className="col-12 col-md-9 col-lg-8 mb-4">
                                     <img
                                           className="w-100 h-auto max-h-[430px] lg:max-h-[600px] rounded-2xl object-cover"
-                                          src="https://scontent-lhr6-2.xx.fbcdn.net/v/t39.30808-6/490070085_667650832621778_5464031922788881425_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=833d8c&_nc_ohc=DP7GcIiMRGQQ7kNvwHdTkq4&_nc_oc=Adn5I9NGLeuGmN6Pj4FZWuMQ9YrYz82yGK0ZGhwuu0941J_j7QzcAUCcWcmWwzP-qlItb2XuQx_VtoFTZmBdC-XD&_nc_zt=23&_nc_ht=scontent-lhr6-2.xx&_nc_gid=DBEeFkTSq0RpgSWEIw_dEA&oh=00_AfFUsXfYnKCE9iRTPIyq-cdzINlVNFWRHNwYxD02_k-FqQ&oe=681AA431"
-                                          alt="article img"
+                                          src={event.imagePath}
+                                          alt={event.title[lang]}
                                     />
                                     <div className="flex gap-4 py-3 px-2 ">
                                           <h4 className="font-nunito font-bold text-sm lg:text-base">
                                                 <i className="far fa-calendar-days text-gold me-2"></i>
-                                                01 juin 2025
+                                                {new Date(event.eventDate).toLocaleDateString(
+                                                      lang,
+                                                      {
+                                                            day: '2-digit',
+                                                            month: 'long',
+                                                            year: 'numeric',
+                                                      }
+                                                )}
                                           </h4>
                                           <h4 className="font-nunito font-bold text-sm lg:text-base">
                                                 <i className="fas fa-location-dot text-gold me-2"></i>
-                                                Kati, Hamdallaye Aci
+                                                {event.location[lang]}
                                           </h4>
                                     </div>
                               </div>
 
-                              {/* Catégories */}
+                              {/* Programme */}
                               <div className="col-12 col-md-3 col-lg-4">
                                     <div className="p-4 bg-light rounded-2xl">
                                           <h2 className="font-nunito text-xl font-black mb-2">
-                                                Programme de l’événements
+                                                {lang === 'fr'
+                                                      ? 'Programme de l’événement'
+                                                      : 'Event Program'}
                                           </h2>
                                           <ol className="d-flex flex-wrap flex-sm-column gap-2 px-2 px-sm-4 py-2 list-decimal list-inside">
-                                                <li className="text-sm sm:text-base">
-                                                      Charity and Donation is a category that
-                                                      involves
-                                                </li>
-                                                <li className="text-sm sm:text-base">
-                                                      Giving financial or material support to
-                                                      various causes and organizations.
-                                                </li>
-                                                <li className="text-sm sm:text-base">
-                                                      It allows individuals to contribute toward
-                                                      addressing social issues by supporting various
-                                                      causes or organizations.
-                                                </li>
-                                                <li className="text-sm sm:text-base">
-                                                      It enables individuals to take part in social
-                                                      change.
-                                                </li>
+                                                {event.program.map((item, index) => (
+                                                      <li
+                                                            key={index}
+                                                            className="text-sm sm:text-base"
+                                                      >
+                                                            {item[lang]}
+                                                      </li>
+                                                ))}
                                           </ol>
                                     </div>
                               </div>
                         </div>
 
-                        {/* Titre + texte */}
+                        {/* Titre + Description */}
                         <div className="row mb-4">
                               <div className="col-12">
                                     <h2 className="font-nunito font-bold text-2xl sm:text-3xl lg:text-4xl mb-4 w-100 sm:w-2/3">
-                                          Donner une bonne éducation aux enfants africains
+                                          {event.title[lang]}
                                     </h2>
                                     <p className="font-roboto text-justify text-base sm:text-lg lg:text-base leading-7">
-                                          La charité et le don sont des catégories qui impliquent un
-                                          soutien financier Catégorie qui implique un soutien
-                                          financier ou matériel à diverses causes d'organisations.
-                                          Elle permet aux individus de s'adresser aux catégories
-                                          sociales qui impliquent de soutenir financièrement ou
-                                          matériellement diverses causes d'organisations. Il permet
-                                          aux individus de s'adresser à la catégorie sociale Charité
-                                          et dons est une catégorie qui implique un soutien
-                                          financier Catégorie qui implique un soutien financier ou
-                                          matériel à diverses causes d'organisations. Il permet aux
-                                          individus de s'adresser à la catégorie sociale Charity And
-                                          Donation Is A Categorys That Involves Giving Financial
-                                          Category That Involves Giving Financial Or Material
-                                          Support Various Causes Organizations. Il permet aux
-                                          individus de s'adresser à la catégorie sociale Charity And
-                                          Donation Is A Categorys That Involves Giving Financial
-                                          Category That Involves Giving Financial Or Material
-                                          Support Various Causes Organizations. Il permet aux
-                                          individus de s'adresser à la catégorie sociale Charity And
-                                          Donation Is A Categorys That Involves Giving Financial
-                                          Category That Involves Giving Financial Or Material
-                                          Support Various Causes Organizations.
+                                          {event.content[lang]}
                                     </p>
                               </div>
                         </div>
 
-                        {/* Recent posts */}
+                        {/* Carte */}
                         <div className="row">
                               <h2 className="col-12 font-nunito font-bold text-2xl sm:text-3xl lg:text-4xl mb-4">
-                                    Localisations du lieu
+                                    {lang === 'fr' ? 'Localisation' : 'Location'}
                               </h2>
-
                               <div className="max-h-96">
-                                    <GoogleMapComponent className="h-full" />
+                                    <GoogleMapComponent
+                                          latitude={event.latitude}
+                                          longitude={event.longitude}
+                                    />
                               </div>
                         </div>
                   </section>

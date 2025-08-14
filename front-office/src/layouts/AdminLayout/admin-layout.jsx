@@ -54,7 +54,7 @@ const AdminLayout = () => {
                                     </aside>
 
                                     <main className="flex-1 bg-white shadow rounded-xl p-6 relative">
-                                          <AuthGuard />;
+                                          <AuthGuard />
                                           <Outlet />
                                     </main>
                               </div>

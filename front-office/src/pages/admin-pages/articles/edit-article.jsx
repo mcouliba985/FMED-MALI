@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { API_ENDPOINTS } from '../../../config/API_ENDPOINT';
 import Loader from '../../../components/main/loader-component';
-import { CATEGORIES_ENUM } from '../../../datas/constants';
+import { CATEGORIES_ENUM, TYPE_ENUM } from '../../../datas/constants';
 
 const EditArticleForm = () => {
       const { id } = useParams();
@@ -13,6 +13,7 @@ const EditArticleForm = () => {
       const [formData, setFormData] = useState({
             title: { fr: '', en: '' },
             category: '',
+            type: '',
             date: '',
             accroche: { fr: '', en: '' },
             content: { fr: '', en: '' },
@@ -34,6 +35,7 @@ const EditArticleForm = () => {
                                     en: data.title?.en || '',
                               },
                               category: data.category || '',
+                              type: data.type || '',
                               date: data.createAt ? data.createAt.substring(0, 10) : '',
                               accroche: {
                                     fr: data.hook?.fr || '',
@@ -85,10 +87,10 @@ const EditArticleForm = () => {
                   hook: formData.accroche,
                   content: formData.content,
                   category: formData.category,
+                  type: formData.type,
                   date: formData.date,
                   status: 'brouillon',
                   archive: false,
-                  type: 'FMED',
             };
 
             const dataToSend = new FormData();
@@ -188,6 +190,19 @@ const EditArticleForm = () => {
                               />
 
                               <div className="flex gap-2">
+                                    <select
+                                          name="type"
+                                          value={formData.type}
+                                          onChange={handleChange}
+                                          className={`flex-1 border rounded px-3 py-2 bg-white ${errors.category ? 'border-red-500' : 'border-gray-300'}`}
+                                    >
+                                          <option value="">-- type d'article --</option>
+                                          {TYPE_ENUM.map((type) => (
+                                                <option key={type.value} value={type.value}>
+                                                      {type.label}
+                                                </option>
+                                          ))}
+                                    </select>
                                     <select
                                           name="category"
                                           value={formData.category}
