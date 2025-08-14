@@ -199,6 +199,38 @@ class ArticlesController extends AbstractController
         return $this->json($articlesArray, Response::HTTP_OK);
     }
 
+    #[Route('/fonsej', name: 'read_all_articles_fonsej', methods: ['GET'])]
+    public function readAllFonsej(EntityManagerInterface $em): Response
+    {
+        // On récupère uniquement les articles publiés et de type "FONSEJ"
+        $articles = $em->getRepository(Articles::class)->findBy(
+            [
+                'status' => 'published',
+                'type' => 'FONSEJ'
+            ],
+            ['createAt' => 'DESC']
+        );
+
+        if (empty($articles)) {
+            return $this->json(['message' => 'No FONSEJ articles found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $articlesArray = array_map(fn($article) => [
+            'id' => $article->getId(),
+            'title' => $article->getTitle(),
+            'hook' => $article->getHook(),
+            'content' => $article->getContent(),
+            'type' => $article->getType(),
+            'status' => $article->getStatus(),
+            'category' => $article->getCategory(),
+            'createAt' => $article->getCreateAt()->format('Y-m-d H:i:s'),
+            'imageName' => $article->getImageName(),
+            'imagePath' => $article->getImagePath(),
+        ], $articles);
+
+        return $this->json($articlesArray, Response::HTTP_OK);
+    }
+
     #[Route('/{id}', name: 'read_one_article', methods: ['GET'])]
     public function readOne(int $id, EntityManagerInterface $em): Response
     {
@@ -241,8 +273,6 @@ class ArticlesController extends AbstractController
         $data = json_decode($request->getContent(), true);
         $newStatus = $data['status'] ?? null;
 
-        
-
         $allowedStatuses = ['brouillon', 'published', 'disabled'];
         if (!in_array($newStatus, $allowedStatuses, true)) {
             return new JsonResponse(['message' => 'Statut invalide'], Response::HTTP_BAD_REQUEST);
@@ -252,7 +282,9 @@ class ArticlesController extends AbstractController
         $article->setStatus($newStatus);
 
         // Envoyer aux abonnés uniquement si l'article est publié
-        
+        if ($newStatus === 'published') {
+            $newsletterService->sendArticleToSubscribers($article);
+        }
 
         $em->flush();
 

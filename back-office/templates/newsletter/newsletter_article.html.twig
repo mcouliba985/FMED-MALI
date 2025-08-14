@@ -113,8 +113,8 @@
             {% if article.imagePath %}
                 <img src="{{ article.imagePath }}" alt="Illustration de l'article">
             {% endif %}
-            <p><strong>{{ article.hook }}</strong></p>
-            <p>{{ article.content[:120] ~ '...' }}</p>
+            <p><strong>{{ article.hook.fr }}</strong></p>
+            <p>{{ article.content.fr[:120] ~ '...' }}</p>
 
             <a class="button" href="https://fmed.ml/article/{{ article.id }}">📖 Lire l'article complet</a>
 
