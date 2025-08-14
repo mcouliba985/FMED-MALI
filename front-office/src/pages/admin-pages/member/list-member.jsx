@@ -11,7 +11,7 @@ const MemberList = () => {
                   try {
                         const fetchRequest = await fetch(API_ENDPOINTS.getMembers);
 
-                        // Vérifie si la réponse HTTP est correcte (status 2xx)
+                        // Vérifie si la réponse HTTP est correcte (status)
                         if (!fetchRequest.ok) {
                               console.error(
                                     'Erreur HTTP lors du chargement des articles :',
