@@ -47,18 +47,6 @@ const MemberList = () => {
                         <h2 className="text-xl font-semibold mb-1">Liste des members</h2>
                         <p className="text-sm text-gray-600 mb-4">Tous les member fmed.</p>
 
-                        <div className="flex justify-end gap-4 mb-4">
-                              <Link
-                                    to={'/admin/add-article'}
-                                    className="bg-yellow-400 text-black px-4 py-2 rounded hover:bg-yellow-500 text-sm font-semibold"
-                              >
-                                    Ajouter un membre
-                              </Link>
-                              <button className="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 text-sm font-semibold">
-                                    Filtrer les membre
-                              </button>
-                        </div>
-
                         <div className="overflow-auto">
                               <table className="min-w-full text-sm text-left">
                                     <thead className="bg-gray-100 text-gray-700">
