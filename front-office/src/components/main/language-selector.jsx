@@ -19,6 +19,9 @@ const LanguageSelector = () => {
                   <option value="en" className="text-black">
                         English
                   </option>
+                  <option value="ar" className="text-black">
+                        Arabe
+                  </option>
             </select>
       );
 };
