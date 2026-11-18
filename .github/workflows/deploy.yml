@@ -1,4 +1,4 @@
-name: Build and Deploy React App (front-office) to cPanel
+name: Deploy Front (React) & Back (Symfony) via FTP
 
 on:
   push:
@@ -6,38 +6,51 @@ on:
       - main
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: 📥 Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Node.js
+      # --- ÉTAPE 1 : Build du Front-Office (React) ---
+      - name: ⚙️ Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      - name: Install dependencies (React front-office)
+      - name: 📦 Install & Build Front-office
         working-directory: ./front-office
-        run: npm install
-
-      - name: Build the React app
-        working-directory: ./front-office
-        run: npm run build
-
-      - name: Set up SSH key
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.CPANEL_SSH_KEY }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -H fmed.ml >> ~/.ssh/known_hosts
+          npm install
+          npm run build
 
-      - name: Deploy build folder to cPanel
-        run: |
-          scp -r ./front-office/build/* fmed86@fmed.ml:/home/fmed86/public_html/
+      # --- ÉTAPE 2 : Déploiement du Front-Office via FTP ---
+      - name: 📤 FTP Upload Front-office (React build)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftp
+          local-dir: ./front-office/build/
+          server-dir: /public_html/
 
-      # Deploy Symfony backend to cPanel (adjust path as needed)
-      - name: Deploy Symfony backend to cPanel
-        run: |
-          scp -r ./back-office/* fmed86@fmed.ml:/home/fmed86/back.fmed.ml/
+      # --- ÉTAPE 3 : Déploiement du Back-Office via FTP ---
+      - name: 📤 FTP Upload Back-office (Symfony)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftp
+          local-dir: ./back-office/
+          server-dir: /back.fmed.ml/
+          exclude: |
+            **/.git*
+            **/node_modules/**
+            **/var/**
+            .env
+            .env.*
+            README.md
+            composer.lock

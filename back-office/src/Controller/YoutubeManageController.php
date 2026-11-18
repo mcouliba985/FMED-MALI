@@ -10,12 +10,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
+
+
+
 #[Route('/api/youtube')]
 class YoutubeManageController extends AbstractController
 {
     #[Route('/create', name: 'create_youtube_manage', methods: ['POST'])]
-    public function create(Request $request, EntityManagerInterface $em,
-        SluggerInterface $slugger): Response
+    public function create(Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
     {
         $hook = json_decode($request->request->get('hook'), true);
         $content = json_decode($request->request->get('content'), true);
@@ -26,8 +28,11 @@ class YoutubeManageController extends AbstractController
             return $this->json(['message' => 'Hook et Content doivent être en JSON {fr:..., en:...}'], Response::HTTP_BAD_REQUEST);
         }
 
-        if (!$file) {
-            return $this->json(['message' => 'Image requise'], Response::HTTP_BAD_REQUEST);
+        // ✅ VÉRIFICATION SÉCURISÉE DE L'IMAGE
+        if (!$file || !$file->isValid()) {
+            return $this->json([
+                'message' => 'Image requise et valide (Vérifiez qu\'elle ne dépasse pas la taille maximale autorisée).'
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         $youtube = new YoutubeManage();
@@ -121,13 +126,14 @@ class YoutubeManageController extends AbstractController
             $entry->setYoutubeLink($youtubeLink);
         }
 
-        if ($file) {
+        // ✅ VÉRIFICATION SÉCURISÉE : On vérifie $file ET $file->isValid()
+        if ($file && $file->isValid()) {
             // Supprimer l'ancienne image
             $oldImagePath = $entry->getImagePath();
             if ($oldImagePath) {
                 $oldFilePath = str_replace($this->getParameter('back_url'), $this->getParameter('kernel.project_dir') . '/public', $oldImagePath);
                 if (file_exists($oldFilePath)) {
-                    unlink($oldFilePath);
+                    @unlink($oldFilePath);
                 }
             }
 
@@ -140,6 +146,11 @@ class YoutubeManageController extends AbstractController
 
             $entry->setImagePath($this->getParameter('back_url') . '/uploads/youtube/' . $newFilename);
             $entry->setImageName($newFilename);
+        } elseif ($file && !$file->isValid()) {
+            // Si une image a été soumise mais est invalide (ex: trop lourde)
+            return $this->json([
+                'message' => 'L\'image soumise est invalide ou dépasse la taille maximale autorisée par le serveur.'
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         $em->flush();
